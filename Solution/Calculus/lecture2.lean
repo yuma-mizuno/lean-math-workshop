@@ -1,4 +1,8 @@
+-- import Mathlib.Topology.MetricSpace.Basic
+import Mathlib.Data.Finset.Lattice
 import Mathlib.Topology.MetricSpace.CauSeqFilter
+import Mathlib.Analysis.Normed.Group.Basic
+import Mathlib.Analysis.Calculus.Deriv.Basic
 
 noncomputable
 section
@@ -10,9 +14,8 @@ def «0.9999999» : CauSeq ℚ abs where
   val n := 1 - (10 ^ n : ℚ)⁻¹
   property := by
     intro ε ε0
-    suffices ∃ i, ∀ (j : ℕ), j ≥ i → |((10 ^ i : ℚ)⁻¹ - (10 ^ j : ℚ)⁻¹)| < ε by simpa
-    have h : ∃ i : ℕ, (ε / 2)⁻¹ < 10 ^ i := pow_unbounded_of_one_lt (ε / 2)⁻¹ (by linarith)
-    cases h with | intro i hi =>
+    simp only [sub_sub_sub_cancel_left]
+    have ⟨i, hi⟩ : ∃ i : ℕ, (ε / 2)⁻¹ < 10 ^ i := pow_unbounded_of_one_lt (ε / 2)⁻¹ (by linarith)
     have hi : 2 * (10 ^ i : ℚ)⁻¹ < ε := (lt_div_iff' (by linarith)).mp (inv_lt_of_inv_lt (half_pos ε0) hi)
     exists i
     intro j hj
@@ -29,13 +32,17 @@ theorem «1 = 0.9999999» : (1 : ℝ) = Real.ofCauchy (Quotient.mk CauSeq.equiv 
       congr 1
       apply Quotient.sound
       intro ε ε0
-      suffices ∃ i, ∀ (j : ℕ), j ≥ i → (10 ^ j : ℚ)⁻¹ < ε by simpa [abs]
-      -- ヒント: `pow_unbounded_of_one_lt`と`inv_lt_of_inv_lt`を使って、欲しい`i`を手に入れよう
-      { sorry }
+      obtain ⟨n, hn⟩ : ∃ n : ℕ, ε⁻¹ < 10 ^ n := pow_unbounded_of_one_lt ε⁻¹ rfl
+      have : (10 ^ n : ℚ)⁻¹ < ε := inv_lt_of_inv_lt ε0 hn
+      exists n
+      intro h hj
+      simp [abs]
+      calc (10 ^ h : ℚ )⁻¹ ≤ (10 ^ n : ℚ)⁻¹ := inv_pow_le_inv_pow_of_le (by linarith) hj
+        _ < ε := this
 
 open Filter Topology Set Classical
 
-def HasFinCover {ι : Type} (U : ι → Set ℝ) (s : Set ℝ) := 
+def HasFinCover {ι : Type} (U : ι → Set ℝ) (s : Set ℝ)  := 
   ∃ (t : Finset ι), s ⊆ ⋃ i ∈ t, U i
 
 variable {ι : Type} (U : ι → Set ℝ)
@@ -43,18 +50,18 @@ variable {ι : Type} (U : ι → Set ℝ)
 def nestedIntervalSucc (a b : ℝ) : ℝ × ℝ :=
   if ¬HasFinCover U (Icc a ((a + b) / 2)) then ⟨a, (a + b) / 2⟩ else ⟨(a + b) / 2, b⟩
 
+example (x y : ℝ) (P : Prop) : (if P then x else y) = x ∨ (if P then x else y) = y := by
+  exact ite_eq_or_eq P x y
+
 def nestedInterval : ℕ → ℝ × ℝ 
   | 0 => ⟨0, 1⟩
   | n + 1 => nestedIntervalSucc U (nestedInterval n).1 (nestedInterval n).2
 
 local notation "I(" n ")" => Icc (Prod.fst (nestedInterval U n)) (Prod.snd (nestedInterval U n))
 
-def nestedIntervalSeq : ℕ → ℝ := 
-  fun n => ((nestedInterval U n).1 + (nestedInterval U n).2) / 2
-
 variable {U}
 
-lemma hasFinCover_concat (hac : HasFinCover U (Icc a c)) (hcb : HasFinCover U (Icc c b)) :
+lemma hasFinCover_concat (a b c : ℝ) (hac : HasFinCover U (Icc a c)) (hcb : HasFinCover U (Icc c b)) :
     HasFinCover U (Icc a b) := by
   rcases hac with ⟨ι_ac, cover_ac⟩
   rcases hcb with ⟨ι_cb, cover_cb⟩
@@ -70,13 +77,13 @@ lemma hasFinCover_concat (hac : HasFinCover U (Icc a c)) (hcb : HasFinCover U (I
     obtain ⟨i, hi⟩ : ∃ i, i ∈ ι_cb ∧ x ∈ U i := by simpa using cover_cb ⟨hxc, hx.right⟩
     exact ⟨i, Or.inr hi.1, hi.2⟩
 
-lemma not_hasFinCover_concat :
+lemma not_hasFinCover_concat {a b c : ℝ} :
     ¬HasFinCover U (Icc a b) → HasFinCover U (Icc a c) → ¬HasFinCover U (Icc c b) := by
   contrapose!
   intro H
-  apply hasFinCover_concat H.1 H.2
+  apply hasFinCover_concat a b c H.1 H.2
 
-lemma not_hasFinCover_concat' (h : ¬HasFinCover U (Icc a b)) : 
+lemma not_hasFinCover_concat' {a b : ℝ} (h : ¬HasFinCover U (Icc a b)) : 
     HasFinCover U (Icc a ((a + b) / 2)) → ¬HasFinCover U (Icc ((a + b) / 2) b) := 
   not_hasFinCover_concat h
 
@@ -88,7 +95,7 @@ lemma nestedIntervalSucc_right (h : HasFinCover U (Icc a ((a + b) / 2))) :
     nestedIntervalSucc U a b = ⟨(a + b) / 2, b⟩ := 
   if_neg (not_not_intro h)
 
-variable (U)
+variable (U) {a b : ℝ}
 
 theorem nestedIntervalSucc_eq_or_eq (a b : ℝ) : 
     nestedIntervalSucc U a b = ⟨a, (a + b) / 2⟩ ∨ 
@@ -103,11 +110,16 @@ theorem nestedInterval_le : ∀ n, (nestedInterval U n).1 < (nestedInterval U n)
     | inl h => rw [nestedInterval, h]; dsimp only; linarith
     | inr h => rw [nestedInterval, h]; dsimp only; linarith
 
+
+def nestedIntervalSeq {ι : Type} (U : ι → Set ℝ) : ℕ → ℝ := 
+  fun n => ((nestedInterval U n).1 + (nestedInterval U n).2) / 2
+
 theorem nestedIntervalSeq_is_nested_succ (n : ℕ) : I(n + 1) ⊆ I(n) := by
   intro x hx
   have := nestedInterval_le U n
-  rcases nestedIntervalSucc_eq_or_eq U (nestedInterval U n).1 (nestedInterval U n).2 with h | h <;>
-    rw [nestedInterval, h, Set.mem_Icc] at hx <;> dsimp only at hx <;> split_ands <;> linarith
+  cases nestedIntervalSucc_eq_or_eq U (nestedInterval U n).1 (nestedInterval U n).2 with
+  | inl h => rw [nestedInterval, h, Set.mem_Icc] at hx; dsimp only at hx; split_ands <;> linarith
+  | inr h => rw [nestedInterval, h, Set.mem_Icc] at hx; dsimp only at hx; split_ands <;> linarith
 
 theorem nestedIntervalSeq_is_nested {i j : ℕ} (hij : i ≤ j) : I(j) ⊆ I(i) := by 
   set k := j - i
@@ -188,14 +200,18 @@ def nestedIntervalCauseq : CauSeq ℝ abs where
   val := nestedIntervalSeq U
   property := nestedIntervalSeq_isCauSeq U
 
--- set_option trace.Meta.synthInstance true in
+abbrev nestedIntervalLim : ℝ := (nestedIntervalCauseq U).lim
+
 local instance : CauSeq.IsComplete ℝ norm := inferInstanceAs (CauSeq.IsComplete ℝ abs)
 
-lemma nestedIntervalSeq_tendsto : 
-    Tendsto (nestedIntervalSeq U) atTop (𝓝 (nestedIntervalCauseq U).lim) := by
+lemma nestedIntervalSeq_tendsto : Tendsto (nestedIntervalSeq U) atTop (𝓝 (nestedIntervalLim U)) := by
   apply (nestedIntervalCauseq U).tendsto_limit
 
-lemma nestedIntervalLim_mem (n : ℕ) : (nestedIntervalCauseq U).lim ∈ I(n) := by
+lemma nestedIntervalLim_mem_init : nestedIntervalLim U ∈ Icc 0 1 := by
+  apply isClosed_Icc.mem_of_tendsto (nestedIntervalSeq_tendsto U)
+  apply eventually_of_forall (fun n => nestedIntervalSeq_mem_of_le U (Nat.zero_le n))
+
+lemma nestedIntervalLim_mem (n : ℕ) : nestedIntervalLim U ∈ I(n) := by
   apply isClosed_Icc.mem_of_tendsto (nestedIntervalSeq_tendsto U)
   rw [eventually_atTop]
   exists n
@@ -205,18 +221,18 @@ lemma nestedIntervalLim_mem (n : ℕ) : (nestedIntervalCauseq U).lim ∈ I(n) :=
 theorem hasFinCover_of_Icc (hU : ∀ (i : ι), IsOpen (U i)) (cover : Icc 0 1 ⊆ ⋃ (i : ι), U i) : 
     HasFinCover U (Icc 0 1) := by 
   by_contra h
-  rcases cover (nestedIntervalLim_mem U 0) with ⟨_, ⟨i, rfl⟩, hU'⟩
-  rcases Metric.isOpen_iff.1 (hU i) (nestedIntervalCauseq U).lim hU' with ⟨ε, ε0, hε⟩
+  rcases cover (nestedIntervalLim_mem_init U) with ⟨_, ⟨i, rfl⟩, hU'⟩
+  rcases Metric.isOpen_iff.1 (hU i) (nestedIntervalLim U) hU' with ⟨ε, ε0, hε⟩
   have ⟨n, hn⟩ : ∃ n : ℕ, (ε / 2)⁻¹ < 2 ^ n := pow_unbounded_of_one_lt (ε / 2)⁻¹ (by linarith)
   have hn : 2 * (2 ^ n : ℝ)⁻¹ < ε := (lt_div_iff' (by linarith)).mp (inv_lt_of_inv_lt (half_pos ε0) hn)
   apply nestedInterval_not_hasFinCover h n
   exists {i}
   set a := (nestedInterval U n).1
   set b := (nestedInterval U n).2
-  set c := (nestedIntervalCauseq U).lim
+  set c := nestedIntervalLim U
   intro x (hx : a ≤ x ∧ x ≤ b)
   suffices x ∈ Metric.ball c ε by
-    simp_rw [Finset.mem_singleton, iUnion_iUnion_eq_left]
+    simp_rw [Finset.mem_singleton, Set.iUnion_iUnion_eq_left]
     apply hε this
   have := calc 2 * |x - c| 
     _ = |2 * (x - c)| := by simp [abs_mul] 
