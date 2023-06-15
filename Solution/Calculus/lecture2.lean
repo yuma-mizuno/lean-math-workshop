@@ -137,14 +137,10 @@ theorem nestedInterval_not_hasFinCover (h : ¬HasFinCover U (Icc 0 1)) : ∀ n :
   | n + 1 => by
     by_cases H : HasFinCover U (Icc (nestedInterval U n).1 (((nestedInterval U n).1 + (nestedInterval U n).2) / 2))
     case pos =>
-      rw [nestedInterval]
-      rw [nestedIntervalSucc_right H]
-      apply not_hasFinCover_concat ?_ H
-      apply nestedInterval_not_hasFinCover h n
+      rw [nestedInterval, nestedIntervalSucc_right H]
+      apply not_hasFinCover_concat (nestedInterval_not_hasFinCover h n) H
     case neg =>
-      rw [nestedInterval]
-      rw [nestedIntervalSucc_left H]
-      dsimp only
+      rw [nestedInterval, nestedIntervalSucc_left H]
       apply H
 
 variable (U)
