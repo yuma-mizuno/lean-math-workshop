@@ -12,3 +12,8 @@ require mathlib from git
 lean_lib «LeanMathWorkshop» {
   -- add any library configuration options here
 }
+
+@[default_target]
+lean_lib «Problem» {
+  -- add any library configuration options here
+}
