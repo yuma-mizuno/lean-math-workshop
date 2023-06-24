@@ -3,6 +3,8 @@ import Mathlib.Topology.MetricSpace.CauSeqFilter
 noncomputable
 section
 
+set_option autoImplicit false
+
 /- # 実数 
 mathlibでは実数型`ℝ`が定義されている。これはコーシー列
 -/
@@ -33,40 +35,60 @@ def «0.9999999» : CauSeq ℚ abs where
 theorem «1 = 0.9999999» : (1 : ℝ) = Real.ofCauchy (Quotient.mk CauSeq.equiv «0.9999999») := by
   calc 
     _ = Real.ofCauchy (Quotient.mk CauSeq.equiv (CauSeq.const abs 1)) := Real.ofCauchy_one.symm
-    _ = Real.ofCauchy (Quotient.mk CauSeq.equiv «0.9999999») := by
-      rw [«0.9999999»]
-      congr 1
-      apply Quotient.sound
-      suffices ∀ (ε : ℚ), ε > 0 → ∃ i, ∀ j, j ≥ i → abs (1 - (1 - (10 ^ j : ℚ)⁻¹)) < ε by assumption
-      intro ε ε0
-      obtain ⟨n, hn⟩ : ∃ n : ℕ, ε⁻¹ < 10 ^ n := pow_unbounded_of_one_lt ε⁻¹ rfl
-      have : (10 ^ n : ℚ)⁻¹ < ε := inv_lt_of_inv_lt ε0 hn
-      exists n
-      intro h hj
-      simp [abs]
-      calc (10 ^ h : ℚ )⁻¹ ≤ (10 ^ n : ℚ)⁻¹ := inv_pow_le_inv_pow_of_le (by linarith) hj
-        _ < ε := this
+    _ = Real.ofCauchy (Quotient.mk CauSeq.equiv «0.9999999»)          := ?_
+  rw [«0.9999999»]
+  congr 1
+  apply Quotient.sound
+  suffices ∀ (ε : ℚ), ε > 0 → ∃ i, ∀ j, j ≥ i → |1 - (1 - (10 ^ j : ℚ)⁻¹)| < ε by assumption
+  intro ε ε0
+  have ⟨n, hn⟩ : ∃ n : ℕ, ε⁻¹ < 10 ^ n := pow_unbounded_of_one_lt ε⁻¹ rfl
+  have : (10 ^ n : ℚ)⁻¹ < ε := inv_lt_of_inv_lt ε0 hn
+  exists n
+  intro h hj
+  simp [abs]
+  calc (10 ^ h : ℚ )⁻¹ ≤ (10 ^ n : ℚ)⁻¹ := inv_pow_le_inv_pow_of_le (by linarith) hj
+    _ < ε := this
 
 open Filter Topology Set Classical
+
+/--
+
+-/
 
 def HasFinCover {ι : Type} (U : ι → Set ℝ) (s : Set ℝ) := 
   ∃ (t : Finset ι), s ⊆ ⋃ i ∈ t, U i
 
 variable {ι : Type} (U : ι → Set ℝ)
 
+/-- 区間縮小法の帰納ステップ。区間を二等分して、有限被覆を持たない方を次の区間に選ぶ。-/
 def nestedIntervalSucc (a b : ℝ) : ℝ × ℝ :=
   if ¬HasFinCover U (Icc a ((a + b) / 2)) then ⟨a, (a + b) / 2⟩ else ⟨(a + b) / 2, b⟩
 
+/-- 区間縮小法 -/
 def nestedInterval : ℕ → ℝ × ℝ 
   | 0 => ⟨0, 1⟩
   | n + 1 => nestedIntervalSucc U (nestedInterval n).1 (nestedInterval n).2
 
+/-
+以下の記号を導入する。
+- `I(n)`: 縮小していく閉区間の列
+- `α n`: `I(n)`の左端
+- `β n`: `I(n)`の右端
+-/
 local notation "I(" n ")" => Icc (Prod.fst (nestedInterval U n)) (Prod.snd (nestedInterval U n))
+local notation "α" => fun n => Prod.fst (nestedInterval U n)
+local notation "β" => fun n => Prod.fst (nestedInterval U n)
 
-def nestedIntervalSeq : ℕ → ℝ := 
-  fun n => ((nestedInterval U n).1 + (nestedInterval U n).2) / 2
+/-- 縮小区間列`I(n)`の中間点からなる数列 -/
+def nestedIntervalSeq : ℕ → ℝ := fun n => (α n + β n) / 2
 
+
+/-
+1. 
+
+-/
 variable {U}
+variable {a b c : ℝ}
 
 lemma hasFinCover_concat (hac : HasFinCover U (Icc a c)) (hcb : HasFinCover U (Icc c b)) :
     HasFinCover U (Icc a b) := by
@@ -89,10 +111,6 @@ lemma not_hasFinCover_concat :
   contrapose!
   intro H
   apply hasFinCover_concat H.1 H.2
-
-lemma not_hasFinCover_concat' (h : ¬HasFinCover U (Icc a b)) : 
-    HasFinCover U (Icc a ((a + b) / 2)) → ¬HasFinCover U (Icc ((a + b) / 2) b) := 
-  not_hasFinCover_concat h
 
 lemma nestedIntervalSucc_left (h : ¬HasFinCover U (Icc a ((a + b) / 2))) : 
     nestedIntervalSucc U a b = ⟨a, (a + b) / 2⟩ := 

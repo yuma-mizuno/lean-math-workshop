@@ -3,9 +3,16 @@ import Mathlib.Topology.MetricSpace.CauSeqFilter
 noncomputable
 section
 
+/- # 実数 
+mathlibでは実数型`ℝ`が定義されている。標準的な解析学の教科書と同様に、`ℝ`の項（つまり実数）は
+Caucy列の同値類として定義される。
+-/
+
+-- 実数`1`は定数Cauchy列`1,1,1,1,...`から定まる同値類と等しい
 example : (1 : ℝ) = Real.ofCauchy (Quotient.mk CauSeq.equiv (CauSeq.const abs 1)) := 
   Real.ofCauchy_one.symm
 
+-- `0.9999999...`をコーシー列として定義する
 def «0.9999999» : CauSeq ℚ abs where
   val n := 1 - (10 ^ n : ℚ)⁻¹
   property := by
@@ -22,40 +29,72 @@ def «0.9999999» : CauSeq ℚ abs where
       _ = 2 * (10 ^ i : ℚ)⁻¹                  := by simp [abs]; ring
       _ < ε                                   := hi
 
-theorem «1 = 0.9999999» : (1 : ℝ) = Real.ofCauchy (Quotient.mk CauSeq.equiv «0.9999999») := by
-  calc (1 : ℝ) = Real.ofCauchy (Quotient.mk CauSeq.equiv (CauSeq.const abs 1)) := Real.ofCauchy_one.symm
-    _= Real.ofCauchy (Quotient.mk CauSeq.equiv «0.9999999») := by
-      rw [«0.9999999»]
-      congr 1
-      apply Quotient.sound
-      intro ε ε0
-      suffices ∃ i, ∀ (j : ℕ), j ≥ i → (10 ^ j : ℚ)⁻¹ < ε by simpa [abs]
-      -- ヒント: `pow_unbounded_of_one_lt`と`inv_lt_of_inv_lt`を使って、欲しい`i`を手に入れよう
-      { sorry }
+-- `0.9999999...`は`1`と等しい
+theorem «0.9999999 = 1» : Real.ofCauchy (Quotient.mk CauSeq.equiv «0.9999999») = (1 : ℝ) := by
+  calc _ = Real.ofCauchy (Quotient.mk CauSeq.equiv (CauSeq.const abs 1)) := ?_
+       _ = (1 : ℝ) := Real.ofCauchy_one
+  rw [«0.9999999»]
+  congr 1
+  apply Quotient.sound
+  intro ε ε0
+  suffices ∃ i, ∀ (j : ℕ), j ≥ i → (10 ^ j : ℚ)⁻¹ < ε by simpa [abs]
+  -- ヒント: `pow_unbounded_of_one_lt`と`inv_lt_of_inv_lt`を使って、欲しい`i`を手に入れよう
+  { sorry }
 
 open Filter Topology Set Classical
 
-def HasFinCover {ι : Type} (U : ι → Set ℝ) (s : Set ℝ) := 
+/-
+TIPS: 閉区間`{ x | a ≤ x ∧ x ≤ b }`は`Icc a b`と表す。Inteval-close-closeの略と覚えると良い。
+（閉区間は数学の本では`[a, b]`と書かれることが多いが、Leanではこの記号はリストを表す）
+-/
+
+/-
+閉区間`Icc 0 1`がコンパクトであること証明してみよう。証明は閉区間`Icc 0 1`の任意の
+開被覆`U : ι → Set ℝ`が有限部分被覆を持つことを背理法を用いて示す。つまり、有限部分被覆を
+持たないとして矛盾を導く。ここでは縮小区間法を直接用いる以下のステップで証明をする。
+
+1. 閉区間`I(0) := [0, 1]`から始まる縮小閉区間列 `I(0) ⊇ I(1) ⊇ ...`であって、任意の
+  `n`で`I(n)`が有限部分被覆を持たないものを定める。
+2. `I(n)`の中間点からなる数列はCauchy列であり、ある実数`c`に収束する。
+3. `c`はある開集合`U i`に含まれるが、`n`を十分大きくとれば`I(n) ⊆ U i`とできる。これは`I(n)`が
+  有限部分被覆を持たないことに矛盾する。
+
+以下ではステップ1,2の証明があらかじめ与えられており、ステップ3が演習問題として残されている。
+すぐに問題に取り組みたい人はファイルの最後までスキップしても問題ないだろう。
+-/
+
+/-- `ℝ`の部分集合`s`の開被覆`U`が有限部分被覆を持つことを表すための命題 -/
+def HasFinSubCover {ι : Type} (U : ι → Set ℝ) (s : Set ℝ) : Prop := 
   ∃ (t : Finset ι), s ⊆ ⋃ i ∈ t, U i
 
 variable {ι : Type} (U : ι → Set ℝ)
 
+/-- 区間縮小法の帰納ステップ。区間を二等分して、有限被覆を持たない方を次の区間に選ぶ。-/
 def nestedIntervalSucc (a b : ℝ) : ℝ × ℝ :=
-  if ¬HasFinCover U (Icc a ((a + b) / 2)) then ⟨a, (a + b) / 2⟩ else ⟨(a + b) / 2, b⟩
+  if ¬HasFinSubCover U (Icc a ((a + b) / 2)) then ⟨a, (a + b) / 2⟩ else ⟨(a + b) / 2, b⟩
 
+/-- 区間縮小法 -/
 def nestedInterval : ℕ → ℝ × ℝ 
   | 0 => ⟨0, 1⟩
   | n + 1 => nestedIntervalSucc U (nestedInterval n).1 (nestedInterval n).2
 
-local notation "I(" n ")" => Icc (Prod.fst (nestedInterval U n)) (Prod.snd (nestedInterval U n))
+/-
+以下の記号を導入する。
+- `I(n)`: 縮小閉区間列`I(0) ⊇ I(1) ⊇ ...`
+- `α n`: `I(n)`の左端
+- `β n`: `I(n)`の右端
+-/
+local notation "α" n:1000 => Prod.fst (nestedInterval U n)
+local notation "β" n:1000 => Prod.snd (nestedInterval U n)
+local notation "I(" n ")" => Icc (α n) (β n) 
 
-def nestedIntervalSeq : ℕ → ℝ := 
-  fun n => ((nestedInterval U n).1 + (nestedInterval U n).2) / 2
+-- 縮小区間列`I(n)`の中間点からなる数列
+def nestedIntervalSeq : ℕ → ℝ := fun n => (α n + β n) / 2
 
 variable {U}
 
-lemma hasFinCover_concat (hac : HasFinCover U (Icc a c)) (hcb : HasFinCover U (Icc c b)) :
-    HasFinCover U (Icc a b) := by
+lemma HasFinSubCover_concat (hac : HasFinSubCover U (Icc a c)) (hcb : HasFinSubCover U (Icc c b)) :
+    HasFinSubCover U (Icc a b) := by
   rcases hac with ⟨ι_ac, cover_ac⟩
   rcases hcb with ⟨ι_cb, cover_cb⟩
   exists ι_ac ∪ ι_cb
@@ -70,21 +109,16 @@ lemma hasFinCover_concat (hac : HasFinCover U (Icc a c)) (hcb : HasFinCover U (I
     obtain ⟨i, hi⟩ : ∃ i, i ∈ ι_cb ∧ x ∈ U i := by simpa using cover_cb ⟨hxc, hx.right⟩
     exact ⟨i, Or.inr hi.1, hi.2⟩
 
-lemma not_hasFinCover_concat :
-    ¬HasFinCover U (Icc a b) → HasFinCover U (Icc a c) → ¬HasFinCover U (Icc c b) := by
+lemma not_HasFinSubCover_concat :
+    ¬HasFinSubCover U (Icc a b) → HasFinSubCover U (Icc a c) → ¬HasFinSubCover U (Icc c b) := by
   contrapose!
-  intro H
-  apply hasFinCover_concat H.1 H.2
+  apply (fun H => HasFinSubCover_concat H.1 H.2)
 
-lemma not_hasFinCover_concat' (h : ¬HasFinCover U (Icc a b)) : 
-    HasFinCover U (Icc a ((a + b) / 2)) → ¬HasFinCover U (Icc ((a + b) / 2) b) := 
-  not_hasFinCover_concat h
-
-lemma nestedIntervalSucc_left (h : ¬HasFinCover U (Icc a ((a + b) / 2))) : 
+lemma nestedIntervalSucc_left (h : ¬HasFinSubCover U (Icc a ((a + b) / 2))) : 
     nestedIntervalSucc U a b = ⟨a, (a + b) / 2⟩ := 
   if_pos h
   
-lemma nestedIntervalSucc_right (h : HasFinCover U (Icc a ((a + b) / 2))) : 
+lemma nestedIntervalSucc_right (h : HasFinSubCover U (Icc a ((a + b) / 2))) : 
     nestedIntervalSucc U a b = ⟨(a + b) / 2, b⟩ := 
   if_neg (not_not_intro h)
 
@@ -95,31 +129,32 @@ theorem nestedIntervalSucc_eq_or_eq (a b : ℝ) :
       nestedIntervalSucc U a b = ⟨(a + b) / 2, b⟩ := by
   apply ite_eq_or_eq
 
-theorem nestedInterval_le : ∀ n, (nestedInterval U n).1 < (nestedInterval U n).2 
+theorem nestedInterval_le : ∀ n, α n < β n
   | 0 => Real.zero_lt_one
   | n + 1 => by
     have := nestedInterval_le n
-    cases nestedIntervalSucc_eq_or_eq U (nestedInterval U n).1 (nestedInterval U n).2 with
-    | inl h => rw [nestedInterval, h]; dsimp only; linarith
-    | inr h => rw [nestedInterval, h]; dsimp only; linarith
+    cases nestedIntervalSucc_eq_or_eq U (α n) (β n) with
+    | inl h => dsimp only; rw [nestedInterval, h]; dsimp only; linarith
+    | inr h => dsimp only; rw [nestedInterval, h]; dsimp only; linarith
 
 theorem nestedIntervalSeq_is_nested_succ (n : ℕ) : I(n + 1) ⊆ I(n) := by
-  intro x hx
   have := nestedInterval_le U n
-  rcases nestedIntervalSucc_eq_or_eq U (nestedInterval U n).1 (nestedInterval U n).2 with h | h <;>
-    rw [nestedInterval, h, Set.mem_Icc] at hx <;> dsimp only at hx <;> split_ands <;> linarith
+  cases nestedIntervalSucc_eq_or_eq U (α n) (β n) with 
+  | inl h => 
+    apply Icc_subset_Icc (by rw [nestedInterval, h]) (by rw [nestedInterval, h]; dsimp only; linarith)
+  | inr h => 
+    apply Icc_subset_Icc (by rw [nestedInterval, h]; dsimp only; linarith) (by rw [nestedInterval, h])
 
 theorem nestedIntervalSeq_is_nested {i j : ℕ} (hij : i ≤ j) : I(j) ⊆ I(i) := by 
+  rw [(Nat.add_sub_of_le hij).symm]
   set k := j - i
-  have : j = i + k := (Nat.add_sub_of_le hij).symm
-  rw [this]
   induction k with
   | zero => apply rfl.subset
   | succ k ih => intro x hx; apply ih (nestedIntervalSeq_is_nested_succ U (i + k) hx)
 
 theorem nestedIntervalSeq_mem (n : ℕ) : nestedIntervalSeq U n ∈ I(n) := by
-  have := nestedInterval_le U n
   simp only [mem_Icc, nestedIntervalSeq] 
+  have := nestedInterval_le U n
   split_ands <;> linarith
 
 theorem nestedIntervalSeq_mem_of_le {i j : ℕ} (hij : i ≤ j): 
@@ -128,44 +163,33 @@ theorem nestedIntervalSeq_mem_of_le {i j : ℕ} (hij : i ≤ j):
 
 variable {U}
   
-theorem nestedInterval_not_hasFinCover (h : ¬HasFinCover U (Icc 0 1)) : ∀ n : ℕ, ¬HasFinCover U I(n)
+/-- `I(0)`が有限部分被覆を持たないならば`I(n)`も有限部分被覆を持たない -/
+theorem nestedInterval_not_HasFinSubCover (h : ¬HasFinSubCover U I(0)) : ∀ n : ℕ, ¬HasFinSubCover U I(n)
   | 0 => h
   | n + 1 => by
-    by_cases H : HasFinCover U (Icc (nestedInterval U n).1 (((nestedInterval U n).1 + (nestedInterval U n).2) / 2))
+    by_cases H : HasFinSubCover U (Icc (α n) ((α n + β n) / 2))
     case pos =>
-      rw [nestedInterval]
-      rw [nestedIntervalSucc_right H]
-      apply not_hasFinCover_concat ?_ H
-      apply nestedInterval_not_hasFinCover h n
+      rw [nestedInterval, nestedIntervalSucc_right H]
+      apply not_HasFinSubCover_concat ?_ H
+      apply nestedInterval_not_HasFinSubCover h n
     case neg =>
-      rw [nestedInterval]
-      rw [nestedIntervalSucc_left H]
-      dsimp only
+      rw [nestedInterval, nestedIntervalSucc_left H]
       apply H
 
 variable (U)
 
-theorem nestedInterval_len : ∀ n : ℕ, (nestedInterval U n).2 - (nestedInterval U n).1 = (2 ^ n : ℝ)⁻¹
+/-- `I(n)`の長さは`(2 ^ n)⁻¹`である -/
+theorem nestedInterval_len : ∀ n : ℕ, β n - α n = (2 ^ n : ℝ)⁻¹
   | 0 => by simp [nestedInterval]
   | n + 1 => by
-    rw [nestedInterval]
-    have := nestedInterval_len n
-    set a := (nestedInterval U n).1
-    set b := (nestedInterval U n).2
-    cases nestedIntervalSucc_eq_or_eq U (nestedInterval U n).1 (nestedInterval U n).2 with
-    | inl H =>
-      rw [H]
-      field_simp at this ⊢
-      calc (a + b - 2 * a) * 2 ^ (n + 1) = (b - a) * 2 ^ n * 2 := by ring
-        _= 2 := by rw [this]; ring
-    | inr H =>
-      rw [H]
-      field_simp at this ⊢
-      calc (b * 2 - (a + b)) * 2 ^ (n + 1) = (b - a) * 2 ^ n * 2 := by ring
-        _= 2 := by rw [this]; ring
+    have ih := nestedInterval_len n
+    rcases nestedIntervalSucc_eq_or_eq U (α n) (β n) with H | H <;> 
+      rw [nestedInterval, H] <;> field_simp at ih ⊢ <;>
+        calc _ = (β n - α n) * 2 ^ n * 2 := by ring
+             _ = 2                       := by rw [ih]; ring
 
-
-theorem nestedIntervalSeq_isCauSeq_aux {x y : ℝ} (hx : x ∈ Icc a b) (hy : y ∈ Icc a b) : |y - x| ≤ (b - a) := by 
+theorem nestedIntervalSeq_isCauSeq_aux {x y : ℝ} (hx : x ∈ Icc a b) (hy : y ∈ Icc a b) : 
+    |y - x| ≤ (b - a) := by 
   dsimp [Icc] at hx hy
   apply (abs_sub_le_iff.2 ⟨_, _⟩) <;> linarith
 
@@ -182,55 +206,52 @@ theorem nestedIntervalSeq_isCauSeq : IsCauSeq abs (nestedIntervalSeq U) := by
   intro j hj
   calc |nestedIntervalSeq U j - nestedIntervalSeq U i| 
     _ ≤ (2 ^ i : ℝ)⁻¹ := nestedIntervalSeq_isCauSeq_aux' U hj
-    _ < ε := hi
+    _ < ε             := hi
 
+/-- 区間`I(n)`の中間点からなるCauchy列 -/
 def nestedIntervalCauseq : CauSeq ℝ abs where
   val := nestedIntervalSeq U
   property := nestedIntervalSeq_isCauSeq U
 
--- set_option trace.Meta.synthInstance true in
+-- この行は無視してください。Leanに`ℝ`が完備であることを思い出させています。
 local instance : CauSeq.IsComplete ℝ norm := inferInstanceAs (CauSeq.IsComplete ℝ abs)
 
 lemma nestedIntervalSeq_tendsto : 
     Tendsto (nestedIntervalSeq U) atTop (𝓝 (nestedIntervalCauseq U).lim) := by
   apply (nestedIntervalCauseq U).tendsto_limit
 
-lemma nestedIntervalLim_mem (n : ℕ) : (nestedIntervalCauseq U).lim ∈ I(n) := by
-  apply isClosed_Icc.mem_of_tendsto (nestedIntervalSeq_tendsto U)
-  rw [eventually_atTop]
-  exists n
-  intro m
-  apply nestedIntervalSeq_mem_of_le U
+/-- 区間`I(n)`の中間点からなるCauchy列の極限は`I(n)`に属する -/
+lemma nestedIntervalLim_mem (n : ℕ) : (nestedIntervalCauseq U).lim ∈ I(n) := 
+  isClosed_Icc.mem_of_tendsto (nestedIntervalSeq_tendsto U) <|
+    eventually_atTop.mpr ⟨n, fun _ => nestedIntervalSeq_mem_of_le U⟩
 
-theorem hasFinCover_of_Icc (hU : ∀ (i : ι), IsOpen (U i)) (cover : Icc 0 1 ⊆ ⋃ (i : ι), U i) : 
-    HasFinCover U (Icc 0 1) := by 
-  by_contra h
+/-
+以上でステップ1,2の証明が与えられている。
+以下の補題が役に立つだろう（カーソルを乗せると説明が表示される）
+-/
+#check nestedInterval_not_HasFinSubCover
+#check nestedInterval_len U
+#check nestedIntervalLim_mem U
+
+/-
+TIPS: 一元集合は`{i}`と表す。証明のどこかで用いるかもしれない。
+-/ 
+
+/-- 閉区間`[0, 1]`はコンパクト -/
+theorem HasFinSubCover_of_Icc (hU : ∀ (i : ι), IsOpen (U i)) (cover : Icc 0 1 ⊆ ⋃ (i : ι), U i) : 
+    HasFinSubCover U (Icc 0 1) := by 
+  by_contra H
   rcases cover (nestedIntervalLim_mem U 0) with ⟨_, ⟨i, rfl⟩, hU'⟩
-  rcases Metric.isOpen_iff.1 (hU i) (nestedIntervalCauseq U).lim hU' with ⟨ε, ε0, hε⟩
-  have ⟨n, hn⟩ : ∃ n : ℕ, (ε / 2)⁻¹ < 2 ^ n := pow_unbounded_of_one_lt (ε / 2)⁻¹ (by linarith)
-  have hn : 2 * (2 ^ n : ℝ)⁻¹ < ε := (lt_div_iff' (by linarith)).mp (inv_lt_of_inv_lt (half_pos ε0) hn)
-  apply nestedInterval_not_hasFinCover h n
-  exists {i}
-  set a := (nestedInterval U n).1
-  set b := (nestedInterval U n).2
   set c := (nestedIntervalCauseq U).lim
-  intro x (hx : a ≤ x ∧ x ≤ b)
-  suffices x ∈ Metric.ball c ε by
-    simp_rw [Finset.mem_singleton, iUnion_iUnion_eq_left]
-    apply hε this
-  have := calc 2 * |x - c| 
-    _ = |2 * (x - c)| := by simp [abs_mul] 
-    _ = |(x - b) + (x - a) + (b - c) + (a - c)| := by congr 1; ring
-    _ ≤ |(x - b) + (x - a) + (b - c)| + |a - c| := by apply abs_add
-    _ ≤ |(x - b) + (x - a)| + |b - c| + |a - c| := by apply add_le_add_right (abs_add _ _)
-    _ ≤ |x - b| + |x - a| + |b - c| + |a - c|   := by apply add_le_add_right (add_le_add_right (abs_add _ _) _)
-    _ ≤ (2 ^ n : ℝ)⁻¹ + (2 ^ n : ℝ)⁻¹ + (2 ^ n : ℝ)⁻¹ + (2 ^ n : ℝ)⁻¹ := by 
-      have hba : b - a = (2 ^ n : ℝ)⁻¹ := nestedInterval_len U n
-      have hc : a ≤ c ∧ c ≤ b := nestedIntervalLim_mem U n
-      repeat apply add_le_add
-      repeat apply (abs_sub_le_iff.2 ⟨_, _⟩) <;> linarith
-    _ = 2 * (2 * (2 ^ n : ℝ)⁻¹) := by field_simp; ring
-  calc |x - c| ≤ 2 * (2 ^ n : ℝ)⁻¹ := (mul_le_mul_left (by linarith)).1 this
-    _ < ε := hn
+  rcases Metric.isOpen_iff.mp (hU i) c hU' with ⟨ε, ε0, hε⟩
+  have ⟨n, hn⟩ : ∃ n : ℕ, (ε / 2)⁻¹ < 2 ^ n := by
+    { sorry }
+  suffices HasFinSubCover U I(n) by 
+    { sorry }
+  suffices I(n) ⊆ U i by
+    { sorry }
+  suffices ∀ x, x ∈ I(n) → |x - c| < ε by
+    { sorry }
+  { sorry }
   
 end
