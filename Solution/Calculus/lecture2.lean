@@ -3,9 +3,17 @@ import Mathlib.Topology.MetricSpace.CauSeqFilter
 noncomputable
 section
 
+/- # 実数 
+mathlibでは実数型`ℝ`が定義されている。これはコーシー列
+-/
+
+-- 実数`1`は定数コーシー列`1,1,1,1,...`から定まる同値類と等しい
 example : (1 : ℝ) = Real.ofCauchy (Quotient.mk CauSeq.equiv (CauSeq.const abs 1)) := 
   Real.ofCauchy_one.symm
 
+/-
+`0.9999999...`が`1`に等しいことを証明してみよう。まず、`0.9999999...`をコーシー列として定義する。
+-/
 def «0.9999999» : CauSeq ℚ abs where
   val n := 1 - (10 ^ n : ℚ)⁻¹
   property := by
@@ -23,11 +31,13 @@ def «0.9999999» : CauSeq ℚ abs where
       _ < ε                                   := hi
 
 theorem «1 = 0.9999999» : (1 : ℝ) = Real.ofCauchy (Quotient.mk CauSeq.equiv «0.9999999») := by
-  calc (1 : ℝ) = Real.ofCauchy (Quotient.mk CauSeq.equiv (CauSeq.const abs 1)) := Real.ofCauchy_one.symm
-    _= Real.ofCauchy (Quotient.mk CauSeq.equiv «0.9999999») := by
+  calc 
+    _ = Real.ofCauchy (Quotient.mk CauSeq.equiv (CauSeq.const abs 1)) := Real.ofCauchy_one.symm
+    _ = Real.ofCauchy (Quotient.mk CauSeq.equiv «0.9999999») := by
       rw [«0.9999999»]
       congr 1
       apply Quotient.sound
+      suffices ∀ (ε : ℚ), ε > 0 → ∃ i, ∀ j, j ≥ i → abs (1 - (1 - (10 ^ j : ℚ)⁻¹)) < ε by assumption
       intro ε ε0
       obtain ⟨n, hn⟩ : ∃ n : ℕ, ε⁻¹ < 10 ^ n := pow_unbounded_of_one_lt ε⁻¹ rfl
       have : (10 ^ n : ℚ)⁻¹ < ε := inv_lt_of_inv_lt ε0 hn
