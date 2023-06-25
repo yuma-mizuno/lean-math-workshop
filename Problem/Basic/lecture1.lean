@@ -1,6 +1,21 @@
 import Mathlib.Tactic.Basic
 
-/-- # Leanにおける論理
+
+/- # 遊び方 -/
+
+-- 証明があるべき場所に`sorry`と書いてあるので...
+example : 1 + 1 = 2 := by
+  { sorry }
+
+-- 正しい証明に書き直そう！
+example : 1 + 1 = 2 := by
+  { triv }
+
+-- 波括弧は省略しても大丈夫。
+example : 1 + 1 = 2 := by
+  triv
+
+/- # Leanにおける論理
 数学的に意味のある文を*命題*と呼ぶ。例えば、「1 + 1 = 2」「3は偶数である」「リーマン予想」などが
 命題である。命題は真である場合もあれば偽である場合もあるし、真偽がわかっていない場合もある。数学の
 教科書などでは「命題」という単語は「定理」という単語の別名として使われることもあるが、ここでは違う
@@ -17,68 +32,70 @@ Leanでは「ならば」を`→`で表す。例えば「PならばQ」は`P →
 -/
 
 /-
-Leanではtacticを使って証明を書く。まずは「ならば」を扱う基本的なtacticについて学ぶ。
+Leanで証明を書くためのコマンドを*tactic*と呼ぶ。まずは「ならば」を扱う基本的なtacticについて学ぼう。
 
 - `intro`
 - `apply`
 
 -/
 
-example (P : Prop) (hP : P) : P := by
-  -- ヒント: `apply hP`と入力すれば仮定をゴールに適用できる。
-  sorry
+-- 以下`P, Q, R`は命題とする
+variable (P Q R : Prop)
 
-example (P Q : Prop) (h : P → Q) (hP : P) : Q := by
+example (hP : P) : P := by
+  -- ヒント: `apply hP`と入力すれば仮定をゴールに適用できる。
+  { sorry }
+
+example (h : P → Q) (hP : P) : Q := by
   -- ヒント: 改行して複数のtacticを並べることもできる。インデント（行の頭の空白の個数）を
   -- 揃える必要があることに注意しよう。
-  sorry
+  { sorry }
 
-example (P Q R : Prop) (h : P → Q) (h' : Q → R) : P → R := by
+example (h : P → Q) (h' : Q → R) : P → R := by
   -- ヒント: `intro hP`と入力すれば仮定`hP : P`が得られる。
-  sorry
-
-
-/- # 任意
-
--/
-
-
+  { sorry }
 
 /- # 否定
 否定命題`¬P`は`P → False`として定義される。
 -/
 
-example (P : Prop) (h : ¬P) (hP : P) : False := by
+example (hP : P) (hP' : ¬P) : False := by
   -- ヒント: 否定命題も`apply`することができる。
-  sorry
+  { sorry }
+
+example : (P → Q) → ¬Q → ¬P := by
+  { sorry }
+
+example : ¬¬¬P → ¬P := by
+  { sorry }
 
 /- # 偽
-偽からは任意の命題が証明できる。Leanではこの事実に`False.elim`という名前がついている。
+偽命題`False`からは任意の命題が証明できる。この事実には`False.elim`という名前がついている。
 -/
 
-example (P : Prop) : False → P := by
+example : False → P := by
   apply False.elim
 
-example (P Q : Prop) (h : ¬ P) : P → Q := by 
-  sorry
+example (h : ¬P) : P → Q := by 
+  { sorry }
+
 
 /-
-Leanではtacticを使って証明を書く。論理記号を扱う基本的なtacticについて
+「かつ」と「または」で用いるtactic
 
 - `constructor`
 - `cases`
 
 -/
 
-variable (P Q : Prop)
-
 /- # かつ
-「PかつQ」は`P ∧ Q`と書かれる。`P ∧ Q`を示したい場合、`constructor` tacticを用いれば右画面に表示されるゴールが`P`と`Q`のそれぞれを示すふたつのゴールに分岐する。
+「PかつQ」は`P ∧ Q`と書かれる。`P ∧ Q`を示したい場合、`constructor`を用いれば右画面に表示されるゴールが
+`P`と`Q`のそれぞれを示すふたつのゴールに分岐する。
 -/
 
 example (hP : P) (hQ : Q) : P ∧ Q := by
-  /- `constructor`によってゴールが分岐する。分岐したゴールたちには名前がついていて、`case`を使ってそれぞれのゴールに的を絞ることができる。
-  -/
+  -- `constructor`によってゴールが分岐する。分岐したゴールたちには名前がついていて、`case`を使ってそれぞれの
+  -- ゴールに的を絞ることができる。
   constructor
   case left =>
     sorry
@@ -86,66 +103,95 @@ example (hP : P) (hQ : Q) : P ∧ Q := by
     sorry
 
 example (hP : P) (hQ : Q) : P ∧ Q := by
-  /- `·`を用いて箇条書きすることでも分岐したそれぞれのゴールに的を絞ることができる。-/  
+  -- 別の書き方: `·`を用いた箇条書きでも分岐したでもそれぞれのゴールに的を絞ることができる。
   constructor
-  · sorry
-  · sorry
+  · { sorry }
+  · { sorry }
 
 /- # かつ
-仮定`h : P ∧ Q`を持っているとき、`h.right`で`P`の証明を、`h.left`で`Q`の証明を得ることができる。
+仮定`h : P ∧ Q`を持っているとき、`h.left`で`P`の証明を、`h.right`で`Q`の証明を得ることができる。
 -/
 
 example : P ∧ Q → P := by
-  sorry
+  { sorry }
 
 example : P ∧ Q → Q := by
-  sorry
+  { sorry }
 
 example : P ∧ Q → Q ∧ P := by
-  sorry
+  { sorry }
+
+/- # かつ（別案）
+「PかつQ」は`P ∧ Q`と書かれる。`P ∧ Q`を証明するとはどういうことであろうか？Leanでは`P ∧ Q`の証明とは
+`P`の証明と`Q`の証明の順序対のことである。つまり、`hP : P`と`hQ : Q`に対して`⟨hP, hQ⟩ : P ∧ Q`となる。
+（Leanでは順序対を`⟨x, y⟩`のように尖った括弧を使って書く。丸括弧`(x, y)`ではないことに注意しよう） 
+-/
 
 
 /- # または
-
-
+「PまたはQ」は`P ∨ Q`と書かれる。仮定`h : P ∨ Q`を持っているとき、`cases h`によって場合分けの証明を行える。
 -/
 
-example (P : Prop) (h : P ∨ ¬ P) : ¬¬P → P := by 
-  intro hp
+example : P ∨ Q → (P → R) → (Q → R) → R := by
+  intro h hPR hQR
+  -- `cases h`によって右画面に新しいゴール`inl`と`inr`が現れる。(これらの名前はinsert leftとinsert rightの略らしい)
   cases h
-  case inl h => 
-    apply h
-  case inr h => 
-    apply False.elim
-    apply hp
-    apply h
+  -- `case inl hP`で左側の命題`P`の証明に`hP`という名前を付けている。
+  case inl hP => 
+    apply hPR hP
+  case inr hQ => 
+    apply hQR hQ
 
+example : P ∨ Q → (P → R) → (Q → R) → R := by
+  intro h hPR hQR
+  -- `rcases`という`cases`の別バージョンがある。ひとつの違いとして、こちらは`case`を使わなくても分岐した
+  -- 仮定に名前を付けられる。箇条書きを使いたい人はこちらを使おう。
+  rcases h with hP | hQ
+  · apply hPR hP 
+  · apply hQR hQ
+
+example (h : P ∨ Q) : (P → R) → (Q → P) → R := by
+  { sorry }
+
+example : ¬¬P → P := by 
+  -- `have` tacticで仮定を追加することができる。以降のファイルではヒントとしても用いる。
+  have h : P ∨ ¬ P := by apply Classical.em
+  { sorry }
+
+/- 以下おまけ。スキップして`lecture 2.lean`に進んでも大丈夫です。 -/
+
+-- 連続して`apply`を使うときは...
+example (h : P → Q) (h' : Q → R) : P → R := by
+  intro hP
+  apply h'
+  apply h 
+  apply hP
+
+-- このようにまとめることができる。なぜなら`h : P → Q`と`hP : P`に対して`h hP : Q`だからである。
+example (h : P → Q) (h' : Q → R) : P → R := by
+  intro hP
+  apply h'
+  apply h hP
+
+-- さらにまとめられる。
+example (h : P → Q) (h' : Q → R) : P → R := by
+  intro hP
+  apply h' (h hP)
+
+-- さらにさらにまとめられて...
+example (h : P → Q) (h' : Q → R) : P → R := by
+  apply (fun hP ↦ h' (h hP))
+
+-- 実はこのようにも書ける。簡単な証明が短く書けるのは嬉しい。
+example (h : P → Q) (h' : Q → R) : P → R :=
+  fun hP ↦ h' (h hP)
+
+-- 面白い事実: 文字を変えると、関数の合成に見える！
+example (f : P → Q) (g : Q → R) : P → R :=
+  fun x ↦ g (f x)
 
 /-
-なお、上の問題では仮定とした`P ∨ ¬ P`はLeanでは`Classical.em`という名前の定理として用意されている。
+Leanでは「ならば」を`→`で表します。`⇒`を用いません。実は、Lean内部では命題`P → Q`は`P`から`Q`への関数として
+解釈されます。ここではこれ以上説明しませんが、この考え方は*Curry–Howard対応*と呼ばれていて、Leanで論理を扱う際の
+基礎となっています。
 -/
-example : P ∨ ¬P := by
-  apply Classical.em
-
-example (P : Prop) (h : P ∨ ¬ P) : ¬¬P → P :=
-fun hP ↦  h.elim (fun h' ↦ h') (fun h' ↦ (hP h').elim)
-
-open Classical
-
-#check Classical.em
-
-example (P : Prop) : P ∨ ¬P := by
-  cases (inferInstance : Decidable P)
-  apply Or.inr; assumption
-  apply Or.inl; assumption
-
-lemma aaa (P : Prop) : ¬¬P → P := by
-  have : Decidable P := inferInstance
-  intro hp
-  cases this
-  case isTrue h => 
-    apply h
-  case isFalse h => 
-    apply False.elim
-    apply hp
-    apply h
