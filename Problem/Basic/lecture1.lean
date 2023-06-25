@@ -1,5 +1,4 @@
-import Mathlib.Tactic.Basic
-
+import Std
 
 /- # 遊び方 -/
 
@@ -39,7 +38,7 @@ Leanで証明を書くためのコマンドを*tactic*と呼ぶ。まずは「�
 
 -/
 
--- 以下`P, Q, R`は命題とする
+-- 以下`P, Q, R`は命題とする。
 variable (P Q R : Prop)
 
 example (hP : P) : P := by
@@ -121,20 +120,14 @@ example : P ∧ Q → Q := by
 example : P ∧ Q → Q ∧ P := by
   { sorry }
 
-/- # かつ（別案）
-「PかつQ」は`P ∧ Q`と書かれる。`P ∧ Q`を証明するとはどういうことであろうか？Leanでは`P ∧ Q`の証明とは
-`P`の証明と`Q`の証明の順序対のことである。つまり、`hP : P`と`hQ : Q`に対して`⟨hP, hQ⟩ : P ∧ Q`となる。
-（Leanでは順序対を`⟨x, y⟩`のように尖った括弧を使って書く。丸括弧`(x, y)`ではないことに注意しよう） 
--/
-
-
 /- # または
 「PまたはQ」は`P ∨ Q`と書かれる。仮定`h : P ∨ Q`を持っているとき、`cases h`によって場合分けの証明を行える。
 -/
 
 example : P ∨ Q → (P → R) → (Q → R) → R := by
   intro h hPR hQR
-  -- `cases h`によって右画面に新しいゴール`inl`と`inr`が現れる。(これらの名前はinsert leftとinsert rightの略らしい)
+  -- `cases h`によって右画面に新しいゴール`inl`と`inr`が現れる。
+  -- (これらの名前はinsert leftとinsert rightの略らしい)
   cases h
   -- `case inl hP`で左側の命題`P`の証明に`hP`という名前を付けている。
   case inl hP => 
@@ -191,7 +184,7 @@ example (f : P → Q) (g : Q → R) : P → R :=
   fun x ↦ g (f x)
 
 /-
-Leanでは「ならば」を`→`で表します。`⇒`を用いません。実は、Lean内部では命題`P → Q`は`P`から`Q`への関数として
-解釈されます。ここではこれ以上説明しませんが、この考え方は*Curry–Howard対応*と呼ばれていて、Leanで論理を扱う際の
-基礎となっています。
+Leanでは「ならば」を`→`で表す。`⇒`は用いない。実は、Lean内部では命題`P → Q`は`P`から`Q`への関数として
+解釈される。ここではこれ以上説明しないが、この考え方は*Curry–Howard対応*と呼ばれていて、Leanで論理を扱う際の
+基礎となっている。
 -/
