@@ -141,7 +141,7 @@ example (h : P ∨ Q) : (P → R) → (Q → P) → R := by
 
 example : ¬¬P → P := by 
   -- `have` tacticで仮定を追加することができる。以降のファイルではヒントとしても用いる。
-  have h : P ∨ ¬ P := by apply Classical.em
+  have h : P ∨ ¬P := by apply Classical.em
   { sorry }
 
 /- 以下おまけ。スキップして`lecture 2.lean`に進んでも大丈夫です。 -/
