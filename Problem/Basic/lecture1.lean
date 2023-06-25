@@ -25,17 +25,19 @@ example : 1 + 1 = 2 := by
 こともできる。
 -/
 
-/- # ならば
-Leanでは「ならば」を`→`で表す。例えば「PならばQ」は`P → Q`と書く。記号`→`を出すには`\to`もしくは
-`\r`と入力する。VSCode上で`→`の上にカーソルを乗せると入力の仕方が表示される。
--/
-
 /-
-Leanで証明を書くためのコマンドを*tactic*と呼ぶ。まずは「ならば」を扱う基本的なtacticについて学ぼう。
+Leanで証明を書くためのコマンドを*tactic*と呼ぶ。このファイルでは以下のtacticについて学ぶ
 
 - `intro`
 - `apply`
+- `constructor`
+- `cases`
 
+-/
+
+/- # ならば
+Leanでは「ならば」を`→`で表す。例えば「PならばQ」は`P → Q`と書く。記号`→`を出すには`\to`もしくは
+`\r`と入力する。VSCode上で`→`の上にカーソルを乗せると入力の仕方が表示される。
 -/
 
 -- 以下`P, Q, R`は命題とする。
@@ -78,15 +80,6 @@ example : False → P := by
 example (h : ¬P) : P → Q := by 
   { sorry }
 
-
-/-
-「かつ」と「または」で用いるtactic
-
-- `constructor`
-- `cases`
-
--/
-
 /- # かつ
 「PかつQ」は`P ∧ Q`と書かれる。`P ∧ Q`を示したい場合、`constructor`を用いれば右画面に表示されるゴールが
 `P`と`Q`のそれぞれを示すふたつのゴールに分岐する。
@@ -97,9 +90,9 @@ example (hP : P) (hQ : Q) : P ∧ Q := by
   -- ゴールに的を絞ることができる。
   constructor
   case left =>
-    sorry
+    { sorry }
   case right =>
-    sorry
+    { sorry }
 
 example (hP : P) (hQ : Q) : P ∧ Q := by
   -- 別の書き方: `·`を用いた箇条書きでも分岐したでもそれぞれのゴールに的を絞ることができる。
@@ -131,17 +124,17 @@ example : P ∨ Q → (P → R) → (Q → R) → R := by
   cases h
   -- `case inl hP`で左側の命題`P`の証明に`hP`という名前を付けている。
   case inl hP => 
-    apply hPR hP
+    { sorry }
   case inr hQ => 
-    apply hQR hQ
+    { sorry }
 
 example : P ∨ Q → (P → R) → (Q → R) → R := by
   intro h hPR hQR
   -- `rcases`という`cases`の別バージョンがある。ひとつの違いとして、こちらは`case`を使わなくても分岐した
   -- 仮定に名前を付けられる。箇条書きを使いたい人はこちらを使おう。
   rcases h with hP | hQ
-  · apply hPR hP 
-  · apply hQR hQ
+  · { sorry }
+  · { sorry }
 
 example (h : P ∨ Q) : (P → R) → (Q → P) → R := by
   { sorry }

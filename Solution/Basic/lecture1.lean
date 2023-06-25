@@ -25,17 +25,19 @@ example : 1 + 1 = 2 := by
 こともできる。
 -/
 
-/- # ならば
-Leanでは「ならば」を`→`で表す。例えば「PならばQ」は`P → Q`と書く。記号`→`を出すには`\to`もしくは
-`\r`と入力する。VSCode上で`→`の上にカーソルを乗せると入力の仕方が表示される。
--/
-
 /-
-Leanで証明を書くためのコマンドを*tactic*と呼ぶ。まずは「ならば」を扱う基本的なtacticについて学ぼう。
+Leanで証明を書くためのコマンドを*tactic*と呼ぶ。このファイルでは以下のtacticについて学ぶ
 
 - `intro`
 - `apply`
+- `constructor`
+- `cases`
 
+-/
+
+/- # ならば
+Leanでは「ならば」を`→`で表す。例えば「PならばQ」は`P → Q`と書く。記号`→`を出すには`\to`もしくは
+`\r`と入力する。VSCode上で`→`の上にカーソルを乗せると入力の仕方が表示される。
 -/
 
 -- 以下`P, Q, R`は命題とする。
@@ -71,16 +73,10 @@ example : (P → Q) → ¬Q → ¬P := by
   intro hPQ hQ hP  
   apply hQ (hPQ hP)
 
-open Lean in
-elab "print_goal" : tactic => do
-  let goal ← Lean.Elab.Tactic.getMainGoal
-  logInfo (s!"{← Meta.ppGoal goal}")
-
 example : ¬¬¬P → ¬P := by
   intro h hP 
   apply h 
   intro h' 
-  print_goal
   apply h' hP
 
 /- # 偽
@@ -94,14 +90,6 @@ example (h : ¬P) : P → Q := by
   intro hP 
   apply False.elim
   apply h hP
-
-/-
-「かつ」と「または」で用いるtactic
-
-- `constructor`
-- `cases`
-
--/
 
 /- # かつ
 「PかつQ」は`P ∧ Q`と書かれる。`P ∧ Q`を示したい場合、`constructor`を用いれば右画面に表示されるゴールが
