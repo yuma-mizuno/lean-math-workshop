@@ -1,6 +1,5 @@
 ファイルを開く前に、ターミナルで以下のコマンドを実行してください。
 ```
-lake update
 lake exe cache get
 ```
 

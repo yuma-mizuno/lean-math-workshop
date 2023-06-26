@@ -12,7 +12,7 @@
     "subDir?": null,
     "rev": "08fc07cd8ba56396909a84a7b2361cfda8223840",
     "name": "mathlib",
-    "inputRev?": null}},
+    "inputRev?": "08fc07cd8ba56396909a84a7b2361cfda8223840"}},
   {"git":
    {"url": "https://github.com/gebner/quote4",
     "subDir?": null,
