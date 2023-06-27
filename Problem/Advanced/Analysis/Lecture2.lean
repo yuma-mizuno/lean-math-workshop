@@ -1,4 +1,4 @@
-import Problem.Advanced.Calculus.lecture1
+import Problem.Advanced.Analysis.Lecture1
 
 open scoped Topology Uniformity
 open Set Filter 
@@ -62,10 +62,7 @@ theorem IsLocalMax.hasDerivAt_eq_zero (h : IsLocalMax f a) (hf : HasDerivAt f f'
     apply le_of_tendsto (hf.mono_left (nhds_right'_le_nhds_ne a)) ha
   case left =>
     -- 右側の場合を真似て証明してみよう。
-    apply ge_of_tendsto (hf.mono_left <| nhds_left'_le_nhds_ne _)
-    have ha : ∀ᶠ x in 𝓝[<] a, (x - a)⁻¹ < 0 := 
-      eventually_nhdsWithin_of_forall fun x hx => inv_lt_zero.mpr <| sub_neg.mpr hx
-    filter_upwards [ha, h.filter_mono nhdsWithin_le_nhds] using by intros; nlinarith
+    { sorry }
 
 /-- 極小値を取る点での微分係数はゼロ -/
 theorem IsLocalMin.hasDerivAt_eq_zero (h : IsLocalMin f a) (hf : HasDerivAt f f' a) : f' = 0 := by
