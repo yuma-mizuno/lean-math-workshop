@@ -1,257 +1,138 @@
-import Mathlib.Topology.MetricSpace.CauSeqFilter
+import Problem.Advanced.Calculus.lecture1
 
-noncomputable
-section
+open scoped Topology Uniformity
+open Set Filter 
 
-/- # 実数 
-mathlibでは実数型`ℝ`が定義されている。標準的な解析学の教科書と同様に、`ℝ`の項（つまり実数）は
-Cauchy列の同値類として定義される。
+variable {f : ℝ → ℝ} {f' : ℝ} {x a b : ℝ} 
+
+/-
+このファイルの目標は**平均値の定理**の証明である。
 -/
 
--- 実数`1`は定数Cauchy列`1,1,1,1,...`から定まる同値類と等しい
-example : (1 : ℝ) = Real.ofCauchy (Quotient.mk CauSeq.equiv (CauSeq.const abs 1)) := 
-  Real.ofCauchy_one.symm
+/-
+まず始めに、極大値を取る点での微分係数はゼロであることの証明をする。定義を確認しておくと、
+`f : ℝ → ℝ`が`a : ℝ`で極大値を取るとは、`a`の近傍において`f x ≤ f a`が成り立つことをいう。
+-/
+example : IsLocalMax f a ↔ ∀ᶠ x in 𝓝 a, f x ≤ f a := .rfl
+/-
+このように、mathlibでは`a`の近傍において性質`P`が成り立つことを`∀ᶠ x in 𝓝 a, P x`と書く。
+これは`ε > 0`を使った次の式と同値となる。
+-/
+example (P : ℝ → Prop) : (∀ᶠ x in 𝓝 a, P x) ↔ ∃ ε, ε > 0 ∧ ∀ x : ℝ, |x - a| < ε → P x := by
+  exact Metric.eventually_nhds_iff
+/-
+以下の証明では、右側近傍や左側近傍といった概念も用いる。例えば`a`の右側近傍において性質`P`が
+成り立つことは`∀ᶠ x in 𝓝[>] a, P x`と表される。もちろんこれも`ε > 0`を使って書き直すこと
+ができるが、以下ではmathlibの定理を上手く使うことで`ε > 0`を直接使わないで証明を進める。
+-/
 
--- `0.9999999...`をCauchy列として定義する
-def «0.9999999» : CauSeq ℚ abs where
-  val n := 1 - (10 ^ n : ℚ)⁻¹
-  property := by
-    intro ε ε0
-    suffices ∃ i, ∀ (j : ℕ), j ≥ i → |((10 ^ i : ℚ)⁻¹ - (10 ^ j : ℚ)⁻¹)| < ε by simpa
-    have h : ∃ i : ℕ, (ε / 2)⁻¹ < 10 ^ i := pow_unbounded_of_one_lt (ε / 2)⁻¹ (by linarith)
-    rcases h with ⟨i, hi⟩
-    have hi : 2 * (10 ^ i : ℚ)⁻¹ < ε := (lt_div_iff' (by linarith)).mp (inv_lt_of_inv_lt (half_pos ε0) hi)
-    exists i
-    intro j hj
-    calc |(10 ^ i : ℚ)⁻¹ - (10 ^ j : ℚ)⁻¹|
-      _ ≤ |(10 ^ i : ℚ)⁻¹| + |(10 ^ j : ℚ)⁻¹| := by apply abs_sub
-      _ ≤ |(10 ^ i : ℚ)⁻¹| + |(10 ^ i : ℚ)⁻¹| := by simpa [abs] using inv_pow_le_inv_pow_of_le (by linarith) hj
-      _ = 2 * (10 ^ i : ℚ)⁻¹                  := by simp [abs]; ring
-      _ < ε                                   := hi
+/- 
+`∀ᶠ x in 𝓝 a, P x`といった記号の正確な意味を理解するには、*フィルター*という概念を知る
+必要がある。といっても、以下の演習問題を解く際にはフィルターとは何かを正確に知らなくても
+問題ないだろう。近傍`𝓝 a`はあなたの直感通りの挙動をするはずだ。
+-/
 
--- `0.9999999...`は`1`と等しい
-theorem «0.9999999 = 1» : Real.ofCauchy (Quotient.mk CauSeq.equiv «0.9999999») = (1 : ℝ) := by
-  calc _ = Real.ofCauchy (Quotient.mk CauSeq.equiv (CauSeq.const abs 1)) := ?_
-       _ = (1 : ℝ) := Real.ofCauchy_one
-  rw [«0.9999999»]
-  congr 1
-  apply Quotient.sound
-  intro ε ε0
-  suffices ∃ i, ∀ (j : ℕ), j ≥ i → (10 ^ j : ℚ)⁻¹ < ε by simpa [abs]
-  -- ヒント: `pow_unbounded_of_one_lt`と`inv_lt_of_inv_lt`を使って、欲しい`i`を手に入れよう
+/- # 近傍の記号
+- `𝓝 a`: `a`の近傍
+- `𝓝[>] a` or `𝓝[Ioi a] a`: `a`の右側近傍（`Ioi`はInterval-open-infiniteの略）
+- `𝓝[<] a` or `𝓝[Iio a] a`: `a`の左側近傍（`Iio`はInterval-infinite-openの略）
+- `𝓝[≠] a` or `𝓝[{a}ᶜ] a`: `a`自身を含まない`a`の近傍（`{a}ᶜ`は`{a}`の補集合）
+-/
+
+/-- 極大値を取る点での微分係数はゼロ -/
+theorem IsLocalMax.hasDerivAt_eq_zero (h : IsLocalMax f a) (hf : HasDerivAt f f' a) : 
+    f' = 0 := by
+  rw [hasDerivAt_iff_tendsto_slope] at hf
+  -- `f' ≤ 0`と`0 ≤ f'`を示す。
+  apply le_antisymm ?right ?left
+  case right =>
+    -- `a`の右側近傍では`0 < (x - a)⁻¹`である。
+    have ha : ∀ᶠ x in 𝓝[>] a, 0 < (x - a)⁻¹ := by
+      apply eventually_nhdsWithin_of_forall
+      intro x hx
+      rw [inv_pos, sub_pos]
+      apply hx
+    -- `a`の右側近傍では`(x - a)⁻¹ * (f x - f a) ≤ 0`である。
+    have ha : ∀ᶠ x in 𝓝[>] a, (x - a)⁻¹ * (f x - f a) ≤ 0 := by
+      -- 近傍での性質を使って近傍での性質を示したいときは`filter_upwards`を使う。
+      filter_upwards [ha, h.filter_mono nhdsWithin_le_nhds]
+      intro x hx₁ hx₂
+      -- 仮定`hx₁, hx₂`を使って不等式を解く。
+      nlinarith [hx₁, hx₂]
+    apply le_of_tendsto (hf.mono_left (nhds_right'_le_nhds_ne a)) ha
+  case left =>
+    -- 右側の場合を真似て証明してみよう。
+    apply ge_of_tendsto (hf.mono_left <| nhds_left'_le_nhds_ne _)
+    have ha : ∀ᶠ x in 𝓝[<] a, (x - a)⁻¹ < 0 := 
+      eventually_nhdsWithin_of_forall fun x hx => inv_lt_zero.mpr <| sub_neg.mpr hx
+    filter_upwards [ha, h.filter_mono nhdsWithin_le_nhds] using by intros; nlinarith
+
+/-- 極小値を取る点での微分係数はゼロ -/
+theorem IsLocalMin.hasDerivAt_eq_zero (h : IsLocalMin f a) (hf : HasDerivAt f f' a) : f' = 0 := by
+  -- ヒント: `IsLocalMax.hasDerivAt_eq_zero`を`x ↦ - f x`に対して使おう。
   { sorry }
 
-open Filter Topology Set Classical
+-- 次の問題で使うかも？
+#check IsLocalExtr.elim
+
+/-- 極値を取る点での微分係数はゼロ -/
+theorem IsLocalExtr.hasDerivAt_eq_zero (h : IsLocalExtr f a) (hf : HasDerivAt f f' a) : f' = 0 := by
+  { sorry }
 
 /-
-TIPS: 閉区間`{ x | a ≤ x ∧ x ≤ b }`は`Icc a b`と表す。Inteval-close-closeの略と覚えると良い。
-（閉区間は数学の本では`[a, b]`と書かれることが多いが、Leanではこの記号はリストを表す）
+次の定理はRolleの定理の証明に用いる。
 -/
 
-/-
-このファイルでは実数の重要な性質のひとつである、閉区間`Icc 0 1`のコンパクト性を証明に挑戦しよう。
-具体的には、閉区間`Icc 0 1`の任意の開被覆`U : ι → Set ℝ`が有限部分被覆を持つことを背理法を用いて示す。
-ここでは区間縮小法を直接用いて証明をする。
+-- 次の問題で使うかも？
+#check isCompact_Icc
+#check IsCompact.exists_forall_ge
+#check IsCompact.exists_forall_le
 
-1. 閉区間`I(0) := Icc 0 1`から始まる縮小閉区間列 `I(0) ⊇ I(1) ⊇ ...`であって、任意の
-  `n`で`I(n)`が有限部分被覆を持たないものを定める。
-2. `I(n)`の中間点からなる数列はCauchy列であり、ある実数`c`に収束する。
-3. `c`はある開集合`U i`に含まれるが、`n`を十分大きくとれば`I(n) ⊆ U i`とできる。これは`I(n)`が
-  有限部分被覆を持たないことに矛盾する。
-
-以下ではステップ1,2の証明があらかじめ与えられており、最後にステップ3が演習問題として残されている。
-すぐに問題に取り組みたい人はファイルの最後までスキップしても問題ないだろう。
--/
-
-/-- `ℝ`の部分集合`s`の開被覆`U`が有限部分被覆を持つことを表すための命題 -/
-def HasFinSubCover {ι : Type} (U : ι → Set ℝ) (s : Set ℝ) : Prop := 
-  ∃ (t : Finset ι), s ⊆ ⋃ i ∈ t, U i
-
-variable {ι : Type} (U : ι → Set ℝ)
-
-/-- 区間縮小法の帰納ステップ。区間を二等分して、有限被覆を持たない方を次の区間に選ぶ。-/
-def nestedIntervalSucc (a b : ℝ) : ℝ × ℝ :=
-  if ¬HasFinSubCover U (Icc a ((a + b) / 2)) then ⟨a, (a + b) / 2⟩ else ⟨(a + b) / 2, b⟩
-
-/-- 区間縮小法 -/
-def nestedInterval : ℕ → ℝ × ℝ 
-  | 0 => ⟨0, 1⟩
-  | n + 1 => nestedIntervalSucc U (nestedInterval n).1 (nestedInterval n).2
-
-/-
-以下の記号を導入する。
-- `I(n)`: 縮小閉区間列`I(0) ⊇ I(1) ⊇ ...`
-- `α n`: `I(n)`の左端
-- `β n`: `I(n)`の右端
--/
-local notation "α" n:1000 => Prod.fst (nestedInterval U n)
-local notation "β" n:1000 => Prod.snd (nestedInterval U n)
-local notation "I(" n ")" => Icc (α n) (β n) 
-
--- 縮小区間列`I(n)`の中間点からなる数列
-def nestedIntervalSeq : ℕ → ℝ := fun n => (α n + β n) / 2
-
-variable {U}
-
-lemma HasFinSubCover_concat (hac : HasFinSubCover U (Icc a c)) (hcb : HasFinSubCover U (Icc c b)) :
-    HasFinSubCover U (Icc a b) := by
-  rcases hac with ⟨ι_ac, cover_ac⟩
-  rcases hcb with ⟨ι_cb, cover_cb⟩
-  exists ι_ac ∪ ι_cb
-  intro x hx
-  suffices ∃ i, (i ∈ ι_ac ∨ i ∈ ι_cb) ∧ x ∈ U i by
-    simpa using this
-  cases le_total x c
-  case inl hxc =>
-    obtain ⟨i, hi⟩ : ∃ i, i ∈ ι_ac ∧ x ∈ U i := by simpa using cover_ac ⟨hx.left, hxc⟩
-    exact ⟨i, Or.inl hi.1, hi.2⟩
-  case inr hxc =>
-    obtain ⟨i, hi⟩ : ∃ i, i ∈ ι_cb ∧ x ∈ U i := by simpa using cover_cb ⟨hxc, hx.right⟩
-    exact ⟨i, Or.inr hi.1, hi.2⟩
-
-lemma not_HasFinSubCover_concat :
-    ¬HasFinSubCover U (Icc a b) → HasFinSubCover U (Icc a c) → ¬HasFinSubCover U (Icc c b) := by
-  contrapose!
-  apply (fun H => HasFinSubCover_concat H.1 H.2)
-
-lemma nestedIntervalSucc_left (h : ¬HasFinSubCover U (Icc a ((a + b) / 2))) : 
-    nestedIntervalSucc U a b = ⟨a, (a + b) / 2⟩ := 
-  if_pos h
-  
-lemma nestedIntervalSucc_right (h : HasFinSubCover U (Icc a ((a + b) / 2))) : 
-    nestedIntervalSucc U a b = ⟨(a + b) / 2, b⟩ := 
-  if_neg (not_not_intro h)
-
-variable (U)
-
-theorem nestedIntervalSucc_eq_or_eq (a b : ℝ) : 
-    nestedIntervalSucc U a b = ⟨a, (a + b) / 2⟩ ∨ 
-      nestedIntervalSucc U a b = ⟨(a + b) / 2, b⟩ := by
-  apply ite_eq_or_eq
-
-theorem nestedInterval_le : ∀ n, α n < β n
-  | 0 => Real.zero_lt_one
-  | n + 1 => by
-    have := nestedInterval_le n
-    cases nestedIntervalSucc_eq_or_eq U (α n) (β n) with
-    | inl h => dsimp only; rw [nestedInterval, h]; dsimp only; linarith
-    | inr h => dsimp only; rw [nestedInterval, h]; dsimp only; linarith
-
-theorem nestedIntervalSeq_is_nested_succ (n : ℕ) : I(n + 1) ⊆ I(n) := by
-  have := nestedInterval_le U n
-  cases nestedIntervalSucc_eq_or_eq U (α n) (β n) with 
-  | inl h => 
-    apply Icc_subset_Icc (by rw [nestedInterval, h]) (by rw [nestedInterval, h]; dsimp only; linarith)
-  | inr h => 
-    apply Icc_subset_Icc (by rw [nestedInterval, h]; dsimp only; linarith) (by rw [nestedInterval, h])
-
-theorem nestedIntervalSeq_is_nested {i j : ℕ} (hij : i ≤ j) : I(j) ⊆ I(i) := by 
-  rw [(Nat.add_sub_of_le hij).symm]
-  set k := j - i
-  induction k with
-  | zero => apply rfl.subset
-  | succ k ih => intro x hx; apply ih (nestedIntervalSeq_is_nested_succ U (i + k) hx)
-
-theorem nestedIntervalSeq_mem (n : ℕ) : nestedIntervalSeq U n ∈ I(n) := by
-  simp only [mem_Icc, nestedIntervalSeq] 
-  have := nestedInterval_le U n
-  split_ands <;> linarith
-
-theorem nestedIntervalSeq_mem_of_le {i j : ℕ} (hij : i ≤ j): 
-    nestedIntervalSeq U j ∈ I(i) := 
-  nestedIntervalSeq_is_nested _ hij (nestedIntervalSeq_mem _ _)
-
-variable {U}
-  
-/-- `I(0)`が有限部分被覆を持たないならば`I(n)`も有限部分被覆を持たない -/
-theorem nestedInterval_not_HasFinSubCover (h : ¬HasFinSubCover U I(0)) : ∀ n : ℕ, ¬HasFinSubCover U I(n)
-  | 0 => h
-  | n + 1 => by
-    by_cases H : HasFinSubCover U (Icc (α n) ((α n + β n) / 2))
-    case pos =>
-      rw [nestedInterval, nestedIntervalSucc_right H]
-      apply not_HasFinSubCover_concat ?_ H
-      apply nestedInterval_not_HasFinSubCover h n
-    case neg =>
-      rw [nestedInterval, nestedIntervalSucc_left H]
-      apply H
-
-variable (U)
-
-/-- `I(n)`の長さは`(2 ^ n)⁻¹`である -/
-theorem nestedInterval_len : ∀ n : ℕ, β n - α n = (2 ^ n : ℝ)⁻¹
-  | 0 => by simp [nestedInterval]
-  | n + 1 => by
-    have ih := nestedInterval_len n
-    rcases nestedIntervalSucc_eq_or_eq U (α n) (β n) with H | H <;> 
-      rw [nestedInterval, H] <;> field_simp at ih ⊢ <;>
-        calc _ = (β n - α n) * 2 ^ n * 2 := by ring
-             _ = 2                       := by rw [ih]; ring
-
-theorem nestedIntervalSeq_isCauSeq_aux {x y : ℝ} (hx : x ∈ Icc a b) (hy : y ∈ Icc a b) : 
-    |y - x| ≤ (b - a) := by 
-  dsimp [Icc] at hx hy
-  apply (abs_sub_le_iff.2 ⟨_, _⟩) <;> linarith
-
-theorem nestedIntervalSeq_isCauSeq_aux' {i j : ℕ} (hij : i ≤ j) : 
-    |nestedIntervalSeq U j - nestedIntervalSeq U i| ≤ (2 ^ i : ℝ)⁻¹ := by
-  have := nestedIntervalSeq_isCauSeq_aux (nestedIntervalSeq_mem U i) (nestedIntervalSeq_mem_of_le U hij)
-  simpa [nestedInterval_len] using this
-
-theorem nestedIntervalSeq_isCauSeq : IsCauSeq abs (nestedIntervalSeq U) := by
-  intro ε ε0
-  have ⟨i, hi⟩ : ∃ i : ℕ, ε⁻¹ < 2 ^ i := pow_unbounded_of_one_lt ε⁻¹ (by linarith)
-  have hi : (2 ^ i : ℝ)⁻¹ < ε := inv_lt_of_inv_lt ε0 hi
-  exists i
-  intro j hj
-  calc |nestedIntervalSeq U j - nestedIntervalSeq U i| 
-    _ ≤ (2 ^ i : ℝ)⁻¹ := nestedIntervalSeq_isCauSeq_aux' U hj
-    _ < ε             := hi
-
-/-- 区間`I(n)`の中間点からなるCauchy列 -/
-def nestedIntervalCauSeq : CauSeq ℝ abs where
-  val := nestedIntervalSeq U
-  property := nestedIntervalSeq_isCauSeq U
-
--- この行は無視してください。Leanに`ℝ`が完備であることを思い出させています。
-local instance : CauSeq.IsComplete ℝ norm := inferInstanceAs (CauSeq.IsComplete ℝ abs)
-
-lemma nestedIntervalSeq_tendsto : 
-    Tendsto (nestedIntervalSeq U) atTop (𝓝 (nestedIntervalCauSeq U).lim) := by
-  apply (nestedIntervalCauSeq U).tendsto_limit
-
-/-- 区間`I(n)`の中間点からなるCauchy列の極限は`I(n)`に属する -/
-lemma nestedIntervalLim_mem (n : ℕ) : (nestedIntervalCauSeq U).lim ∈ I(n) := 
-  isClosed_Icc.mem_of_tendsto (nestedIntervalSeq_tendsto U) <|
-    eventually_atTop.mpr ⟨n, fun _ => nestedIntervalSeq_mem_of_le U⟩
-
-/-
-以上でステップ1,2の証明が与えられている。
-以下の補題が役に立つだろう（カーソルを乗せると説明が表示される）
--/
-#check nestedInterval_not_HasFinSubCover
-#check nestedInterval_len U
-#check nestedIntervalLim_mem U
-
-/-
-TIPS: 一元集合は`{i}`と表す。証明のどこかで用いるかもしれない。
--/ 
-
-/-- 閉区間`Icc 0 1`はコンパクト -/
-theorem HasFinSubCover_of_Icc (hU : ∀ (i : ι), IsOpen (U i)) (cover : Icc 0 1 ⊆ ⋃ (i : ι), U i) : 
-    HasFinSubCover U (Icc 0 1) := by 
-  by_contra H
-  set c := (nestedIntervalCauSeq U).lim
-  rcases cover (nestedIntervalLim_mem U 0) with ⟨_, ⟨i, rfl⟩, hU' : c ∈ U i⟩
-  rcases Metric.isOpen_iff.mp (hU i) c hU' with ⟨ε, ε0, hε⟩
-  have ⟨n, hn⟩ : ∃ n : ℕ, (ε / 2)⁻¹ < 2 ^ n := by
+/-- 閉区間上の連続関数は端点において同じ値を持つならば区間の内部で極値を取る。-/
+theorem exists_local_extr_Ioo (hab : a < b) (hfc : ContinuousOn f (Icc a b)) (hfI : f a = f b) :
+    ∃ c ∈ Ioo a b, IsLocalExtr f c := by
+  suffices ∃ c ∈ Ioo a b, IsExtrOn f (Icc a b) c by
+    rcases this with ⟨c, cmem, hc⟩
+    exists c, cmem
+    apply hc.isLocalExtr <| Icc_mem_nhds cmem.1 cmem.2
+  have ne : (Icc a b).Nonempty := nonempty_Icc.2 (le_of_lt hab)
+  have ⟨C, Cmem, Cge⟩ : ∃ C ∈ Icc a b, ∀ x ∈ Icc a b, f x ≤ f C := by
     { sorry }
-  suffices HasFinSubCover U I(n) by 
+  have ⟨c, cmem, cle⟩ : ∃ c ∈ Icc a b, ∀ x ∈ Icc a b, f c ≤ f x := by
     { sorry }
-  suffices I(n) ⊆ U i by
-    { sorry }
-  suffices ∀ x, x ∈ I(n) → |x - c| < ε by
-    { sorry }
+  by_cases hc : f c = f a
+  · by_cases hC : f C = f a
+    · have : ∀ x ∈ Icc a b, f x = f a := fun x hx => le_antisymm (hC ▸ Cge x hx) (hc ▸ cle x hx)
+      rcases nonempty_Ioo.2 hab with ⟨c', hc'⟩
+      refine ⟨c', hc', Or.inl fun x hx ↦ ?_⟩
+      simp [this x hx, this c' (Ioo_subset_Icc_self hc')]
+    · refine ⟨C, ⟨lt_of_le_of_ne Cmem.1 <| mt ?_ hC, lt_of_le_of_ne Cmem.2 <| mt ?_ hC⟩, Or.inr Cge⟩
+      exacts [fun h => by rw [h], fun h => by rw [h, hfI]]
+  · refine ⟨c, ⟨lt_of_le_of_ne cmem.1 <| mt ?_ hc, lt_of_le_of_ne cmem.2 <| mt ?_ hc⟩, Or.inl cle⟩
+    exacts [fun h => by rw [h], fun h => by rw [h, hfI]]
+
+variable {f f' : ℝ → ℝ} {g g' : ℝ → ℝ} {a b : ℝ} 
+
+/-- Rolleの定理 -/
+theorem exists_hasDerivAt_eq_zero (hab : a < b) (hfc : ContinuousOn f (Icc a b)) (hfI : f a = f b)
+    (hff' : ∀ x ∈ Ioo a b, HasDerivAt f (f' x) x) : ∃ c ∈ Ioo a b, f' c = 0 := by
   { sorry }
   
-end
+/-- Cauchyの平均値の定理 -/
+theorem exists_ratio_hasDerivAt_eq_ratio_slope (hab : a < b) 
+    (hfc : ContinuousOn f (Icc a b)) (hff' : ∀ x ∈ Ioo a b, HasDerivAt f (f' x) x)
+      (hgc : ContinuousOn g (Icc a b)) (hgg' : ∀ x ∈ Ioo a b, HasDerivAt g (g' x) x) :
+        ∃ c ∈ Ioo a b, (g b - g a) * f' c = (f b - f a) * g' c := by
+  let h x := (g b - g a) * f x - (f b - f a) * g x
+  have hhc : ContinuousOn h (Icc a b) :=
+    (continuousOn_const.mul hfc).sub (continuousOn_const.mul hgc)
+  { sorry }
+
+-- 次の問題で使うかも？
+#check eq_div_iff
+
+/-- Lagrangeの平均値の定理 -/
+theorem exists_hasDerivAt_eq_slope (hab : a < b) 
+    (hfc : ContinuousOn f (Icc a b)) (hff' : ∀ x ∈ Ioo a b, HasDerivAt f (f' x) x) : 
+      ∃ c ∈ Ioo a b, f' c = (f b - f a) / (b - a) := by
+  { sorry }
