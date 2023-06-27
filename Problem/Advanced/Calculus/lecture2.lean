@@ -19,7 +19,7 @@ def «0.9999999» : CauSeq ℚ abs where
     intro ε ε0
     suffices ∃ i, ∀ (j : ℕ), j ≥ i → |((10 ^ i : ℚ)⁻¹ - (10 ^ j : ℚ)⁻¹)| < ε by simpa
     have h : ∃ i : ℕ, (ε / 2)⁻¹ < 10 ^ i := pow_unbounded_of_one_lt (ε / 2)⁻¹ (by linarith)
-    cases h with | intro i hi =>
+    rcases h with ⟨i, hi⟩
     have hi : 2 * (10 ^ i : ℚ)⁻¹ < ε := (lt_div_iff' (by linarith)).mp (inv_lt_of_inv_lt (half_pos ε0) hi)
     exists i
     intro j hj
@@ -209,7 +209,7 @@ theorem nestedIntervalSeq_isCauSeq : IsCauSeq abs (nestedIntervalSeq U) := by
     _ < ε             := hi
 
 /-- 区間`I(n)`の中間点からなるCauchy列 -/
-def nestedIntervalCauseq : CauSeq ℝ abs where
+def nestedIntervalCauSeq : CauSeq ℝ abs where
   val := nestedIntervalSeq U
   property := nestedIntervalSeq_isCauSeq U
 
@@ -217,11 +217,11 @@ def nestedIntervalCauseq : CauSeq ℝ abs where
 local instance : CauSeq.IsComplete ℝ norm := inferInstanceAs (CauSeq.IsComplete ℝ abs)
 
 lemma nestedIntervalSeq_tendsto : 
-    Tendsto (nestedIntervalSeq U) atTop (𝓝 (nestedIntervalCauseq U).lim) := by
-  apply (nestedIntervalCauseq U).tendsto_limit
+    Tendsto (nestedIntervalSeq U) atTop (𝓝 (nestedIntervalCauSeq U).lim) := by
+  apply (nestedIntervalCauSeq U).tendsto_limit
 
 /-- 区間`I(n)`の中間点からなるCauchy列の極限は`I(n)`に属する -/
-lemma nestedIntervalLim_mem (n : ℕ) : (nestedIntervalCauseq U).lim ∈ I(n) := 
+lemma nestedIntervalLim_mem (n : ℕ) : (nestedIntervalCauSeq U).lim ∈ I(n) := 
   isClosed_Icc.mem_of_tendsto (nestedIntervalSeq_tendsto U) <|
     eventually_atTop.mpr ⟨n, fun _ => nestedIntervalSeq_mem_of_le U⟩
 
@@ -241,8 +241,8 @@ TIPS: 一元集合は`{i}`と表す。証明のどこかで用いるかもしれ
 theorem HasFinSubCover_of_Icc (hU : ∀ (i : ι), IsOpen (U i)) (cover : Icc 0 1 ⊆ ⋃ (i : ι), U i) : 
     HasFinSubCover U (Icc 0 1) := by 
   by_contra H
-  rcases cover (nestedIntervalLim_mem U 0) with ⟨_, ⟨i, rfl⟩, hU'⟩
-  set c := (nestedIntervalCauseq U).lim
+  set c := (nestedIntervalCauSeq U).lim
+  rcases cover (nestedIntervalLim_mem U 0) with ⟨_, ⟨i, rfl⟩, hU' : c ∈ U i⟩
   rcases Metric.isOpen_iff.mp (hU i) c hU' with ⟨ε, ε0, hε⟩
   have ⟨n, hn⟩ : ∃ n : ℕ, (ε / 2)⁻¹ < 2 ^ n := by
     { sorry }
