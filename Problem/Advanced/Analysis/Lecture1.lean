@@ -5,8 +5,8 @@ open Topology Filter Asymptotics
 
 /- # ランダウ記号
 mathlibではランダウ記号を次のように記述する。
-- `f = O[𝓝 a] g`: （よくある記法ではf(x) = O(g(x)) as x → a）
-- `f = o[𝓝 a] g`: （よくある記法ではf(x) = o(g(x)) as x → a）
+- `f =O[𝓝 a] g`: （よくある記法ではf(x) = O(g(x)) as x → a）
+- `f =o[𝓝 a] g`: （よくある記法ではf(x) = o(g(x)) as x → a）
 すなわち、関数`f, g : ℝ → ℝ`に対して、`f = O[𝓝 a] g`は`x`が十分`a`に近いときに`|f x|`が`|g x|`の
 定数倍で抑えられることを表す。また、`f = o[𝓝 a] g`は`x`が十分`a`に近いときに`|f x|`が`|g x|`の
 任意に小さい定数倍で抑えられることを表す。
@@ -39,7 +39,7 @@ example : (fun x ↦ 4 * x ^ 5 - 2 * x ^ 4 : ℝ → ℝ) =o[𝓝 0] (fun x ↦ 
 
 /- # 微分 -/
 
-/-- 関数`f : ℝ → ℝ`の`x : ℝ`における微分係数が`c : ℝ`である -/
+/-- 関数`f : ℝ → ℝ`の`a : ℝ`における微分係数が`f' : ℝ`である -/
 def HasDerivAt (f : ℝ → ℝ) (f' : ℝ) (a : ℝ) := 
   (fun x ↦ f x - f a - (x - a) * f') =o[𝓝 a] fun x ↦ x - a 
 
@@ -49,7 +49,7 @@ def HasDerivAt (f : ℝ → ℝ) (f' : ℝ) (a : ℝ) :=
 
 variable {f : ℝ → ℝ} {f' : ℝ} {a : ℝ}
 
-/-- 1. `x`が`x`に近づくとき`f x = f a + (x - a) * f' + o(x - a)`である -/
+/-- 1. `x`が`a`に近づくとき`f x = f a + (x - a) * f' + o(x - a)`である -/
 theorem hasDerivAt_iff_isLittleO : 
     HasDerivAt f f' a ↔ (fun x ↦ f x - f a - (x - a) * f') =o[𝓝 a] fun x ↦ x - a := by
   rfl
@@ -60,7 +60,7 @@ theorem hasDerivAt_iff_isLittleO_nhds_zero :
   rw [hasDerivAt_iff_isLittleO, ← map_add_left_nhds_zero a, isLittleO_map]
   simp [(· ∘ ·)]
 
-/-- 3. `x`が`x`に近づくとき`(x - a)⁻¹ * (f x - f a - (x - a) * f')`は`0`に近づく -/
+/-- 3. `x`が`a`に近づくとき`(x - a)⁻¹ * (f x - f a - (x - a) * f')`は`0`に近づく -/
 theorem hasDerivAt_iff_tendsto : 
     HasDerivAt f f' a ↔ Tendsto (fun x ↦ (x - a)⁻¹ * (f x - f a - (x - a) * f')) (𝓝[≠] a) (𝓝 0) := by
   calc HasDerivAt f f' a
@@ -71,7 +71,7 @@ theorem hasDerivAt_iff_tendsto :
   case iff2 => exact .symm <| tendsto_inf_principal_nhds_iff_of_forall_eq <| by simp
   case iff3 => exact tendsto_congr (by intros; field_simp)
 
-/-- 4. `x`が`x`に近づくとき`(x - a)⁻¹ * (f x - f a)`は`f'`に近づく -/
+/-- 4. `x`が`a`に近づくとき`(x - a)⁻¹ * (f x - f a)`は`f'`に近づく -/
 theorem hasDerivAt_iff_tendsto_slope : 
     HasDerivAt f f' a ↔ Tendsto (fun x ↦ (x - a)⁻¹ * (f x - f a)) (𝓝[≠] a) (𝓝 f') := by
   calc HasDerivAt f f' a
@@ -189,7 +189,7 @@ theorem HasDerivAt.add (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' a) :
 #check IsBigO.mul_isLittleO
 #check isLittleO_one_iff
 
-theorem HasDerivAt.mul {f : ℝ → ℝ} (hf : HasDerivAt f f' x) (hg : HasDerivAt g g' x) :
+theorem HasDerivAt.mul {f : ℝ → ℝ} (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' a) :
     HasDerivAt (fun x ↦ f x * g x) (f a * g' + f' * g a) a := by
   rw [hasDerivAt_iff_isLittleO]
   calc (fun x ↦ f x * g x - f a * g a - (x - a) * (f a * g' + f' * g a))
