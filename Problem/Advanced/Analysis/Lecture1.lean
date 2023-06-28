@@ -205,8 +205,8 @@ theorem HasDerivAt.const_mul (c : ℝ) (hf : HasDerivAt f f' a) :
     HasDerivAt (fun x ↦ c * f x) (c * f') a := by
   { sorry }
 
-theorem HasDerivAt.neg (h : HasDerivAt f f' a) : HasDerivAt (fun x ↦ -f x) (-f') a := by
-  suffices HasDerivAt (fun x ↦ -1 * f x) ((-1) * f' + 0 * f a) a by simpa using this
+theorem HasDerivAt.neg (hf : HasDerivAt f f' a) : HasDerivAt (fun x ↦ -f x) (-f') a := by
+  suffices HasDerivAt (fun x ↦ -1 * f x) ((-1) * f') a by simpa using this  
   { sorry }
   
 theorem HasDerivAt.sub (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' a) :
