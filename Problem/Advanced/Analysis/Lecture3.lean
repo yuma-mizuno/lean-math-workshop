@@ -39,7 +39,7 @@ theorem «0.9999999 = 1» : Real.ofCauchy (Quotient.mk CauSeq.equiv «0.9999999�
   intro ε ε0
   suffices ∃ i, ∀ (j : ℕ), j ≥ i → (10 ^ j : ℚ)⁻¹ < ε by simpa [abs]
   -- ヒント: `pow_unbounded_of_one_lt`と`inv_lt_of_inv_lt`を使って、欲しい`i`を手に入れよう
-  { sorry }
+  sorry
 
 open Filter Topology Set Classical
 
@@ -245,13 +245,13 @@ theorem HasFinSubCover_of_Icc (hU : ∀ (i : ι), IsOpen (U i)) (cover : Icc 0 1
   rcases cover (nestedIntervalLim_mem U 0) with ⟨_, ⟨i, rfl⟩, hU' : c ∈ U i⟩
   rcases Metric.isOpen_iff.mp (hU i) c hU' with ⟨ε, ε0, hε⟩
   have ⟨n, hn⟩ : ∃ n : ℕ, (ε / 2)⁻¹ < 2 ^ n := by
-    { sorry }
+    sorry
   suffices HasFinSubCover U I(n) by 
-    { sorry }
+    sorry
   suffices I(n) ⊆ U i by
-    { sorry }
+    sorry
   suffices ∀ x, x ∈ I(n) → |x - c| < ε by
-    { sorry }
-  { sorry }
+    sorry
+  sorry
   
 end

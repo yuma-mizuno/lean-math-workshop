@@ -62,19 +62,19 @@ theorem IsLocalMax.hasDerivAt_eq_zero (h : IsLocalMax f a) (hf : HasDerivAt f f'
     apply le_of_tendsto (hf.mono_left (nhds_right'_le_nhds_ne a)) ha
   case left =>
     -- 右側の場合を真似て証明してみよう。
-    { sorry }
+    sorry
 
 /-- 極小値を取る点での微分係数はゼロ -/
 theorem IsLocalMin.hasDerivAt_eq_zero (h : IsLocalMin f a) (hf : HasDerivAt f f' a) : f' = 0 := by
   -- ヒント: `IsLocalMax.hasDerivAt_eq_zero`を`x ↦ - f x`に対して使おう。
-  { sorry }
+  sorry
 
 -- 次の問題で使うかも？
 #check IsLocalExtr.elim
 
 /-- 極値を取る点での微分係数はゼロ -/
 theorem IsLocalExtr.hasDerivAt_eq_zero (h : IsLocalExtr f a) (hf : HasDerivAt f f' a) : f' = 0 := by
-  { sorry }
+  sorry
 
 /-
 次の定理はRolleの定理の証明に用いる。
@@ -94,9 +94,9 @@ theorem exists_local_extr_Ioo (hab : a < b) (hfc : ContinuousOn f (Icc a b)) (hf
     apply hc.isLocalExtr <| Icc_mem_nhds cmem.1 cmem.2
   have ne : (Icc a b).Nonempty := nonempty_Icc.2 (le_of_lt hab)
   have ⟨C, Cmem, Cge⟩ : ∃ C ∈ Icc a b, ∀ x ∈ Icc a b, f x ≤ f C := by
-    { sorry }
+    sorry
   have ⟨c, cmem, cle⟩ : ∃ c ∈ Icc a b, ∀ x ∈ Icc a b, f c ≤ f x := by
-    { sorry }
+    sorry
   by_cases hc : f c = f a
   · by_cases hC : f C = f a
     · have : ∀ x ∈ Icc a b, f x = f a := fun x hx => le_antisymm (hC ▸ Cge x hx) (hc ▸ cle x hx)
@@ -113,7 +113,7 @@ variable {f f' : ℝ → ℝ} {g g' : ℝ → ℝ} {a b : ℝ}
 /-- Rolleの定理 -/
 theorem exists_hasDerivAt_eq_zero (hab : a < b) (hfc : ContinuousOn f (Icc a b)) (hfI : f a = f b)
     (hff' : ∀ x ∈ Ioo a b, HasDerivAt f (f' x) x) : ∃ c ∈ Ioo a b, f' c = 0 := by
-  { sorry }
+  sorry
   
 /-- Cauchyの平均値の定理 -/
 theorem exists_ratio_hasDerivAt_eq_ratio_slope (hab : a < b) 
@@ -123,7 +123,7 @@ theorem exists_ratio_hasDerivAt_eq_ratio_slope (hab : a < b)
   let h x := (g b - g a) * f x - (f b - f a) * g x
   have hhc : ContinuousOn h (Icc a b) :=
     (continuousOn_const.mul hfc).sub (continuousOn_const.mul hgc)
-  { sorry }
+  sorry
 
 -- 次の問題で使うかも？
 #check eq_div_iff
@@ -132,4 +132,4 @@ theorem exists_ratio_hasDerivAt_eq_ratio_slope (hab : a < b)
 theorem exists_hasDerivAt_eq_slope (hab : a < b) 
     (hfc : ContinuousOn f (Icc a b)) (hff' : ∀ x ∈ Ioo a b, HasDerivAt f (f' x) x) : 
       ∃ c ∈ Ioo a b, f' c = (f b - f a) / (b - a) := by
-  { sorry }
+  sorry
