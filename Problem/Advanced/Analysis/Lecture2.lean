@@ -1,5 +1,7 @@
 import Problem.Advanced.Analysis.Lecture1
 
+namespace Exercise
+
 open scoped Topology Uniformity
 open Set Filter 
 
@@ -42,26 +44,31 @@ example (P : ℝ → Prop) : (∀ᶠ x in 𝓝 a, P x) ↔ ∃ ε, ε > 0 ∧ �
 /-- 極大値を取る点での微分係数はゼロ -/
 theorem IsLocalMax.hasDerivAt_eq_zero (h : IsLocalMax f a) (hf : HasDerivAt f f' a) : 
     f' = 0 := by
-  rw [hasDerivAt_iff_tendsto_slope] at hf
   -- `f' ≤ 0`と`0 ≤ f'`を示す。
   apply le_antisymm ?right ?left
   case right =>
-    -- `a`の右側近傍では`0 < (x - a)⁻¹`である。
-    have ha : ∀ᶠ x in 𝓝[>] a, 0 < (x - a)⁻¹ := by
+    -- `x`を`a`に右側から近づけたとき`(f x - f a) / (x - a)`は`f`に収束する。
+    have hf : Tendsto (fun x => (f x - f a) / (x - a)) (𝓝[>] a) (𝓝 f') := by
+      rw [hasDerivAt_iff_tendsto_slope] at hf
+      apply hf.mono_left (nhds_right'_le_nhds_ne a)
+    -- `(f x - f a) / (x - a)`が`a`の右側近傍で`0`以下であることを示せばよい。
+    suffices ∀ᶠ x in 𝓝[>] a, (f x - f a) / (x - a) ≤ 0 from le_of_tendsto hf this
+    -- `a`の右側近傍では`a < x`である。
+    have ha : ∀ᶠ x in 𝓝[>] a, a < x := by
       apply eventually_nhdsWithin_of_forall
       intro x hx
-      rw [inv_pos, sub_pos]
       apply hx
-    -- `a`の右側近傍では`(x - a)⁻¹ * (f x - f a) ≤ 0`である。
-    have ha : ∀ᶠ x in 𝓝[>] a, (x - a)⁻¹ * (f x - f a) ≤ 0 := by
-      -- 近傍での性質を使って近傍での性質を示したいときは`filter_upwards`を使う。
-      filter_upwards [ha, h.filter_mono nhdsWithin_le_nhds]
-      intro x hx₁ hx₂
-      -- 仮定`hx₁, hx₂`を使って不等式を解く。
-      nlinarith [hx₁, hx₂]
-    apply le_of_tendsto (hf.mono_left (nhds_right'_le_nhds_ne a)) ha
+    -- `a`の右側近傍では`f x ≤ f a`である。
+    have h : ∀ᶠ x in 𝓝[>] a, f x ≤ f a := h.filter_mono nhdsWithin_le_nhds
+    -- 近傍での性質`h₁, ⋯, hₙ`を使って近傍での性質を示したいときは`filter_upwards [h₁, ⋯, hₙ]`を使う。
+    filter_upwards [ha, h]
+    intro x ha h
+    rw [div_le_iff]
+    -- 仮定`ha, h`を使って不等式を解く。
+    · linarith only [h]
+    · linarith only [ha]
   case left =>
-    -- 右側の場合を真似て証明してみよう。
+    -- 右側の場合を真似て証明してみよう。`le_div_iff_of_neg`を使うとよい。
     sorry
 
 /-- 極小値を取る点での微分係数はゼロ -/
@@ -133,3 +140,5 @@ theorem exists_hasDerivAt_eq_slope (hab : a < b)
     (hfc : ContinuousOn f (Icc a b)) (hff' : ∀ x ∈ Ioo a b, HasDerivAt f (f' x) x) : 
       ∃ c ∈ Ioo a b, f' c = (f b - f a) / (b - a) := by
   sorry
+
+end Exercise
