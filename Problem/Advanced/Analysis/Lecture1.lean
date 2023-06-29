@@ -1,5 +1,6 @@
-import Mathlib.Tactic.Linarith
 import Mathlib.Analysis.Asymptotics.Asymptotics
+
+namespace Exercise
 
 open Topology Filter Asymptotics
 
@@ -14,11 +15,11 @@ mathlibではランダウ記号を次のように記述する。
 
 -- 定数倍は自身のBig O
 example : (fun x ↦ 2 * x : ℝ → ℝ) =O[𝓝 0] (fun x ↦ x : ℝ → ℝ) := by
-  apply isBigO_const_mul_self 
+  apply Asymptotics.isBigO_const_mul_self 
 
 -- `x ^ 2`は`x`よりも速くゼロに近づく
 example : (fun x ↦ x ^ 2 : ℝ → ℝ) =o[𝓝 0] (fun x ↦ x : ℝ → ℝ) := by
-  apply isLittleO_pow_id (by linarith)
+  apply Asymptotics.isLittleO_pow_id (by linarith)
 
 -- ランダウ記号の計算は、あたかも等式の変形のように扱えて便利
 example : (fun x ↦ 11 * x ^ 5 + 4 * x ^ 3 : ℝ → ℝ) =o[𝓝 0] (fun x ↦ 23 * x ^ 2 : ℝ → ℝ) := by
@@ -57,59 +58,124 @@ theorem hasDerivAt_iff_isLittleO :
 /-- 2. `h`が`0`に近づくとき`f (x + h) = f a + h * f' + o(h)`である -/
 theorem hasDerivAt_iff_isLittleO_nhds_zero : 
     HasDerivAt f f' a ↔ (fun h ↦ f (a + h) - f a - h * f') =o[𝓝 0] fun h => h := by
-  rw [hasDerivAt_iff_isLittleO, ← map_add_left_nhds_zero a, isLittleO_map]
+  rw [hasDerivAt_iff_isLittleO, ← map_add_left_nhds_zero a, Asymptotics.isLittleO_map]
   simp [(· ∘ ·)]
 
-/-- 3. `x`が`a`に近づくとき`(x - a)⁻¹ * (f x - f a - (x - a) * f')`は`0`に近づく -/
+/-- 3. `x`が`a`に近づくとき`(f x - f a - (x - a) * f') / (x - a)`は`0`に近づく -/
 theorem hasDerivAt_iff_tendsto : 
-    HasDerivAt f f' a ↔ Tendsto (fun x ↦ (x - a)⁻¹ * (f x - f a - (x - a) * f')) (𝓝[≠] a) (𝓝 0) := by
+    HasDerivAt f f' a ↔ Tendsto (fun x ↦ (f x - f a - (x - a) * f') / (x - a)) (𝓝[≠] a) (𝓝 0) := by
   calc HasDerivAt f f' a
     _ ↔ Tendsto (fun x ↦ (f x - f a - (x - a) * f') / (x - a)) (𝓝 a) (𝓝 0)      := ?iff1
     _ ↔ Tendsto (fun x ↦ (f x - f a - (x - a) * f') / (x - a)) (𝓝[≠] a) (𝓝 0)   := ?iff2
-    _ ↔ Tendsto (fun x ↦ (x - a)⁻¹ * (f x - f a - (x - a) * f')) (𝓝[≠] a) (𝓝 0) := ?iff3   
-  case iff1 => rw [hasDerivAt_iff_isLittleO, isLittleO_iff_tendsto (by intro _ h; simp [sub_eq_zero.1 h])]
+  case iff1 => rw [hasDerivAt_iff_isLittleO, Asymptotics.isLittleO_iff_tendsto (by intro _ h; simp [sub_eq_zero.1 h])]
   case iff2 => exact .symm <| tendsto_inf_principal_nhds_iff_of_forall_eq <| by simp
-  case iff3 => exact tendsto_congr (by intros; field_simp)
 
-/-- 4. `x`が`a`に近づくとき`(x - a)⁻¹ * (f x - f a)`は`f'`に近づく -/
+/-- 4. `x`が`a`に近づくとき`(f x - f a) / (x - a)`は`f'`に近づく -/
 theorem hasDerivAt_iff_tendsto_slope : 
-    HasDerivAt f f' a ↔ Tendsto (fun x ↦ (x - a)⁻¹ * (f x - f a)) (𝓝[≠] a) (𝓝 f') := by
+    HasDerivAt f f' a ↔ Tendsto (fun x ↦ (f x - f a) / (x - a)) (𝓝[≠] a) (𝓝 f') := by
   calc HasDerivAt f f' a
-    _ ↔ Tendsto (fun x ↦ (x - a)⁻¹ * (f x - f a) - (x - a)⁻¹ * (x - a) * f') (𝓝[≠] a) (𝓝 0) := ?iff1
-    _ ↔ Tendsto (fun x ↦ (x - a)⁻¹ * (f x - f a) - f') (𝓝[≠] a) (𝓝 0)                       := ?iff2
-    _ ↔ Tendsto (fun x ↦ (x - a)⁻¹ * (f x - f a)) (𝓝[≠] a) (𝓝 f')                           := ?iff3
-  case iff1 => simp only [hasDerivAt_iff_tendsto, mul_sub, mul_assoc, sub_mul]
+    _ ↔ Tendsto (fun x ↦ (f x - f a) / (x - a) - (x - a) / (x - a) * f') (𝓝[≠] a) (𝓝 0) := ?iff1
+    _ ↔ Tendsto (fun x ↦ (f x - f a) / (x - a) - f') (𝓝[≠] a) (𝓝 0)                     := ?iff2
+    _ ↔ Tendsto (fun x ↦ (f x - f a) / (x - a)) (𝓝[≠] a) (𝓝 f')                         := ?iff3
+  case iff1 => simp only [hasDerivAt_iff_tendsto, sub_div, mul_div_right_comm]
   case iff2 => exact tendsto_congr' <| (Set.EqOn.eventuallyEq fun _ h ↦ (by field_simp [sub_ne_zero.2 h])).filter_mono inf_le_right
   case iff3 => rw [← nhds_translation_sub f', tendsto_comap_iff]; rfl
 
--- 具体例として、`x ↦ x ^ 2`の微分係数を求める。まずは2つめの定義を使う。
-example (x : ℝ) : HasDerivAt (fun x ↦ x ^ 2 : ℝ → ℝ) (2 * x) x := by
+-- 具体例として、`x ↦ x ^ 2`の微分係数を求める。ここでは2つめの定義を使う。
+example (a : ℝ) : HasDerivAt (fun x ↦ x ^ 2 : ℝ → ℝ) (2 * a) a := by
   rw [hasDerivAt_iff_isLittleO_nhds_zero]
-  calc (fun h ↦ (x + h) ^ 2 - x ^ 2 - h * (2 * x)) 
+  calc (fun h ↦ (a + h) ^ 2 - a ^ 2 - h * (2 * a)) 
     _ = fun h ↦ h ^ 2                        := ?eq1
     _ =o[𝓝 0] fun h ↦ h                     := ?eq2
   case eq1 =>
-  -- ヒント: 関数の間の等号を示したいときは`funext`を使おう
+    -- ヒント: 関数の間の等号を示したいときは`funext`を使おう
     sorry
   case eq2 =>
-  -- ヒント: `apply?`を使って必要な命題を探そう
+    -- ヒント: `apply?`を使って必要な命題を探そう。2行以内で証明できるはず。
     sorry
 
--- 次の問題で使うかも？
-#check inv_mul_cancel
-
--- 次は4つめの定義を使って同じ事実を証明する。
-example (x : ℝ) : HasDerivAt (fun x ↦ x ^ 2 : ℝ → ℝ) (2 * x) x := by
+-- 4つめの定義を使っても示すことができるが、ゼロ除算の扱いに注意する必要がある。
+example (a : ℝ) : HasDerivAt (fun x ↦ x ^ 2 : ℝ → ℝ) (2 * a) a := by
   rw [hasDerivAt_iff_tendsto_slope]
-  -- 条件をε-δで書き換える
-  suffices ∀ (ε : ℝ), ε > 0 → ∃ δ, δ > 0 ∧ 
-      ∀ {y : ℝ}, y ≠ x → |y - x| < δ → 
-        |(y - x)⁻¹ * (y ^ 2 - x ^ 2) - 2 * x| < ε from
-    Metric.tendsto_nhdsWithin_nhds.mpr this
-  sorry
+  rw [show 𝓝 (2 * a) = 𝓝 (a + a) by congr; ring]
+  apply (tendsto_nhdsWithin_of_tendsto_nhds ((continuous_id.tendsto a).add tendsto_const_nhds)).congr'
+  apply eventually_nhdsWithin_of_forall
+  intro x hx
+  suffices x + a = (x ^ 2 - a ^ 2) / (x - a) by assumption
+  have hxa : x - a ≠ 0 := by rw [sub_ne_zero]; simpa using hx
+  field_simp [hxa]
+  ring
 
 /-
 以下では微分に関する基本的な性質を示していく。
+-/
+
+-- 必要になるかもしれないランダウ記号の性質
+section Landau
+
+variable {f g h f₁ g₁ f₂ g₂ : ℝ → ℝ} {a b : ℝ}
+
+theorem IsLittleO.add (h₁ : f₁ =o[𝓝 a] g) (h₂ : f₂ =o[𝓝 a] g) :
+    (fun x => f₁ x + f₂ x) =o[𝓝 a] g := 
+  Asymptotics.IsLittleO.add h₁ h₂
+
+theorem IsLittleO.const_mul_left (h : f =o[𝓝 a] g) (c : ℝ) : 
+    (fun x => c * f x) =o[𝓝 a] g :=
+  Asymptotics.IsLittleO.const_mul_left h c
+
+theorem isBigO_const_mul_self (c : ℝ) (f : ℝ → ℝ) : 
+    (fun x => c * f x) =O[𝓝 a] f :=
+  Asymptotics.isBigO_const_mul_self c f (𝓝 a)
+
+theorem IsLittleO.comp_tendsto (hfg : f =o[𝓝 b] g) (hh : Tendsto h (𝓝 a) (𝓝 b)) : 
+    (f ∘ h) =o[𝓝 a] (g ∘ h) :=
+  Asymptotics.IsLittleO.comp_tendsto hfg hh
+
+theorem IsBigO.mul_isLittleO (h₁ : f₁ =O[𝓝 a] g₁) (h₂ : f₂ =o[𝓝 a] g₂) :
+    (fun x => f₁ x * f₂ x) =o[𝓝 a] fun x => g₁ x * g₂ x :=
+  Asymptotics.IsBigO.mul_isLittleO h₁ h₂
+
+end Landau
+
+theorem hasDerivAt_const (c : ℝ) : HasDerivAt (fun _ => c) 0 a := by
+  rw [hasDerivAt_iff_isLittleO]
+  -- ヒント: `simp`を使おう
+  sorry 
+
+theorem hasDerivAt_id (a : ℝ) : HasDerivAt id 1 a := by
+  rw [hasDerivAt_iff_isLittleO]
+  sorry
+
+theorem HasDerivAt.add (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' a) :
+    HasDerivAt (fun x ↦ f x + g x) (f' + g') a := by
+  rw [hasDerivAt_iff_isLittleO] at *
+  calc (fun x ↦ f x + g x - (f a + g a) - (x - a) * (f' + g')) 
+    _ = fun x ↦ (f x - f a - (x - a) * f') + (g x - g a - (x - a) * g') := ?eq1 
+    _ =o[𝓝 a] fun x ↦ x - a                                            := ?eq2
+  case eq1 =>
+    -- ヒント: 関数の間の等号を示したいときは`funext`を使おう
+    sorry
+  case eq2 =>
+    -- ヒント: `apply?`を使って必要な命題を探そう
+    sorry
+
+theorem HasDerivAt.const_mul (c : ℝ) (hf : HasDerivAt f f' a) :
+    HasDerivAt (fun x ↦ c * f x) (c * f') a := by
+  rw [hasDerivAt_iff_isLittleO] at *
+  -- ヒント: `HasDerivAt.add`のときと同様に`calc`で計算しよう
+  sorry
+
+theorem HasDerivAt.neg (hf : HasDerivAt f f' a) : 
+    HasDerivAt (fun x ↦ -f x) (-f') a := by
+  sorry
+
+theorem HasDerivAt.sub (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' a) :
+    HasDerivAt (fun x ↦ f x - g x) (f' - g') a := by
+  sorry
+
+/-
+合成関数の微分と積の微分についての命題を示す。これらの命題の証明には、微分可能なら連続であることを
+用いるので、まずはそれに関連する命題を示しておこう。
 -/
 
 theorem HasDerivAt.isBigO_sub (h : HasDerivAt f f' a) : 
@@ -145,7 +211,7 @@ variable {g : ℝ → ℝ} {g' : ℝ}
 /-- 合成関数の微分 -/
 theorem HasDerivAt.comp (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' (f a)) : 
     HasDerivAt (g ∘ f) (g' * f') a := by
-  rw [hasDerivAt_iff_isLittleO]
+  rw [hasDerivAt_iff_isLittleO] at *
   have h₁ := 
     calc (fun x ↦ g (f x) - g (f a) - (f x - f a) * g') 
         =o[𝓝 a] fun x ↦ f x - f a                := ?eq1
@@ -167,23 +233,6 @@ theorem HasDerivAt.comp (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' (f a)) :
   case eq5 =>
     sorry
 
-theorem hasDerivAt_const (c : ℝ) : HasDerivAt (fun _ => c) 0 a := by
-  sorry
-
--- 次の問題で使うかも？
-#check IsLittleO.add
-
-theorem HasDerivAt.add (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' a) :
-    HasDerivAt (fun x ↦ f x + g x) (f' + g') a := by
-  rw [hasDerivAt_iff_isLittleO]
-  calc (fun x ↦ f x + g x - (f a + g a) - (x - a) * (f' + g')) 
-    _ = fun x ↦ (f x - f a - (x - a) * f') + (g x - g a - (x - a) * g') := ?eq1 
-    _ =o[𝓝 a] fun x ↦ x - a                                            := ?eq2
-  case eq1 =>
-    sorry
-  case eq2 =>
-    sorry
-
 -- 次の問題で使うかも？
 #check IsLittleO.const_mul_left
 #check IsBigO.mul_isLittleO
@@ -202,43 +251,30 @@ theorem HasDerivAt.mul {f : ℝ → ℝ} (hf : HasDerivAt f f' a) (hg : HasDeriv
       sorry
     have hf' : (fun x => g a * (f x - f a - (x - a) * f')) =o[𝓝 a] fun x => x - a := 
       sorry
-    have hfg := calc (fun x => (f x - f a) * (g x - g a))
-      _ =o[𝓝 a] fun x => (x - a) * 1      := ?eq3
-      _ = fun x => x - a                   := ?eq4
+    have hfg := 
+      calc (fun x => (f x - f a) * (g x - g a))
+        _ =o[𝓝 a] fun x => (x - a) * 1      := ?eq3
+        _ = fun x => x - a                   := ?eq4
     sorry
     case eq3 =>
       have hg'' : (fun x => g x - g a) =o[𝓝 a] fun _ => (1 : ℝ) := by
-        rw [isLittleO_one_iff, tendsto_sub_nhds_zero_iff]
+        rw [Asymptotics.isLittleO_one_iff, tendsto_sub_nhds_zero_iff]
         sorry
       sorry
     case eq4 =>
       sorry
-
-theorem HasDerivAt.const_mul (c : ℝ) (hf : HasDerivAt f f' a) :
-    HasDerivAt (fun x ↦ c * f x) (c * f') a := by
-  sorry
-
-theorem HasDerivAt.neg (hf : HasDerivAt f f' a) : HasDerivAt (fun x ↦ -f x) (-f') a := by
-  suffices HasDerivAt (fun x ↦ -1 * f x) ((-1) * f') a by simpa using this  
-  sorry
-  
-theorem HasDerivAt.sub (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' a) :
-    HasDerivAt (fun x ↦ f x - g x) (f' - g') a := by
-  sorry
-
-theorem hasDerivAt_id (a : ℝ) : HasDerivAt id 1 a := by
-  sorry
   
 -- 次の問題で使うかも？
 #check Nat.succ_eq_add_one
 
 /-- 単項式の微分 -/
-theorem hasDerivAt_pow (n : ℕ) (x : ℝ) : HasDerivAt (fun x ↦ x ^ n : ℝ → ℝ) (n * x ^ (n - 1)) x := by
+theorem hasDerivAt_pow (n : ℕ) (a : ℝ) : HasDerivAt (fun x ↦ x ^ n : ℝ → ℝ) (n * a ^ (n - 1)) a := by
   -- ヒント: `induction n`で帰納法が使える。`induction`の使い方は`cases`と大体同じ。
   sorry
 
 -- 再び`x ↦ x ^ 2`の微分。すぐ上で示した`hasDerivAt_pow`を使ってみよう。
-example (x : ℝ) : HasDerivAt (fun x ↦ x ^ 2 : ℝ → ℝ) (2 * x) x := by
-  suffices HasDerivAt (fun x ↦ x ^ 2) (2 * x ^ (2 - 1)) x by simpa using this
+example (a : ℝ) : HasDerivAt (fun x ↦ x ^ 2 : ℝ → ℝ) (2 * a) a := by
+  suffices HasDerivAt (fun x ↦ x ^ 2) (2 * a ^ (2 - 1)) a by simpa using this
   sorry
 
+end Exercise
