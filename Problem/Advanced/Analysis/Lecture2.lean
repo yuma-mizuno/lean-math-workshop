@@ -54,21 +54,18 @@ theorem IsLocalMax.hasDerivAt_eq_zero (h : IsLocalMax f a) (hf : HasDerivAt f f'
     -- `(f x - f a) / (x - a)`が`a`の右側近傍で`0`以下であることを示せばよい。
     suffices ∀ᶠ x in 𝓝[>] a, (f x - f a) / (x - a) ≤ 0 from le_of_tendsto hf this
     -- `a`の右側近傍では`a < x`である。
-    have ha : ∀ᶠ x in 𝓝[>] a, a < x := by
-      apply eventually_nhdsWithin_of_forall
-      intro x hx
-      apply hx
+    have ha : ∀ᶠ x in 𝓝[>] a, a < x := eventually_nhdsWithin_of_forall fun x hx => hx
     -- `a`の右側近傍では`f x ≤ f a`である。
     have h : ∀ᶠ x in 𝓝[>] a, f x ≤ f a := h.filter_mono nhdsWithin_le_nhds
     -- 近傍での性質`h₁, ⋯, hₙ`を使って近傍での性質を示したいときは`filter_upwards [h₁, ⋯, hₙ]`を使う。
     filter_upwards [ha, h]
     intro x ha h
-    rw [div_le_iff]
+    apply div_nonpos_of_nonpos_of_nonneg
     -- 仮定`ha, h`を使って不等式を解く。
     · linarith only [h]
     · linarith only [ha]
   case left =>
-    -- 右側の場合を真似て証明してみよう。`le_div_iff_of_neg`を使うとよい。
+    -- 右側の場合を真似て証明してみよう。最後は`div_nonneg_of_nonpos`を使うとよい。
     sorry
 
 /-- 極小値を取る点での微分係数はゼロ -/

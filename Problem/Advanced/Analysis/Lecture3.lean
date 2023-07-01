@@ -93,7 +93,7 @@ def nestedIntervalSeq : ℕ → ℝ := fun n => (α n + β n) / 2
 
 variable {U}
 
-lemma HasFinSubCover_concat (hac : HasFinSubCover U (Icc a c)) (hcb : HasFinSubCover U (Icc c b)) :
+lemma hasFinSubCover_concat (hac : HasFinSubCover U (Icc a c)) (hcb : HasFinSubCover U (Icc c b)) :
     HasFinSubCover U (Icc a b) := by
   rcases hac with ⟨ι_ac, cover_ac⟩
   rcases hcb with ⟨ι_cb, cover_cb⟩
@@ -112,7 +112,7 @@ lemma HasFinSubCover_concat (hac : HasFinSubCover U (Icc a c)) (hcb : HasFinSubC
 lemma not_HasFinSubCover_concat :
     ¬HasFinSubCover U (Icc a b) → HasFinSubCover U (Icc a c) → ¬HasFinSubCover U (Icc c b) := by
   contrapose!
-  apply (fun H => HasFinSubCover_concat H.1 H.2)
+  apply (fun H => hasFinSubCover_concat H.1 H.2)
 
 lemma nestedIntervalSucc_left (h : ¬HasFinSubCover U (Icc a ((a + b) / 2))) : 
     nestedIntervalSucc U a b = ⟨a, (a + b) / 2⟩ := 
@@ -252,6 +252,44 @@ theorem HasFinSubCover_of_Icc (hU : ∀ (i : ι), IsOpen (U i)) (cover : Icc 0 1
     sorry
   suffices ∀ x, x ∈ I(n) → |x - c| < ε by
     sorry
+  sorry
+
+-- 空でない上に有界な実数集合が上限を持つことを用いた別証明
+/-- 閉区間`Icc 0 1`はコンパクト -/
+example (hU : ∀ (i : ι), IsOpen (U i)) (cover : Icc 0 1 ⊆ ⋃ (i : ι), U i) : 
+    HasFinSubCover U (Icc 0 1) := by 
+  set A := { x : ℝ | x ∈ Icc 0 1 ∧ HasFinSubCover U (Icc 0 x) }
+  have A0 : 0 ∈ A := by
+    rcases cover (left_mem_Icc.mpr zero_le_one) with ⟨_, ⟨i, rfl⟩, hU' : 0 ∈ U i⟩
+    sorry
+  have A1 : A.Nonempty := ⟨0, A0⟩
+  have A2 : 1 ∈ upperBounds A := fun x hx => hx.1.2
+  -- `c`は`A`の最小上界
+  have ⟨c, ⟨hAc, hAc'⟩⟩ : ∃ c, IsLUB A c := ⟨sSup A, isLUB_csSup A1 ⟨1, A2⟩⟩
+  have hc : c ∈ Icc 0 1 := by
+    sorry
+  rcases cover hc with ⟨_, ⟨ic, rfl⟩, hUc' : c ∈ U ic⟩
+  have hcA : c ∈ A := by
+    rcases hc.1.eq_or_lt with rfl | hlt
+    · assumption
+    · exists hc
+      rcases (mem_nhdsWithin_Iic_iff_exists_Ioc_subset' hlt).mp 
+        (mem_nhdsWithin_of_mem_nhds <| (hU ic).mem_nhds hUc') with ⟨x, hxc, hxU⟩
+      rcases ((IsLUB.frequently_mem ⟨hAc, hAc'⟩ A1).and_eventually 
+        (Ioc_mem_nhdsWithin_Iic ⟨hxc, le_rfl⟩)).exists with ⟨y, ⟨-, hyf⟩, hy⟩
+      apply hasFinSubCover_concat hyf
+      sorry
+  suffices c = 1 from this.symm ▸ hcA.2
+  by_contra hc  
+  have hlt : c < 1 := Ne.lt_of_le hc (A2 hcA)
+  rcases(mem_nhdsWithin_Ici_iff_exists_mem_Ioc_Ico_subset hlt).mp
+    (mem_nhdsWithin_of_mem_nhds <| (hU ic).mem_nhds hUc') with ⟨c', ⟨hc'1, hc'2⟩, hc'U⟩
+  have : c' ∈ A := by
+    constructor
+    · sorry
+    · apply hasFinSubCover_concat hcA.2
+      -- ヒント: `Ico_union_right`と`union_subset_union`を用いるとよいかもしれない
+      sorry
   sorry
   
 end
