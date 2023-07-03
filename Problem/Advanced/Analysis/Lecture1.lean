@@ -268,13 +268,19 @@ theorem HasDerivAt.mul {f : ℝ → ℝ} (hf : HasDerivAt f f' a) (hg : HasDeriv
 #check Nat.succ_eq_add_one
 
 /-- 単項式の微分 -/
-theorem hasDerivAt_pow (n : ℕ) (a : ℝ) : HasDerivAt (fun x ↦ x ^ n : ℝ → ℝ) (n * a ^ (n - 1)) a := by
+theorem hasDerivAt_pow (n : ℕ) (a : ℝ) : 
+    HasDerivAt (fun x ↦ x ^ (n + 1)) ((n + 1) * a ^ n) a := by
   -- ヒント: `induction n`で帰納法が使える。`induction`の使い方は`cases`と大体同じ。
   sorry
 
+/- 
+TIPS: 右画面の表示に現れる`↑n`はcoercionといって、自然数を実数と思いたいときに現れる。
+つまり、`n : ℕ`に対して`↑n : ℝ`となる。
+-/
+
 -- 再び`x ↦ x ^ 2`の微分。すぐ上で示した`hasDerivAt_pow`を使ってみよう。
-example (a : ℝ) : HasDerivAt (fun x ↦ x ^ 2 : ℝ → ℝ) (2 * a) a := by
-  suffices HasDerivAt (fun x ↦ x ^ 2) (2 * a ^ (2 - 1)) a by simpa using this
+example (a : ℝ) : HasDerivAt (fun x ↦ x ^ 2) (2 * a) a := by
+  suffices HasDerivAt (fun x ↦ x ^ 2) (((1 : ℕ) + 1) * a ^ 1) a by simpa [one_add_one_eq_two]
   sorry
 
 end Exercise
