@@ -8,5 +8,5 @@ lake exe cache get
 - [ ] Basic/Lecture2
 - [x] Advanced/Analysis/Lecture1 微分の基礎
 - [x] Advanced/Analysis/Lecture2 平均値の定理
-- [x] Advanced/Analysis/Lecture2 閉区間のコンパクト性
+- [x] Advanced/Analysis/Lecture3 閉区間のコンパクト性
 - [ ] Advanced/Algebra
