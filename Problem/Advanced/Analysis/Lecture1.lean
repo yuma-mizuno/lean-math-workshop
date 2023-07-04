@@ -225,6 +225,7 @@ theorem HasDerivAt.comp (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' (f a)) :
       _ =o[𝓝 a] fun x ↦ x - a                    := ?eq5
   apply h₁.triangle h₂
   case eq1 =>
+    -- `IsLittleO.comp_tendsto`が使える
     sorry
   case eq2 => 
     sorry
@@ -240,18 +241,18 @@ theorem HasDerivAt.comp (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' (f a)) :
 #check IsBigO.mul_isLittleO
 
 theorem HasDerivAt.mul {f : ℝ → ℝ} (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' a) :
-    HasDerivAt (fun x ↦ f x * g x) (f a * g' + f' * g a) a := by
+    HasDerivAt (fun x ↦ f x * g x) (f' * g a + f a * g') a := by
   rw [hasDerivAt_iff_isLittleO]
-  calc (fun x ↦ f x * g x - f a * g a - (x - a) * (f a * g' + f' * g a))
-    _ = fun x ↦ f a * (g x - g a - (x - a) * g') + 
-          (g a * (f x - f a - (x - a) * f') + (f x - f a) * (g x - g a)) := ?eq1
+  calc (fun x ↦ f x * g x - f a * g a - (x - a) * (f' * g a + f a * g'))
+    _ = fun x ↦ g a * (f x - f a - (x - a) * f') + 
+          (f a * (g x - g a - (x - a) * g') + (f x - f a) * (g x - g a)) := ?eq1
     _ =o[𝓝 a] fun x ↦ x - a                                             := ?eq2
   case eq1 =>
     sorry
   case eq2 =>
-    have hg' : (fun x => f a * (g x - g a - (x - a) * g')) =o[𝓝 a] fun x => x - a := 
-      sorry
     have hf' : (fun x => g a * (f x - f a - (x - a) * f')) =o[𝓝 a] fun x => x - a := 
+      sorry
+    have hg' : (fun x => f a * (g x - g a - (x - a) * g')) =o[𝓝 a] fun x => x - a := 
       sorry
     have hfg := 
       calc (fun x => (f x - f a) * (g x - g a))
@@ -262,6 +263,7 @@ theorem HasDerivAt.mul {f : ℝ → ℝ} (hf : HasDerivAt f f' a) (hg : HasDeriv
       have hg'' : (fun x => g x - g a) =o[𝓝 a] fun _ => (1 : ℝ) := by
         rw [Asymptotics.isLittleO_one_iff, tendsto_sub_nhds_zero_iff]
         sorry
+      -- `IsBigO.mul_isLittleO`が使える
       sorry
     case eq4 =>
       sorry
@@ -286,5 +288,3 @@ example (a : ℝ) : HasDerivAt (fun x ↦ x ^ 2) (2 * a) a := by
   sorry
 
 end Exercise
-
-/- ℝ ℝ -/
