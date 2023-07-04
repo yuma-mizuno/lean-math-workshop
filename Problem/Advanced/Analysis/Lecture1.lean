@@ -35,9 +35,6 @@ example : (fun x ↦ 11 * x ^ 5 + 4 * x ^ 3 : ℝ → ℝ) =o[𝓝 0] (fun x ↦
       _ =O[𝓝 0] fun x ↦ 23 * x ^ 2   := by apply isBigO_self_const_mul _ (by linarith)
   apply h₁.add h₂
 
-example : (fun x ↦ 4 * x ^ 5 - 2 * x ^ 4 : ℝ → ℝ) =o[𝓝 0] (fun x ↦ 5 * x ^ 3 : ℝ → ℝ) := by
-  sorry
-
 /- # 微分 -/
 
 /-- 関数`f : ℝ → ℝ`の`a : ℝ`における微分係数が`f' : ℝ`である -/
@@ -82,7 +79,7 @@ theorem hasDerivAt_iff_tendsto_slope :
   case iff3 => rw [← nhds_translation_sub f', tendsto_comap_iff]; rfl
 
 -- 具体例として、`x ↦ x ^ 2`の微分係数を求める。ここでは2つめの定義を使う。
-example (a : ℝ) : HasDerivAt (fun x ↦ x ^ 2 : ℝ → ℝ) (2 * a) a := by
+example (a : ℝ) : HasDerivAt (fun x ↦ x ^ 2) (2 * a) a := by
   rw [hasDerivAt_iff_isLittleO_nhds_zero]
   calc (fun h ↦ (a + h) ^ 2 - a ^ 2 - h * (2 * a)) 
     _ = fun h ↦ h ^ 2                        := ?eq1
@@ -91,11 +88,11 @@ example (a : ℝ) : HasDerivAt (fun x ↦ x ^ 2 : ℝ → ℝ) (2 * a) a := by
     -- ヒント: 関数の間の等号を示したいときは`funext`を使おう
     sorry
   case eq2 =>
-    -- ヒント: `apply?`を使って必要な命題を探そう。2行以内で証明できるはず。
+    -- ヒント: `apply?`を使って必要な命題を探せる。2行以内で証明できるはず。
     sorry
 
 -- 4つめの定義を使っても示すことができるが、ゼロ除算の扱いに注意する必要がある。
-example (a : ℝ) : HasDerivAt (fun x ↦ x ^ 2 : ℝ → ℝ) (2 * a) a := by
+example (a : ℝ) : HasDerivAt (fun x ↦ x ^ 2) (2 * a) a := by
   rw [hasDerivAt_iff_tendsto_slope]
   rw [show 𝓝 (2 * a) = 𝓝 (a + a) by congr; ring]
   apply (tendsto_nhdsWithin_of_tendsto_nhds ((continuous_id.tendsto a).add tendsto_const_nhds)).congr'
@@ -156,26 +153,30 @@ theorem HasDerivAt.add (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' a) :
     -- ヒント: 関数の間の等号を示したいときは`funext`を使おう
     sorry
   case eq2 =>
-    -- ヒント: `apply?`を使って必要な命題を探そう
+    -- ヒント: `apply?`を使って必要な命題を探せる
     sorry
 
 theorem HasDerivAt.const_mul (c : ℝ) (hf : HasDerivAt f f' a) :
     HasDerivAt (fun x ↦ c * f x) (c * f') a := by
   rw [hasDerivAt_iff_isLittleO] at *
-  -- ヒント: `HasDerivAt.add`のときと同様に`calc`で計算しよう
+  -- ヒント: `HasDerivAt.add`のときと同様に`calc`で計算できる
   sorry
 
+-- Lecture 2で用いる
 theorem HasDerivAt.neg (hf : HasDerivAt f f' a) : 
-    HasDerivAt (fun x ↦ -f x) (-f') a := by
-  sorry
+    HasDerivAt (fun x ↦ -f x) (-f') a :=
+  suffices HasDerivAt (fun x ↦ -1 * f x) (-1 * f') a by simpa using this
+  hf.const_mul (-1)
 
+-- Lecture 2で用いる
 theorem HasDerivAt.sub (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' a) :
-    HasDerivAt (fun x ↦ f x - g x) (f' - g') a := by
-  sorry
+    HasDerivAt (fun x ↦ f x - g x) (f' - g') a :=
+  suffices HasDerivAt (fun x ↦ f x + -g x) (f' + -g') a by simpa [sub_eq_add_neg] using this
+  hf.add (hg.neg)
 
 /-
 合成関数の微分と積の微分についての命題を示す。これらの命題の証明には、微分可能なら連続であることを
-用いるので、まずはそれに関連する命題を示しておこう。
+用いるので、まずはそれに関連する命題を示しておく。
 -/
 
 theorem HasDerivAt.isBigO_sub (h : HasDerivAt f f' a) : 
@@ -189,11 +190,12 @@ theorem HasDerivAt.isBigO_sub (h : HasDerivAt f f' a) :
     -- ヒント: 関数の間の等号を示したいときは`funext`を使おう
     sorry
   case eq2 =>
-    -- ヒント: `apply?`を使って必要な命題を探そう
+    -- ヒント: `apply?`を使って必要な命題を探せる
     sorry
 
 /-- 微分可能ならば連続 -/
-theorem HasDerivAt.continuousAt (h : HasDerivAt f f' a) : Tendsto f (𝓝 a) (𝓝 (f a)) := by
+theorem HasDerivAt.continuousAt (h : HasDerivAt f f' a) : 
+    Tendsto f (𝓝 a) (𝓝 (f a)) := by
   have : Tendsto (fun x ↦ f x - f a + f a) (𝓝 a) (𝓝 (0 + f a)) := by
     apply Tendsto.add _ tendsto_const_nhds
     apply h.isBigO_sub.trans_tendsto
@@ -284,3 +286,5 @@ example (a : ℝ) : HasDerivAt (fun x ↦ x ^ 2) (2 * a) a := by
   sorry
 
 end Exercise
+
+/- ℝ ℝ -/
