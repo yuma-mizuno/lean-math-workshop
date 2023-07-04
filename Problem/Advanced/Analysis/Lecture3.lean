@@ -268,28 +268,31 @@ example (hU : ∀ (i : ι), IsOpen (U i)) (cover : Icc 0 1 ⊆ ⋃ (i : ι), U i
   have ⟨c, ⟨hAc, hAc'⟩⟩ : ∃ c, IsLUB A c := ⟨sSup A, isLUB_csSup A1 ⟨1, A2⟩⟩
   have hc : c ∈ Icc 0 1 := by
     sorry
-  rcases cover hc with ⟨_, ⟨ic, rfl⟩, hUc' : c ∈ U ic⟩
+  rcases cover hc with ⟨_, ⟨i, rfl⟩, hUc' : c ∈ U i⟩
   have hcA : c ∈ A := by
     rcases hc.1.eq_or_lt with rfl | hlt
     · assumption
     · exists hc
       rcases (mem_nhdsWithin_Iic_iff_exists_Ioc_subset' hlt).mp 
-        (mem_nhdsWithin_of_mem_nhds <| (hU ic).mem_nhds hUc') with ⟨x, hxc, hxU⟩
+        (mem_nhdsWithin_of_mem_nhds <| (hU i).mem_nhds hUc') with ⟨x, hxc, hxU⟩
       rcases ((IsLUB.frequently_mem ⟨hAc, hAc'⟩ A1).and_eventually 
         (Ioc_mem_nhdsWithin_Iic ⟨hxc, le_rfl⟩)).exists with ⟨y, ⟨-, hyf⟩, hy⟩
       apply hasFinSubCover_concat hyf
       sorry
   suffices c = 1 from this.symm ▸ hcA.2
-  by_contra hc  
-  have hlt : c < 1 := Ne.lt_of_le hc (A2 hcA)
+  by_contra hnc
+  have hlt : c < 1 := Ne.lt_of_le hnc (A2 hcA)
   rcases(mem_nhdsWithin_Ici_iff_exists_mem_Ioc_Ico_subset hlt).mp
-    (mem_nhdsWithin_of_mem_nhds <| (hU ic).mem_nhds hUc') with ⟨c', ⟨hc'1, hc'2⟩, hc'U⟩
+    (mem_nhdsWithin_of_mem_nhds <| (hU i).mem_nhds hUc') with ⟨c', ⟨hc'1, hc'2⟩, hc'U⟩
   have : c' ∈ A := by
     constructor
     · sorry
     · apply hasFinSubCover_concat hcA.2
+      dsimp [Icc] at hc
+      have : c' ∈ Icc 0 1 := ⟨by linarith, by linarith⟩
+      rcases cover this with ⟨_, ⟨i', rfl⟩, hUc' : c' ∈ U i'⟩
       -- ヒント: `Ico_union_right`と`union_subset_union`を用いるとよいかもしれない
       sorry
   sorry
-  
+
 end
