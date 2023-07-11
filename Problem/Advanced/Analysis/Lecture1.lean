@@ -1,6 +1,6 @@
 import Mathlib.Analysis.Asymptotics.Asymptotics
 
-namespace Exercise
+namespace Tutorial
 
 open Topology Filter Asymptotics
 
@@ -287,4 +287,4 @@ example (a : ℝ) : HasDerivAt (fun x ↦ x ^ 2) (2 * a) a := by
   suffices HasDerivAt (fun x ↦ x ^ 2) (((1 : ℕ) + 1) * a ^ 1) a by simpa [one_add_one_eq_two]
   sorry
 
-end Exercise
+end Tutorial

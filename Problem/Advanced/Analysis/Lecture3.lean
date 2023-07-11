@@ -1,5 +1,7 @@
 import Mathlib.Topology.MetricSpace.CauSeqFilter
 
+namespace Tutorial
+
 noncomputable
 section
 
@@ -296,3 +298,5 @@ example (hU : ∀ (i : ι), IsOpen (U i)) (cover : Icc 0 1 ⊆ ⋃ (i : ι), U i
   sorry
 
 end
+
+end Tutorial

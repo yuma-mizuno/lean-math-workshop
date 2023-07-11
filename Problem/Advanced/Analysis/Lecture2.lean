@@ -1,6 +1,6 @@
 import Problem.Advanced.Analysis.Lecture1
 
-namespace Exercise
+namespace Tutorial
 
 open scoped Topology Uniformity
 open Set Filter 
@@ -138,4 +138,4 @@ theorem exists_hasDerivAt_eq_slope (hab : a < b)
       ∃ c ∈ Ioo a b, f' c = (f b - f a) / (b - a) := by
   sorry
 
-end Exercise
+end Tutorial

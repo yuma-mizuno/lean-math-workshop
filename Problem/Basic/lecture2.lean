@@ -19,6 +19,8 @@ example [Group G] [Group H] (f : G →* H) (a b : G) :
   -- ヒント: `apply?`を使う
   sorry
 
+-- TIPS: 関数の適用は`f (x)`ではなく`f x`と書く
+
 example [Group G] [Group H] (f : G →* H) (a : G) (n : ℤ) :
     f (a ^ n) = (f a) ^ n := by 
   sorry
@@ -27,11 +29,10 @@ example [Group G] (x y : G) :
     (x * y)⁻¹ = y⁻¹ * x⁻¹ := by
   sorry
 
+-- 環準同型の合成
 example [Ring R] [Ring S] [Ring T] (f : R →+* S) (g : S →+* T) : 
     R →+* T := by
   sorry
-
--- TIPS: 関数の適用は`f (x)`ではなく`f x`と書くのが基本
 
 /- # simp
 mathlibの定理を使って式を簡略化するtactic
@@ -47,8 +48,11 @@ example [Ring R] [Ring S] (f : R →+* S) (a b c) :
 - nlinarith: 非線形不等式を証明するtactic
 -/
 
-example (x : ℤ) : (x + 1) ^ 2 < x ^ 2 + 2 * x + 5 := by
-  nlinarith
+example (x y : ℤ) : (x + y) ^ 2 = x ^ 2 + 2 * x * y + y ^ 2 := by 
+  ring
+
+example (x : ℤ) (hx : 0 ≤ x) (hy : 3 ≤ y) : 2 < x + y := by
+  linarith
 
 example (x : ℤ) (h : x > 1) : 3 < (x + 1) ^ 2 := by
   nlinarith
