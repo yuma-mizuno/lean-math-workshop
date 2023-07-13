@@ -29,9 +29,9 @@ example (P : ℝ → Prop) : (∀ᶠ x in 𝓝 a, P x) ↔ ∃ ε, ε > 0 ∧ �
 -/
 
 /- 
-`∀ᶠ x in 𝓝 a, P x`といった記号の正確な意味を理解するには、*フィルター*という概念を知る
+`∀ᶠ x in 𝓝 a, P x`といった記号の正確な意味を理解するには、**フィルター**という概念を知る
 必要がある。といっても、以下の演習問題を解く際にはフィルターとは何かを正確に知らなくても
-問題ないだろう。近傍`𝓝 a`はあなたの直感通りの挙動をするはずだ。
+問題ないと思う。近傍`𝓝 a`は直感通りの挙動をするだろう。
 -/
 
 /- # 近傍の記号
@@ -86,8 +86,8 @@ theorem IsLocalExtr.hasDerivAt_eq_zero (h : IsLocalExtr f a) (hf : HasDerivAt f 
 
 -- 次の問題で使うかも？
 #check isCompact_Icc
-#check IsCompact.exists_forall_ge
-#check IsCompact.exists_forall_le
+#check IsCompact.exists_isMaxOn
+#check IsCompact.exists_isMinOn
 
 /-- 閉区間上の連続関数は端点において同じ値を持つならば区間の内部で極値を取る。-/
 theorem exists_local_extr_Ioo (hab : a < b) (hfc : ContinuousOn f (Icc a b)) (hfI : f a = f b) :
