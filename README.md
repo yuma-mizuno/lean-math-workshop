@@ -13,8 +13,9 @@ lake exe cache get
 準備中。今後、内容が更新される予定です。
 
 準備状況
-- [x] Basic/Lecture1
-- [ ] Basic/Lecture2
+- [x] Basic/Lecture1 命題論理
+- [x] Basic/Lecture2 mathlibの使い方
+- [x] Basic/Lecture3 任意と存在
 - [x] Advanced/Analysis/Lecture1 微分係数の定義および基本的な命題
 - [x] Advanced/Analysis/Lecture2 平均値の定理
 - [x] Advanced/Analysis/Lecture3 閉区間のコンパクト性

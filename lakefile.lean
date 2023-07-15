@@ -10,6 +10,6 @@ require mathlib from git
     @"08fc07cd8ba56396909a84a7b2361cfda8223840"
 
 @[default_target]
-lean_lib «Problem» {
+lean_lib «Tutorial» {
   -- add any library configuration options here
 }
