@@ -1,4 +1,4 @@
-import Problem.Advanced.Analysis.Lecture1
+import Tutorial.Advanced.Analysis.Lecture1
 
 namespace Tutorial
 
