@@ -48,13 +48,13 @@ theorem IsLocalMax.hasDerivAt_eq_zero (h : IsLocalMax f a) (hf : HasDerivAt f f'
   apply le_antisymm ?right ?left
   case right =>
     -- `x`を`a`に右側から近づけたとき`(f x - f a) / (x - a)`は`f`に収束する。
-    have hf : Tendsto (fun x => (f x - f a) / (x - a)) (𝓝[>] a) (𝓝 f') := by
+    have hf : Tendsto (fun x ↦ (f x - f a) / (x - a)) (𝓝[>] a) (𝓝 f') := by
       rw [hasDerivAt_iff_tendsto_slope] at hf
       apply hf.mono_left (nhds_right'_le_nhds_ne a)
     -- `(f x - f a) / (x - a)`が`a`の右側近傍で`0`以下であることを示せばよい。
     suffices ∀ᶠ x in 𝓝[>] a, (f x - f a) / (x - a) ≤ 0 from le_of_tendsto hf this
     -- `a`の右側近傍では`a < x`である。
-    have ha : ∀ᶠ x in 𝓝[>] a, a < x := eventually_nhdsWithin_of_forall fun x hx => hx
+    have ha : ∀ᶠ x in 𝓝[>] a, a < x := eventually_nhdsWithin_of_forall fun x hx ↦ hx
     -- `a`の右側近傍では`f x ≤ f a`である。
     have h : ∀ᶠ x in 𝓝[>] a, f x ≤ f a := h.filter_mono nhdsWithin_le_nhds
     -- 近傍での性質`h₁, ⋯, hₙ`を使って近傍での性質を示したいときは`filter_upwards [h₁, ⋯, hₙ]`を使う。
@@ -103,14 +103,14 @@ theorem exists_local_extr_Ioo (hab : a < b) (hfc : ContinuousOn f (Icc a b)) (hf
     sorry
   by_cases hc : f c = f a
   · by_cases hC : f C = f a
-    · have : ∀ x ∈ Icc a b, f x = f a := fun x hx => le_antisymm (hC ▸ Cge x hx) (hc ▸ cle x hx)
+    · have : ∀ x ∈ Icc a b, f x = f a := fun x hx ↦ le_antisymm (hC ▸ Cge x hx) (hc ▸ cle x hx)
       rcases nonempty_Ioo.2 hab with ⟨c', hc'⟩
       refine ⟨c', hc', Or.inl fun x hx ↦ ?_⟩
       simp [this x hx, this c' (Ioo_subset_Icc_self hc')]
     · refine ⟨C, ⟨lt_of_le_of_ne Cmem.1 <| mt ?_ hC, lt_of_le_of_ne Cmem.2 <| mt ?_ hC⟩, Or.inr Cge⟩
-      exacts [fun h => by rw [h], fun h => by rw [h, hfI]]
+      exacts [fun h ↦ by rw [h], fun h ↦ by rw [h, hfI]]
   · refine ⟨c, ⟨lt_of_le_of_ne cmem.1 <| mt ?_ hc, lt_of_le_of_ne cmem.2 <| mt ?_ hc⟩, Or.inl cle⟩
-    exacts [fun h => by rw [h], fun h => by rw [h, hfI]]
+    exacts [fun h ↦ by rw [h], fun h ↦ by rw [h, hfI]]
 
 variable {f f' : ℝ → ℝ} {g g' : ℝ → ℝ} {a b : ℝ} 
 

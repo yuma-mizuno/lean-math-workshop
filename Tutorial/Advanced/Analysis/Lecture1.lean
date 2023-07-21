@@ -54,7 +54,7 @@ theorem hasDerivAt_iff_isLittleO :
 
 /-- 2. `h`が`0`に近づくとき`f (x + h) = f a + h * f' + o(h)`である -/
 theorem hasDerivAt_iff_isLittleO_nhds_zero : 
-    HasDerivAt f f' a ↔ (fun h ↦ f (a + h) - f a - h * f') =o[𝓝 0] fun h => h := by
+    HasDerivAt f f' a ↔ (fun h ↦ f (a + h) - f a - h * f') =o[𝓝 0] fun h ↦ h := by
   rw [hasDerivAt_iff_isLittleO, ← map_add_left_nhds_zero a, Asymptotics.isLittleO_map]
   simp [(· ∘ ·)]
 
@@ -113,15 +113,15 @@ section Landau
 variable {f g h f₁ g₁ f₂ g₂ : ℝ → ℝ} {a b : ℝ}
 
 theorem IsLittleO.add (h₁ : f₁ =o[𝓝 a] g) (h₂ : f₂ =o[𝓝 a] g) :
-    (fun x => f₁ x + f₂ x) =o[𝓝 a] g := 
+    (fun x ↦ f₁ x + f₂ x) =o[𝓝 a] g := 
   Asymptotics.IsLittleO.add h₁ h₂
 
 theorem IsLittleO.const_mul_left (h : f =o[𝓝 a] g) (c : ℝ) : 
-    (fun x => c * f x) =o[𝓝 a] g :=
+    (fun x ↦ c * f x) =o[𝓝 a] g :=
   Asymptotics.IsLittleO.const_mul_left h c
 
 theorem isBigO_const_mul_self (c : ℝ) (f : ℝ → ℝ) : 
-    (fun x => c * f x) =O[𝓝 a] f :=
+    (fun x ↦ c * f x) =O[𝓝 a] f :=
   Asymptotics.isBigO_const_mul_self c f (𝓝 a)
 
 theorem IsLittleO.comp_tendsto (hfg : f =o[𝓝 b] g) (hh : Tendsto h (𝓝 a) (𝓝 b)) : 
@@ -129,12 +129,12 @@ theorem IsLittleO.comp_tendsto (hfg : f =o[𝓝 b] g) (hh : Tendsto h (𝓝 a) (
   Asymptotics.IsLittleO.comp_tendsto hfg hh
 
 theorem IsBigO.mul_isLittleO (h₁ : f₁ =O[𝓝 a] g₁) (h₂ : f₂ =o[𝓝 a] g₂) :
-    (fun x => f₁ x * f₂ x) =o[𝓝 a] fun x => g₁ x * g₂ x :=
+    (fun x ↦ f₁ x * f₂ x) =o[𝓝 a] fun x ↦ g₁ x * g₂ x :=
   Asymptotics.IsBigO.mul_isLittleO h₁ h₂
 
 end Landau
 
-theorem hasDerivAt_const (c : ℝ) : HasDerivAt (fun _ => c) 0 a := by
+theorem hasDerivAt_const (c : ℝ) : HasDerivAt (fun _ ↦ c) 0 a := by
   rw [hasDerivAt_iff_isLittleO]
   -- ヒント: `simp`を使おう
   sorry 
@@ -250,17 +250,17 @@ theorem HasDerivAt.mul {f : ℝ → ℝ} (hf : HasDerivAt f f' a) (hg : HasDeriv
   case eq1 =>
     sorry
   case eq2 =>
-    have hf' : (fun x => g a * (f x - f a - (x - a) * f')) =o[𝓝 a] fun x => x - a := 
+    have hf' : (fun x ↦ g a * (f x - f a - (x - a) * f')) =o[𝓝 a] fun x ↦ x - a := 
       sorry
-    have hg' : (fun x => f a * (g x - g a - (x - a) * g')) =o[𝓝 a] fun x => x - a := 
+    have hg' : (fun x ↦ f a * (g x - g a - (x - a) * g')) =o[𝓝 a] fun x ↦ x - a := 
       sorry
     have hfg := 
-      calc (fun x => (f x - f a) * (g x - g a))
-        _ =o[𝓝 a] fun x => (x - a) * 1      := ?eq3
-        _ = fun x => x - a                   := ?eq4
+      calc (fun x ↦ (f x - f a) * (g x - g a))
+        _ =o[𝓝 a] fun x ↦ (x - a) * 1      := ?eq3
+        _ = fun x ↦ x - a                   := ?eq4
     sorry
     case eq3 =>
-      have hg'' : (fun x => g x - g a) =o[𝓝 a] fun _ => (1 : ℝ) := by
+      have hg'' : (fun x ↦ g x - g a) =o[𝓝 a] fun _ ↦ (1 : ℝ) := by
         rw [Asymptotics.isLittleO_one_iff, tendsto_sub_nhds_zero_iff]
         sorry
       -- `IsBigO.mul_isLittleO`が使える

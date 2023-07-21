@@ -91,7 +91,7 @@ local notation "β" n:1000 => Prod.snd (nestedInterval U n)
 local notation "I(" n ")" => Icc (α n) (β n) 
 
 -- 縮小区間列`I(n)`の中間点からなる数列
-def nestedIntervalSeq : ℕ → ℝ := fun n => (α n + β n) / 2
+def nestedIntervalSeq : ℕ → ℝ := fun n ↦ (α n + β n) / 2
 
 variable {U}
 
@@ -114,7 +114,7 @@ lemma hasFinSubCover_concat (hac : HasFinSubCover U (Icc a c)) (hcb : HasFinSubC
 lemma not_HasFinSubCover_concat :
     ¬HasFinSubCover U (Icc a b) → HasFinSubCover U (Icc a c) → ¬HasFinSubCover U (Icc c b) := by
   contrapose!
-  apply (fun H => hasFinSubCover_concat H.1 H.2)
+  apply (fun H ↦ hasFinSubCover_concat H.1 H.2)
 
 lemma nestedIntervalSucc_left (h : ¬HasFinSubCover U (Icc a ((a + b) / 2))) : 
     nestedIntervalSucc U a b = ⟨a, (a + b) / 2⟩ := 
@@ -225,7 +225,7 @@ lemma nestedIntervalSeq_tendsto :
 /-- 区間`I(n)`の中間点からなるCauchy列の極限は`I(n)`に属する -/
 lemma nestedIntervalLim_mem (n : ℕ) : (nestedIntervalCauSeq U).lim ∈ I(n) := 
   isClosed_Icc.mem_of_tendsto (nestedIntervalSeq_tendsto U) <|
-    eventually_atTop.mpr ⟨n, fun _ => nestedIntervalSeq_mem_of_le U⟩
+    eventually_atTop.mpr ⟨n, fun _ ↦ nestedIntervalSeq_mem_of_le U⟩
 
 /-
 以上でステップ1,2の証明が与えられている。
@@ -265,7 +265,7 @@ example (hU : ∀ (i : ι), IsOpen (U i)) (cover : Icc 0 1 ⊆ ⋃ (i : ι), U i
     rcases cover (left_mem_Icc.mpr zero_le_one) with ⟨_, ⟨i, rfl⟩, hU' : 0 ∈ U i⟩
     sorry
   have A1 : A.Nonempty := ⟨0, A0⟩
-  have A2 : 1 ∈ upperBounds A := fun x hx => hx.1.2
+  have A2 : 1 ∈ upperBounds A := fun x hx ↦ hx.1.2
   -- `c`は`A`の最小上界
   have ⟨c, ⟨hAc, hAc'⟩⟩ : ∃ c, IsLUB A c := ⟨sSup A, isLUB_csSup A1 ⟨1, A2⟩⟩
   have hc : c ∈ Icc 0 1 := by
