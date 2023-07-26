@@ -1,7 +1,5 @@
 import Mathlib.Tactic.Linarith
 
--- Todo: `∀`, `∃`
-
 /- # mathlib
 mathlibは有志のコミュニテイーによって開発されている数学ライブラリである。
 https://leanprover-community.github.io/
@@ -44,9 +42,9 @@ example [Ring R] [Ring S] (f : R →+* S) (a b c) :
   sorry
 
 /- # ring, linarith, nlinarith
-- ring: 環の等式を証明するtactic
-- linarith: 線形不等式を証明するtactic
-- nlinarith: 非線形不等式を証明するtactic
+- `ring`: 可換環の等式を証明するtactic
+- `linarith`: 線形不等式を証明するtactic
+- `nlinarith`: 非線形不等式を証明するtactic
 -/
 
 example (x y : ℤ) : (x + y) ^ 2 = x ^ 2 + 2 * x * y + y ^ 2 := by 

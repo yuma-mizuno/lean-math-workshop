@@ -8,7 +8,7 @@ namespace Tutorial
 
 example (n : ℤ) : ∃ m : ℤ, n < m := by
   -- 存在命題は`exists` tacticで証明できる
-  exists n + 1 
+  exists n + 1
   linarith
 
 example (n : ℤ) : ∃ m : ℤ, m < n := by
@@ -33,8 +33,8 @@ example (m n : ℤ) (hm : Even m) (hn : Even n) : Even (m + n) := by
   have ⟨k₂, hk₂⟩ := hn
   exists k₁ + k₂
   calc m + n = 2 * k₁ + n := by rw [hk₁] 
-    _= 2 * k₁ + 2 * k₂    := by rw [hk₂]
-    _= 2 * (k₁ + k₂)      := by ring
+    _ = 2 * k₁ + 2 * k₂   := by rw [hk₂]
+    _ = 2 * (k₁ + k₂)     := by ring
 
 example (m n : ℤ) (hm : Odd m) (hn : Even n) : Odd (m + n) := by
   sorry
@@ -52,8 +52,5 @@ example : ∀ x : ℤ, ∃ y : ℤ, x < y := by
 example : ∃ x : ℤ, ∀ y : ℤ, y + y = x * y := by
   sorry
 
-/-  
-Basicチュートリアルは以上です。Advancedチュートリアルではより実践的な数学を扱います。
--/
 
 end Tutorial
