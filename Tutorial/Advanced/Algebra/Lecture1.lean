@@ -286,7 +286,7 @@ section Section3_GroupHom
 -/
 structure GroupHom (G₁ : Type _) (G₂ : Type _) [Group G₁] [Group G₂] where
   toFun : G₁ → G₂
-  map_mul' : ∀ (a b : G₁), toFun (a * b) = toFun a * toFun b
+  map_mul' : ∀ a b : G₁, toFun (a * b) = toFun a * toFun b
   -- 単位元を保つことはここから従う、後で示す
 
 -- `f : G₁ →* G₂`で群準同型を表せるようにする。
