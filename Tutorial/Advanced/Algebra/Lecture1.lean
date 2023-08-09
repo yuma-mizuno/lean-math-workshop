@@ -436,7 +436,9 @@ variable {f : G₁ →* G₂}
 -- 「単射と核が自明が同値」の証明で本質的なのは下の主張。
 #check mul_inv_eq_one -- これが役立つかも
 theorem injective_iff_map_eq_one : Function.Injective f ↔ (∀ a, f a = 1 → a = 1) := by
-  sorry
+  constructor
+  · sorry
+  · sorry 
 
 /-- 群準同型の核が自明なことと単射なことは同値。 -/
 theorem ker_eq_bot_iff : f.ker = ⊥ ↔ Function.Injective f := by
