@@ -30,9 +30,9 @@ class Group (G : Type _) where
   mul : G → G → G
   one : G
   inv : G → G
-  mul_assoc : ∀ (a b c : G), mul (mul a b) c = mul a (mul b c)
-  one_mul : ∀ (a : G), mul one a = a
-  mul_inv_left : ∀ (a : G), mul (inv a) a = one
+  mul_assoc : ∀ a b c : G, mul (mul a b) c = mul a (mul b c)
+  one_mul : ∀ a : G, mul one a = a
+  mul_inv_left : ∀ a : G, mul (inv a) a = one
 
 /-
 1. `G : Type _`は`G`が集合であることを表すと思ってよい。
