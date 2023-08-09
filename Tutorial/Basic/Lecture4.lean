@@ -28,7 +28,7 @@ example : Injective (fun x : ℕ ↦ x + 1) := by
 /-
 2つの単射の合成は単射。
 
-おまけ：下の`g ∘ f`を`f ∘ g`にわざと書き変えてみよう！
+おまけ: 下の`g ∘ f`を`f ∘ g`にわざと書き変えてみよう！
 人間はこういうミスをよくするが、Leanは「合成できません」とエラーを出してくる。
 Leanの便利なところの一つでもある。
 -/
@@ -42,17 +42,17 @@ theorem Injective.comp {f : X → Y} {g : Y → Z} (hfinj : Injective f) (hginj 
   sorry
 
 /-
-補足：
+*補足*
 `hfinj : Injective f`は、「`f x₁ = f x₂`という事実が与えられたら、`x₁ = x₂`という事実を返す関数」と思える。
 なので、例えば`hfx : f x₁ = f x₂`があれば、
 `hfinj`という関数にそれを代入した`hfinj hfx`は、`x₁ = x₂`という事実になる。
 
-上級者向け（最初は読み飛ばしてください）：
+*上級者向け（最初は読み飛ばしてください）*
 「`Injective`の定義を見ると`x₁`と`x₂`も与えなきゃ駄目なんじゃ？」と思った方へ。
 実は定義では`∀ {x₁ x₂ : X}, ...`と中括弧で囲っており、すると`x₁`と`x₂`は与える必要がなくなる。
 与える必要がないのは、その後の`hfx : f x₁ = f x₂`が与えられれば、
 `x₁ x₂`が何かはそれから分かってしまうからである。
-詳しくは：
+詳しくは:
 https://leanprover.github.io/theorem_proving_in_lean4/dependent_type_theory.html#implicit-arguments
 -/
 
@@ -83,7 +83,7 @@ example {f : X → Y} {g : Y → Z} (hgfinj : Injective (g ∘ f)) : Injective f
 /-
 全体を通したTIPS。
 例えば`Injective f`ってどう定義されていたっけ？と気になったときは、
-`Injective`のどこかにカーソルを置いて、F12キーを押すと、
+`Injective`のどこかにカーソルを置いて、F12キーを押す（もしくは右クリックして`Go to Definition`）と、
 それが定義されていた場所にジャンプすることができる。
 ジャンプしたあとに、元いた場所に戻るときは、
 - WindowsならAlt + 左矢印「←」キー
@@ -121,7 +121,7 @@ theorem Surjective.comp (hfsurj : Surjective f) (hgsurj : Surjective g) : Surjec
   sorry
 
 /-
-補足
+*補足*
 `hfsurj : Surjective f`は、「`y : Y`が与えられたら、`∃ x : X, f x = y`という事実を返す関数」だと思える。
 なので、`hsurj y`により`∃ x : X, f x = y`という事実が取り出せる。
 よって、`have ⟨x, hx⟩ := hsurj y`によって、
