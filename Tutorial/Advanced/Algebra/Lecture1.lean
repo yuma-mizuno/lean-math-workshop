@@ -81,10 +81,9 @@ example : Group Aˣ where
   mul_inv_left := by
     sorry
 
-
 /-
 # 1.2 群の基本性質
-以下`G`を群とする。
+以下この節では`G`を群とする。
 -/
 variable [Group G]
 /-
@@ -201,11 +200,11 @@ theorem mul_inv_eq_iff_eq_mul {a b c : G} : a * b⁻¹ = c ↔ a = c * b := by
   -- ヒント: `constructor`でゴールを分けよう
   sorry
 
-
 theorem mul_inv_eq_one {a b : G} : a = b ↔ a * b⁻¹ = 1 := by
   sorry
 
 end Section1_Definition_and_Basic_Properties
+
 
 section Section2_Subgroup
 /-
@@ -240,7 +239,7 @@ structure Subgroup (G) [Group G] where
 同時に`x : X`かつ`x : A`であることはありえない、という型理論の要請からきている。
 -/
 
--- 以下`G`を群、`H`をその部分群とする
+-- 以下この節では`G`を群、`H`をその部分群とする
 variable [Group G] {H : Subgroup G}
 
 /-
@@ -278,6 +277,7 @@ end Subgroup
 
 end Section2_Subgroup
 
+
 section Section3_GroupHom
 /-
 # 3. 群の準同型
@@ -292,7 +292,7 @@ structure GroupHom (G₁ : Type _) (G₂ : Type _) [Group G₁] [Group G₂] whe
 -- `f : G₁ →* G₂`で群準同型を表せるようにする。
 infixr:25 " →* " => GroupHom
 
--- 以下この章では`G₁`と`G₂`を群、`f`をその間の準同型とする。
+-- 以下この節では`G₁`と`G₂`を群、`f`をその間の準同型とする。
 variable [Group G₁] [Group G₂] {f : G₁ →* G₂}
 
 -- `f`と`a : G₁`に対して`f a`などと書くためのおまじない
@@ -341,13 +341,14 @@ def GroupHom.one : G₁ →* G₂ where
 
 end Section3_GroupHom
 
+
 section Section4_Hom_and_Subgroups
 /-
 # 4. 群準同型に付随する部分群
 群準同型`f : G₁ →* G₂`に対して、その像と核を定義し、
 基本性質や、「単射なことと核が自明が同値」等を示そう。
+この節では`G₁`と`G₂`を群とする。
 -/
--- この節では`G₁`と`G₂`を群とする。
 variable [Group G₁] [Group G₂]
 
 namespace GroupHom
@@ -389,6 +390,7 @@ end GroupHom
 以下は*準同型写像が単射なことと核が自明なことは同値*を示してく。
 これを正確に述べるために、まだ自明な部分群を定義していなかった。
 「全体」と「単位元のみ」という2つの部分群を定義する。
+以下この節では`G`を群とする。
 -/
 variable [Group G]
 -- 群`G`は`G`の部分群でもある
@@ -438,10 +440,9 @@ theorem injective_iff_map_eq_one : Function.Injective f ↔ (∀ a, f a = 1 → 
 
 /-- 群準同型の核が自明なことと単射なことは同値。 -/
 theorem ker_eq_bot_iff : f.ker = ⊥ ↔ Function.Injective f := by
-  -- 上の`injective_iff_map_eq_one`で`rw`してから`constructor`がよいか。
+  -- 上の`injective_iff_map_eq_one`で`rw`してから`constructor`がよい。
   -- （上を使わず直接示すこともできる）
   sorry
-
 
 /-- 群準同型の像が全体なことと全射なことは同値。 -/
 theorem range_eq_top_iff : f.range = ⊤ ↔ Function.Surjective f := by
@@ -457,6 +458,7 @@ theorem range_eq_top_iff : f.range = ⊤ ↔ Function.Surjective f := by
 end GroupHom
 
 end Section4_Hom_and_Subgroups
+
 
 section Appendix
 /-
