@@ -136,7 +136,7 @@ theorem inv_mul_cancel_left (a b : G) : a⁻¹ * (a * b) = b := by
 そのため次の補題を使う。
 -/
 /-- 等しいかどうかは左から元をかけてチェックできる。 -/
-theorem mul_left_cancel {a x y : G} : a * x = a * y → x = y := by
+theorem mul_left_cancel (a : G) {x y : G} : a * x = a * y → x = y := by
   -- ヒント: `intro h`してから上のように`calc`で変形しよう
   -- （`calc`を使わず`rw`のみの縛りプレイでも可能）
   sorry
@@ -146,7 +146,8 @@ theorem mul_left_cancel {a x y : G} : a * x = a * y → x = y := by
 theorem mul_one (a : G) : a * 1 = a := by
   /-
   ヒント: `mul_left_cancel`の`a`として`foo`を使いたいときは、
-  `apply mul_left_cancel (a := foo)`とする。
+  `apply mul_left_cancel (a := foo)`または、単に
+  `apply mul_left_cancel foo`とする。
   `foo`として何を使えばいいだろうか？
   その後は積極的に`simp`を使おう。
   -/
@@ -172,7 +173,7 @@ theorem inv_mul_cancel_right (a b : G) : a * b⁻¹ * b = a := by
   sorry
 
 /-- 等しいかどうかは右から元をかけてチェックできる。 -/
-theorem mul_right_cancel {a x y : G} : x * a = y * a → x = y := by
+theorem mul_right_cancel (a : G) {x y : G} : x * a = y * a → x = y := by
   sorry
 
 /-- 左逆元の一意性 -/
