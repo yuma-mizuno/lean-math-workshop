@@ -325,7 +325,8 @@ def GroupHom.comp [Group G₁] [Group G₂] [Group G₃]
   (f₂ : G₂ →* G₃) (f₁ : G₁ →* G₂) : G₁ →* G₃ where
   toFun := f₂ ∘ f₁
   map_mul' := by
-    sorry -- ヒント: まずは`simp`を試そう
+    -- ヒント: まずは`simp`を試そう
+    sorry
 
 -- 恒等写像は準同型
 def GroupHom.id (G) [Group G] : G →* G where
