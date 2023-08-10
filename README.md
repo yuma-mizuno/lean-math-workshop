@@ -16,7 +16,11 @@ lake exe cache get
 - [x] Basic/Lecture1 命題論理
 - [x] Basic/Lecture2 mathlibの使い方
 - [x] Basic/Lecture3 任意と存在
+- [x] Basic/Lecture4 単射と全射
 - [x] Advanced/Analysis/Lecture1 微分係数の定義および基本的な命題
 - [x] Advanced/Analysis/Lecture2 平均値の定理
 - [x] Advanced/Analysis/Lecture3 閉区間のコンパクト性
-- [ ] Advanced/Algebra
+- [x] Advanced/Algebra/Lecture1 群・部分群の定義と基本性質
+- [x] Advanced/Algebra/Lecture2 準同型の定義と基本性質
+- [ ] Advanced/Algebra/Lecture3 群の集合への作用や剰余類（予定）
+- [ ] Advanced/Algebra/Lecture4 群の準同型定理（予定）

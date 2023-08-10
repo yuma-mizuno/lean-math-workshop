@@ -51,7 +51,6 @@ example (P Q : Prop) (h : P → Q) (hP : P) : Q := by
   apply h
   apply hP
 
-
 -- `h`に全称記号等が付いていても使える。
 example (f : ℕ → ℕ) (hinj : ∀ x₁ x₂, f x₁ = f x₂ → x₁ = x₂) (x : ℕ) (h : f x = f 0) : x = 0 := by
   apply hinj -- Goal: `f x = f 0`
@@ -136,9 +135,11 @@ example : ∃ x : ℕ, 3 * x + 1 = 7 := by
 ゴールを（Leanとmathlibの定理を使い）できるだけ簡単な形に書き換える。
 `simp at h`で、`h`を簡単な形に書き換える。`simp at *`で全てを簡単な形に書き換える。
 さらに`simp [h₁]`で、`h₁`というものも書き換えに使っていいよと与える。
+`simp?`により使われた定理が分かる。
 
 - `simp_all`
 ゴールや仮定すべてをできるだけ簡単にしようとする。
+`simp_all?`で使われた定理が分かる。
 
 - `aesop`
 ルーチーンな証明をやってくれようとする。成功するか失敗するかのどちらか。
