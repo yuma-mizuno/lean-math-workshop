@@ -20,6 +20,7 @@ lake exe cache get
 - [x] Advanced/Analysis/Lecture1 微分係数の定義および基本的な命題
 - [x] Advanced/Analysis/Lecture2 平均値の定理
 - [x] Advanced/Analysis/Lecture3 閉区間のコンパクト性
-- [x] Advanced/Algebra/Lecture1 群・部分群・準同型等
-- [ ] Advanced/Algebra/Lecture2 群の集合への作用や剰余類
-- [ ] Advanced/Algebra/Lecture3 群の準同型定理
+- [x] Advanced/Algebra/Lecture1 群・部分群の定義と基本性質
+- [x] Advanced/Algebra/Lecture2 準同型の定義と基本性質
+- [ ] Advanced/Algebra/Lecture3 群の集合への作用や剰余類（予定）
+- [ ] Advanced/Algebra/Lecture4 群の準同型定理（予定）
