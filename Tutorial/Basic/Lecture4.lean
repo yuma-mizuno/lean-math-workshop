@@ -83,8 +83,11 @@ example {f : X → Y} {g : Y → Z} (hgfinj : Injective (g ∘ f)) : Injective f
 /-
 全体を通したTIPS。
 例えば`Injective f`ってどう定義されていたっけ？と気になったときは、
-`Injective`のどこかにカーソルを置いて、F12キーを押す（もしくは右クリックして`Go to Definition`）と、
-それが定義されていた場所にジャンプすることができる。
+`Injective`のどこかにカーソルを置いて、以下のいずれかの操作
+* F12キーを押す
+* Ctrl + 左クリック (Windows), ⌘ + 左クリック (Mac)
+* 右クリックして`Go to Definition`
+を行うと、それが定義されていた場所にジャンプすることができる。
 ジャンプしたあとに、元いた場所に戻るときは、
 - WindowsならAlt + 左矢印「←」キー
 - MacならCtrl + -
