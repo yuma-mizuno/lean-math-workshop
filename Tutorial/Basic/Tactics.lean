@@ -51,7 +51,6 @@ example (P Q : Prop) (h : P → Q) (hP : P) : Q := by
   apply h
   apply hP
 
-
 -- `h`に全称記号等が付いていても使える。
 example (f : ℕ → ℕ) (hinj : ∀ x₁ x₂, f x₁ = f x₂ → x₁ = x₂) (x : ℕ) (h : f x = f 0) : x = 0 := by
   apply hinj -- Goal: `f x = f 0`
