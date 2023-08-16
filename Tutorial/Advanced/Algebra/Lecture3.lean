@@ -169,7 +169,8 @@ def GroupActionHom.inverse (f : X →[G] Y)
 `x : X`に対しては`G → X, a ↦ a • x`を対応させる。
 -/
 def yoneda : (G →[G] X) ≃ X where
-  toFun := fun f ↦ f 1 -- `(G →[G] X) → X`
+  -- `(G →[G] X) → X`
+  toFun := fun f ↦ f 1
   -- `X → (G →[G] X)`
   invFun := fun x ↦ {
     toFun := fun a ↦ a • x

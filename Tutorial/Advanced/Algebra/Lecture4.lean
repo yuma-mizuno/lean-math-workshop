@@ -53,7 +53,7 @@ infixl:35 " ⧸ " => leftQuotient
 variable [Group G] {H : Subgroup G}
 
 /-- `G`から`G ⧸ H`への自然な全射。 -/
-abbrev mk (a : G) : G ⧸ H :=
+def mk (a : G) : G ⧸ H :=
   Quotient.mk'' a
 
 -- `a : G`に対して、`a ⋆ H`で対応する`G ⧸ H`の元を表そう。
@@ -81,7 +81,9 @@ theorem mk_eq : (Quot.mk _ a : G ⧸ H) = a ⋆ H := rfl
 `f`が同値なものを等しいものに送る（well-defined性）
 という事実`h`を与える必要がある。
 -/
-def lift {Y} (f : G → Y) (h : ∀ a b : G, a⁻¹ * b ∈ H → f a = f b) : G ⧸ H → Y := Quotient.lift f h
+def lift {Y} (f : G → Y)
+    (h : ∀ a b : G, a⁻¹ * b ∈ H → f a = f b) : G ⧸ H → Y :=
+  Quotient.lift f h
 
 /-- `lift`についての自然な可換性。
 誘導される写像の定義より、`lift f h : G ⧸ H → Y`について、
@@ -197,8 +199,8 @@ def leftQuotientStabilizerIsoSelfOfIsTransitive
   injective := by -- 単射性
     sorry
   surjective := by -- 全射性
-    -- 今`X`は推移的という仮定があるので、
-    -- `∃ a : G, a • x = y`という形の主張は
+    -- 今`X`は推移的という仮定があるので、`x y : X`がに対して、
+    -- `∃ a : G, a • x = y`という形の主張は、
     -- `apply IsTransitive.exists_smul_eq`で示すことができる。
     sorry
 
