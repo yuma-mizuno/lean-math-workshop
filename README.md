@@ -22,5 +22,6 @@ lake exe cache get
 - [x] Advanced/Analysis/Lecture3 閉区間のコンパクト性
 - [x] Advanced/Algebra/Lecture1 群・部分群の定義と基本性質
 - [x] Advanced/Algebra/Lecture2 準同型の定義と基本性質
-- [ ] Advanced/Algebra/Lecture3 群の集合への作用や剰余類（予定）
-- [ ] Advanced/Algebra/Lecture4 群の準同型定理（予定）
+- [x] Advanced/Algebra/Lecture3 群の集合への作用や同変写像
+- [x] Advanced/Algebra/Lecture4 左剰余類の集合、推移的`G`集合の構造定理
+- [ ] Advanced/Algebra/Lecture5 群の準同型定理（予定）

@@ -9,7 +9,7 @@ import Mathlib.Tactic
 import Mathlib.Data.SetLike.Basic
 namespace Tutorial
 
-section Section1_Definition_and_Basic_Properties
+section Section1
 /-
 # 1 群の定義と基本性質
 数学的には、群とは以下のような情報をまとめたものと思える。
@@ -81,7 +81,7 @@ example : Group Aˣ where
 variable [Group G]
 /-
 いちいち`G`の演算を`mul a b`等と書いていたのでは大変なので、
-`*`と`1`と`⁻¹` (\inv または \- または \-1) が使えるようにする。
+`*`と`1`と`⁻¹` (`\inv` または `\-` または `\-1`) が使えるようにする。
 -/
 instance : Mul G := ⟨Group.mul⟩
 instance : One G := ⟨Group.one⟩
@@ -194,13 +194,16 @@ theorem mul_inv_eq_iff_eq_mul {a b c : G} : a * b⁻¹ = c ↔ a = c * b := by
   -- ヒント: `constructor`でゴールを分けよう
   sorry
 
-theorem mul_inv_eq_one {a b : G} : a = b ↔ a * b⁻¹ = 1 := by
+theorem mul_inv_eq_one {a b : G} : a * b⁻¹ = 1 ↔ a = b := by
   sorry
 
-end Section1_Definition_and_Basic_Properties
+theorem inv_mul_eq_one {a b : G} : a⁻¹ * b = 1 ↔ a = b := by
+  sorry
+
+end Section1
 
 
-section Section2_Subgroup
+section Section2
 /-
 # 2. 部分群
 群`G`の部分群とは、単位元を含み積と逆元で閉じた`G`の部分集合である。
@@ -323,7 +326,6 @@ def Subgroup.normalizer : Subgroup G where
   inv_mem' := by
     sorry
 
-end Section2_Subgroup
-
+end Section2
 
 end Tutorial
