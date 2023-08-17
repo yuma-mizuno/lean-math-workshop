@@ -199,7 +199,7 @@ def leftQuotientStabilizerIsoSelfOfIsTransitive
   injective := by -- 単射性
     sorry
   surjective := by -- 全射性
-    -- 今`X`は推移的という仮定があるので、`x y : X`がに対して、
+    -- 今`X`は推移的という仮定があるので、`x y : X`に対して、
     -- `∃ a : G, a • x = y`という形の主張は、
     -- `apply IsTransitive.exists_smul_eq`で示すことができる。
     sorry
