@@ -193,8 +193,6 @@ def yoneda : (G →[G] X) ≃ X where
     -/
     sorry
   right_inv := by
-    -- 注意: `1`と書くとデフォルトで自然数だと思われる。
-    -- 群`G`の単位元`1`が欲しい場合は`1 : G`と書こう。
     sorry
 
 end Section2
