@@ -103,9 +103,8 @@ instance : GroupAction G (G ⧸ H) where
   このため、`lift`に、関数`G → G ⧸ H, x ↦ (a * x) ⋆ H`と、
   それが`G ⧸ H`上でwell-definedなことの証明を与える。
   -/
-  smul := fun a ↦ lift (fun x ↦ (a * x) ⋆ H) (by
+  smul := fun a ↦ lift (fun x ↦ (a * x) ⋆ H) <| by
     sorry
-  )
   one_smul' := by
     /- これは「任意の`G ⧸ H`の元について◯◯」という形をしている。
     普通に`intro`すると`G ⧸ H`の元を取ることになり面倒だが、
@@ -188,10 +187,9 @@ theorem mem_stabilizer_iff {a : G} {x : X} : a ∈ stabilizer G x ↔ a • x = 
 def leftQuotientStabilizerIsoSelfOfIsTransitive
     [IsTransitive G X] (x₀ : X) : (G ⧸ stabilizer G x₀) ≅[G] X where
   -- `G → X, a ↦ a • x₀`を`G ⧸ stabilizer G x₀`上の写像にリフトさせよう。
-  toFun := LeftQuotient.lift (fun a ↦ a • x₀) (by
+  toFun := LeftQuotient.lift (fun a ↦ a • x₀) <| by
     -- 写像がwell-definedなことを示す必要がある。
     sorry
-  )
   map_smul' := by -- 上の写像が`G`同変なこと。
     -- 「`G ⧸ H`の元について◯◯」がゴールなら、
     -- `rintro ⟨a⟩`とすれば`a : G`についての主張に書き換わる。
