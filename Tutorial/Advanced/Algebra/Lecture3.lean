@@ -124,6 +124,12 @@ instance : FunLike (GroupActionHom G X Y) X (fun _ ↦ Y) where
   coe f := f.toFun
   coe_injective' f₁ f₂ _ := by cases f₁; cases f₂; congr
 
+/-- underlying functionが`f`の同変写像を単なる写像とみなしたものは`f`と等しい。 -/
+-- 当たり前の事実だがsimpで使えるようにしておくと便利なのでそうしておく。
+@[simp]
+theorem GroupActionHom.coe_coe (f : X → Y) (h) : ((⟨f, h⟩ : X →[G] Y) : X → Y) = f := 
+  rfl
+
 -- 定義からすぐ分かること
 @[ext]
 theorem GroupActionHom.ext {f₁ f₂ : X →[G] Y} : (∀ x, f₁ x = f₂ x) → f₁ = f₂ :=
