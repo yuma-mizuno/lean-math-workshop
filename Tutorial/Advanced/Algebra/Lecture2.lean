@@ -3,6 +3,7 @@
 一つの目標は「準同型が単射なことと核が自明なことは同値」である。
 *Lecture1で示したことは自由に使える*ので、必要なら使える定理を探しに行こう。
 
+# 目次
 - Section 1. 群準同型の定義と基本性質
 - Section 2. 群準同型に付随する部分群
 - Appendix. Cayleyの定理（群は自己全単射のなす群に埋め込める）
@@ -10,7 +11,7 @@
 import Tutorial.Advanced.Algebra.Lecture1
 namespace Tutorial
 
-section Section1_GroupHom
+section Section1
 /-
 # 1. 群の準同型
 群`G₁`と`G₂`に対して、その準同型とは、写像であって積を保つものをいう。
@@ -72,10 +73,10 @@ def GroupHom.one : G₁ →* G₂ where
   map_mul' := by
     sorry
 
-end Section1_GroupHom
+end Section1
 
 
-section Section2_Hom_and_Subgroups
+section Section2
 /-
 # 2. 群準同型に付随する部分群
 群準同型`f : G₁ →* G₂`に対して、その像と核を定義し、
@@ -117,6 +118,10 @@ def ker (f : G₁ →* G₂) : Subgroup G₁ where
 @[simp]
 theorem mem_ker {f : G₁ →* G₂} {a : G₁} : a ∈ f.ker ↔ f a = 1 := Iff.rfl 
 
+/-- 像に入ることの定義の確認。 -/
+@[simp]
+theorem mem_range {f : G₁ →* G₂} : b ∈ f.range ↔ ∃ a, f a = b := Iff.rfl
+
 end GroupHom
 
 /-
@@ -138,11 +143,11 @@ instance : Top (Subgroup G) where
       sorry
   }
 
--- これは以下のように使える。`⊤`は\topで入力し、これはこの部分群が
+-- これは以下のように使える。`⊤`は`\top`で入力し、これはこの部分群が
 -- 部分群全体のなす順序集合の最大元なことからくる慣習的記法。
 #check (⊤ : Subgroup G)
 
--- 双対的に、`⊥`(\bot)も定義しよう。
+-- 双対的に、`⊥`(`\bot`)も定義しよう。
 instance : Bot (Subgroup G) where
   bot := {
     carrier := { 1 } -- `1`のみからなる一元集合
@@ -194,7 +199,7 @@ theorem range_eq_top : f.range = ⊤ ↔ Function.Surjective f := by
 
 end GroupHom
 
-end Section2_Hom_and_Subgroups
+end Section2
 
 
 section Appendix
