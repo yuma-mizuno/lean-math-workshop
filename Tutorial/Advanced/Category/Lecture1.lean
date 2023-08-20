@@ -77,19 +77,14 @@ attribute [simp] id_comp comp_id assoc
 example (f : Hom a b) (g : Hom b c) (h : Hom c d) (i : Hom d e) : 
     (f ≫ (𝟙 b ≫ g)) ≫ (h ≫ i) = f ≫ (g ≫ ((𝟙 c ≫ h) ≫ i)) := by
   -- ヒント: `simp`を使えば圏の公理を使って式が簡略化される
-  simp
+  sorry
 
-example (f : Hom a b) (g : Hom b a) (h₁ h₂ : Hom b c)  (H : g ≫ f = 𝟙 b) :
-  f ≫ h₁ = f ≫ h₂ → h₁ = h₂ := by
-  intro Hfh 
+example (f : Hom a b) (g : Hom b a) (h₁ h₂ : Hom b c) (Hgf : g ≫ f = 𝟙 b) (Hfh : f ≫ h₁ = f ≫ h₂) : 
+    h₁ = h₂ := by
   calc h₁ = 𝟙 b ≫ h₁ := by simp
-    _ = (g ≫ f) ≫ h₁ := by rw [H]
+    _ = (g ≫ f) ≫ h₁ := by rw [Hgf]
     -- 必要に応じて行を追加しよう
-    _ = g ≫ (f ≫ h₁) := by simp
-    _ = g ≫ (f ≫ h₂) := by rw [Hfh]
-    _ = (g ≫ f) ≫ h₂ := by simp
-    _ = 𝟙 b ≫ h₂ := by rw [H]
-    _ = h₂ := by simp
+    _ = h₂ := by sorry
 
 /- # 圏の例 -/
 
@@ -131,14 +126,16 @@ instance (R : CommRingCat) : CommRing R.base := R.str
 
 /- `CommRingCat`が実際に環となることを証明してみよう。ヒントとして、必要となるmathlibの定義を挙げておく。 -/
 
-#check RingHom
-#check RingHom.comp
-#check RingHom.id
-
 instance : Category CommRingCat where 
   Hom R S := RingHom R S
+  -- 合成と恒等射を与える
   comp f g := RingHom.comp g f
   id R := RingHom.id R
+  /- 以下の公理については証明を書いてもよいが、省略してもエラーがでないかどうかをまず確認してみよう。
+  もしエラーが出なければ、それは`aesop`が成功したことを意味する。 -/
+  id_comp := sorry
+  comp_id := sorry
+  assoc := sorry
 
 /- 次は可換環`R`に対して`R`上の可換代数の圏を定義する。-/
 
@@ -160,6 +157,11 @@ instance {R : CommRingCat} : Category (CommAlgCat R) where
   Hom A B := AlgHom R A B
   comp f g := AlgHom.comp g f
   id A := AlgHom.id R A
+  id_comp := sorry
+  comp_id := sorry
+  assoc := sorry
+
+/- 定義の上の`@[simps]`はおまじないで、ここでは特に意味がない。`Lecture 2`で役に立つ。 -/
 
 -- おまじない。`Lecture 2`で役に立つ。
 instance {A B : CommAlgCat R} : AlgHomClass (Hom A B) R A B := 
@@ -167,9 +169,6 @@ instance {A B : CommAlgCat R} : AlgHomClass (Hom A B) R A B :=
 
 /- 少し毛色の違う例として、空集合が圏であることを確かめてみよう。-/
 -- ヒント: 空写像は`Empty.elim`で表される
-instance : Category Empty where
-  Hom := fun _ _ ↦ Empty
-  comp := fun f => Empty.elim f
-  id := fun a ↦ Empty.elim a
+instance : Category Empty := sorry
 
 end Tutorial
