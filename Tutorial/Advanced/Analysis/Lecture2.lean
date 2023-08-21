@@ -97,10 +97,12 @@ theorem exists_local_extr_Ioo (hab : a < b) (hfc : ContinuousOn f (Icc a b)) (hf
     exists c, cmem
     apply hc.isLocalExtr <| Icc_mem_nhds cmem.1 cmem.2
   have ne : (Icc a b).Nonempty := nonempty_Icc.2 (le_of_lt hab)
-  have ⟨C, Cmem, Cge⟩ : ∃ C ∈ Icc a b, ∀ x ∈ Icc a b, f x ≤ f C := by
+  have ⟨C, Cmem, Cge⟩ : ∃ C ∈ Icc a b, IsMaxOn f (Icc a b) C := by
     sorry
-  have ⟨c, cmem, cle⟩ : ∃ c ∈ Icc a b, ∀ x ∈ Icc a b, f c ≤ f x := by
+  have ⟨c, cmem, cle⟩ : ∃ c ∈ Icc a b, IsMinOn f (Icc a b) c := by
     sorry
+  change ∀ x ∈ Icc a b, f x ≤ f C at Cge
+  change ∀ x ∈ Icc a b, f c ≤ f x at cle
   by_cases hc : f c = f a
   · by_cases hC : f C = f a
     · have : ∀ x ∈ Icc a b, f x = f a := fun x hx ↦ le_antisymm (hC ▸ Cge x hx) (hc ▸ cle x hx)

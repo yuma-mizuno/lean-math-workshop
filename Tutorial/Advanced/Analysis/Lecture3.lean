@@ -136,8 +136,8 @@ theorem nestedInterval_le : ∀ n, α n < β n
   | n + 1 => by
     have := nestedInterval_le n
     cases nestedIntervalSucc_eq_or_eq U (α n) (β n) with
-    | inl h => dsimp only; rw [nestedInterval, h]; dsimp only; linarith
-    | inr h => dsimp only; rw [nestedInterval, h]; dsimp only; linarith
+    | inl h => rw [nestedInterval, h]; dsimp only; linarith
+    | inr h => rw [nestedInterval, h]; dsimp only; linarith
 
 theorem nestedIntervalSeq_is_nested_succ (n : ℕ) : I(n + 1) ⊆ I(n) := by
   have := nestedInterval_le U n

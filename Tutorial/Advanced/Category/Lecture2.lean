@@ -99,6 +99,9 @@ structure CoconeHom (s t : Cocone F) where
   /-- `hom`と余錐の射は可換 -/
   comm : ∀ j : J, s.to_vertex j ≫ hom = t.to_vertex j
 
+-- おまじない。右画面の表示が少しきれいになる。
+attribute [pp_dot] Functor.obj Functor.map Cocone.to_vertex CoconeHom.hom
+
 /-- 余錐全体は圏を成す。 -/
 instance : Category (Cocone F) where
   Hom s t := CoconeHom s t
@@ -107,7 +110,7 @@ instance : Category (Cocone F) where
       comm := by 
         intro j
         calc r.to_vertex j ≫ f.hom ≫ g.hom 
-          _ = (r.to_vertex j ≫ f.hom) ≫ g.hom  := by sorry
+          _ = (r.to_vertex j ≫ f.hom) ≫ g.hom := by sorry
           _ = s.to_vertex j ≫ g.hom := by sorry
           _ = t.to_vertex j := by sorry }
   id t := 
@@ -248,12 +251,12 @@ example (F : Functor Coproduct.Shape (CommAlgCat R)) : Colimit (tensorCocone F) 
   uniq := by 
     intro t f 
     apply CoconeHom.ext
-    have hₗ : ∀ a : F.obj .l, f.hom (Algebra.TensorProduct.includeLeft a) = (t.to_vertex .l) a := by
+    have hₗ : ∀ a : F.obj .l, f.hom (a ⊗ₜ[R.base] 1) = t.to_vertex .l a := by
       -- ヒント: `AlgHom.congr_fun`を使う
       sorry
-    have hᵣ : ∀ b : F.obj .r, f.hom (Algebra.TensorProduct.includeRight b) = (t.to_vertex .r) b := by
+    have hᵣ : ∀ b : F.obj .r, f.hom (1 ⊗ₜ[R.base] b) = t.to_vertex .r b := by
       sorry
-    -- ヒント: `Algebra.TensorProduct.ext`を使う
+    -- ヒント: `Algebra.TensorProduct.ext'`を使う（`ext`ではなくて`ext'`）
     sorry
 
 /- # コイコライザー -/
