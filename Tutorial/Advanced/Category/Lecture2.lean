@@ -365,10 +365,9 @@ example (F : Functor Coequalizer.Shape Type) : Colimit (quotCocone F) where
     { -- `Quot.lift`を使う
       hom := Quot.lift (t.to_vertex .tar) <| by
         intro x₁ x₂ ⟨x⟩
-        have h₁ : t.to_vertex .tar (F.map .fst x) = t.to_vertex .src x := 
-          -- ヒント: `AlgHom.congr_fun`を使う
+        have h₁ : t.to_vertex .tar (F.map .fst x) = t.to_vertex .src x := by
           sorry
-        have h₂ : t.to_vertex .tar (F.map .snd x) = t.to_vertex .src x := 
+        have h₂ : t.to_vertex .tar (F.map .snd x) = t.to_vertex .src x := by
           sorry
         sorry
       comm := by
