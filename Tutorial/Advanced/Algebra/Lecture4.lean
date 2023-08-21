@@ -145,7 +145,7 @@ section Section2
 
 namespace GroupAction
 /-- `G`集合`X`が推移的であることを`IsTransitive G X`で表す。 -/
-class IsTransitive (G : Type _) (X : Type _) [Group G] [GroupAction G X] : Prop where
+class IsTransitive (G X : Type) [Group G] [GroupAction G X] : Prop where
   exists_smul_eq : ∀ x y : X, ∃ a : G, a • x = y
 
 -- 以下この節では群`G`を固定する。

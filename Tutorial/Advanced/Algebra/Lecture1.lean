@@ -22,7 +22,7 @@ section Section1
 
 これをLeanでは以下のように表す。
 -/
-class Group (G : Type _) where
+class Group (G : Type) where
   mul : G → G → G
   one : G
   inv : G → G
@@ -31,7 +31,7 @@ class Group (G : Type _) where
   mul_inv_left : ∀ a : G, mul (inv a) a = one
 
 /-
-1. `G : Type _`は`G`が集合であることを表すと思ってよい。
+1. `G : Type`は`G`が集合であることを表すと思ってよい。
 2. `mul : G → G → G`は二項演算（mul = multiplication）。
 Leanで`→`は右結合的、つまり`mul : G → (G → G)`、つまり`mul`とは「`G`の元を与えたら「`G`から`G`への関数」を返すような関数」である。
 人によっては`Hom(G, Hom(G, G))`と書くと分かりやすいかもしれない。

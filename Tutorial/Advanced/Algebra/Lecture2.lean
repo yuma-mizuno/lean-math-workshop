@@ -17,7 +17,7 @@ section Section1
 群`G₁`と`G₂`に対して、その準同型とは、写像であって積を保つものをいう。
 今までと同じように、underlying mapと、それが写像を保つこと、を束ねてこれを実装する。
 -/
-structure GroupHom (G₁ : Type _) (G₂ : Type _) [Group G₁] [Group G₂] where
+structure GroupHom (G₁ G₂ : Type) [Group G₁] [Group G₂] where
   toFun : G₁ → G₂
   map_mul' : ∀ a b : G₁, toFun (a * b) = toFun a * toFun b
   -- 単位元を保つことはここから従う、後で示す
@@ -218,7 +218,7 @@ open Equiv
 それが左・右逆写像であることの証明、という組。
 `Perm X`に群構造を与えよう。
 -/
-instance (X : Type _) : Group (Perm X) where
+instance (X : Type) : Group (Perm X) where
   mul f g := Equiv.trans g f
   -- この積`f * g`は、先に`g`、次に`f`という、関数の合成の向き。
   one := Equiv.refl X

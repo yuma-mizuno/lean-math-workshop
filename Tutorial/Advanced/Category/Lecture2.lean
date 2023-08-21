@@ -130,7 +130,7 @@ namespace Coproduct
 /- 余積の図式とは、2元集合からの関手である。 -/
 
 /- 2元集合は帰納型として定義される。帰納型は`inductive`コマンドで定義することができる。
-帰納型の詳細については https://leanprover.github.io/theorem_proving_in_lean4/inductive_types.html
+帰納型の詳細については https://aconite-ac.github.io/theorem_proving_in_lean4_ja/inductive_types.html
 を参照せよ。
  -/
 
