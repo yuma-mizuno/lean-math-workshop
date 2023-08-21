@@ -16,9 +16,9 @@ variable {C : Type u} [Category.{u, v} C]
 /-- `a`が始対象とは、任意の`b`について`a`から`b`への射が一意に存在するときをいう。 -/
 structure Initial (a : C) where
   /-- 射の族: 各`b : C`について`a`から`b`への射 -/
-  from_initial : ∀ b : C, Hom a b
+  fromInitial : ∀ b : C, Hom a b
   /-- 射の族の一意性 -/
-  uniq : ∀ {b : C}, ∀ f : Hom a b, f = from_initial b
+  uniq : ∀ {b : C}, ∀ f : Hom a b, f = fromInitial b
 
 /- `Initial a`は性質ではなく構造として定義している。すなわち、単に射の族が存在するというだけでなく、
 射の族データも保持している。これは実装の便宜上の都合である。射の族は一意であるため、数学的な違いは
@@ -26,7 +26,7 @@ structure Initial (a : C) where
 
 /-- 始対象からの射がふたつ存在すれば、それらは等しい。 -/
 theorem Initial.uniq' {a : C} (h : Initial a) {b : C} (f g : Hom a b) : f = g :=
-  calc f = h.from_initial b := by sorry
+  calc f = h.fromInitial b := by sorry
        _ = g := by sorry
 
 end Category
@@ -37,7 +37,7 @@ end Category
 -- 正確には、「空型は型の圏における始対象である。」
 -- Leanにおける型と通常の数学書における集合はほとんど同じ意味です。
 example : Initial Empty where
-  from_initial X := by
+  fromInitial X := by
     intro x
     -- ヒント: 空写像は`Empty.elim`で表される。`apply Empty.elim`を試してみよう。
     sorry
@@ -51,7 +51,7 @@ example : Initial Empty where
 /- 環とは底集合と環構造の組であった。底集合`ℤ`に対して、`inferInstance`がmathlibのどこかで定義されている
 適切な環構造を探してくれている。 -/
 example : Initial (⟨ℤ, inferInstance⟩ : CommRingCat) where
-  from_initial := fun R ↦ Int.castRingHom R
+  fromInitial := fun R ↦ Int.castRingHom R
   uniq := RingHom.eq_intCast'
 
 /- # 余極限 -/
@@ -83,9 +83,9 @@ structure Cocone (F : Functor J C) where
   /-- `C`の対象（頂点という） -/
   vertex : C
   /-- 頂点への射の族 -/
-  to_vertex : ∀ j : J, Hom (F.obj j) vertex
+  toVertex : ∀ j : J, Hom (F.obj j) vertex
   /-- 射の族の自然性 -/
-  naturality : ∀ {i j : J} (f : Hom i j), F.map f ≫ to_vertex j = to_vertex i
+  naturality : ∀ {i j : J} (f : Hom i j), F.map f ≫ toVertex j = toVertex i
 
 /- 余錐全体は圏を成す。射の集合は次のように定義される。-/
 
@@ -97,10 +97,10 @@ structure CoconeHom (s t : Cocone F) where
   /-- 頂点の間の射 -/
   hom : Hom s.vertex t.vertex
   /-- `hom`と余錐の射は可換 -/
-  comm : ∀ j : J, s.to_vertex j ≫ hom = t.to_vertex j
+  comm : ∀ j : J, s.toVertex j ≫ hom = t.toVertex j
 
 -- おまじない。右画面の表示が少しきれいになる。
-attribute [pp_dot] Functor.obj Functor.map Cocone.to_vertex CoconeHom.hom
+attribute [pp_dot] Functor.obj Functor.map Cocone.toVertex CoconeHom.hom
 
 /-- 余錐全体は圏を成す。 -/
 instance : Category (Cocone F) where
@@ -109,10 +109,10 @@ instance : Category (Cocone F) where
     { hom := f.hom ≫ g.hom
       comm := by 
         intro j
-        calc r.to_vertex j ≫ f.hom ≫ g.hom 
-          _ = (r.to_vertex j ≫ f.hom) ≫ g.hom := by sorry
-          _ = s.to_vertex j ≫ g.hom := by sorry
-          _ = t.to_vertex j := by sorry }
+        calc r.toVertex j ≫ f.hom ≫ g.hom 
+          _ = (r.toVertex j ≫ f.hom) ≫ g.hom := by sorry
+          _ = s.toVertex j ≫ g.hom := by sorry
+          _ = t.toVertex j := by sorry }
   id t := 
     { hom := 𝟙 t.vertex
       comm := by
@@ -181,7 +181,7 @@ end Coproduct
 @[simps]
 def sumCocone (F : Functor Coproduct.Shape Type) : Cocone F where
   vertex := F.obj .l ⊕ F.obj .r
-  to_vertex j := match j with
+  toVertex j := match j with
     -- 「標準的な写像」を使おう
     | .l => sorry
     | .r => sorry
@@ -191,9 +191,9 @@ def sumCocone (F : Functor Coproduct.Shape Type) : Cocone F where
     
 /- 集合の圏における余積はdisjoint union -/
 example (F : Functor Coproduct.Shape Type) : Colimit (sumCocone F) where
-  from_initial t := {
+  fromInitial t := {
     hom := fun x ↦ match x with
-      -- `Cocone.to_vertex`を使う
+      -- `Cocone.toVertex`を使う
       | .inl x => sorry
       | .inr x => sorry
     comm := by
@@ -228,7 +228,7 @@ open scoped TensorProduct
 @[simps]
 def tensorCocone (F : Functor Coproduct.Shape (CommAlgCat R)) : Cocone F where
   vertex := ⟨(F.obj .l) ⊗[R] (F.obj .r), inferInstance, inferInstance⟩
-  to_vertex := fun j ↦ match j with
+  toVertex := fun j ↦ match j with
     -- ヒント: 「標準的な写像」を使おう
     | .l => sorry
     | .r => sorry
@@ -240,7 +240,7 @@ def tensorCocone (F : Functor Coproduct.Shape (CommAlgCat R)) : Cocone F where
 
 /- `R`上の可換代数の圏における余積はテンソル積 -/
 example (F : Functor Coproduct.Shape (CommAlgCat R)) : Colimit (tensorCocone F) where
-  from_initial t := {
+  fromInitial t := {
     -- ヒント: `Algebra.TensorProduct.productMap`を使う
     hom := sorry
     comm := by 
@@ -251,10 +251,10 @@ example (F : Functor Coproduct.Shape (CommAlgCat R)) : Colimit (tensorCocone F) 
   uniq := by 
     intro t f 
     apply CoconeHom.ext
-    have hₗ : ∀ a : F.obj .l, f.hom (a ⊗ₜ[R.base] 1) = t.to_vertex .l a := by
+    have hₗ : ∀ a : F.obj .l, f.hom (a ⊗ₜ[R.base] 1) = t.toVertex .l a := by
       -- ヒント: `AlgHom.congr_fun`を使う
       sorry
-    have hᵣ : ∀ b : F.obj .r, f.hom (1 ⊗ₜ[R.base] b) = t.to_vertex .r b := by
+    have hᵣ : ∀ b : F.obj .r, f.hom (1 ⊗ₜ[R.base] b) = t.toVertex .r b := by
       sorry
     -- ヒント: `Algebra.TensorProduct.ext'`を使う（`ext`ではなくて`ext'`）
     sorry
@@ -343,7 +343,7 @@ inductive coequalizerRel {X Y : Type} (f g : X → Y) : Y → Y → Prop
 def quotCocone (F : Functor Coequalizer.Shape Type) : Cocone F where
   -- `Quot`を使う
   vertex := Quot (coequalizerRel (F.map .fst) (F.map .snd))
-  to_vertex := fun j => match j with
+  toVertex := fun j => match j with
     -- `Quot.mk`を使う
     | .src => fun x ↦ Quot.mk _ (F.map .fst x)
     | .tar => fun x ↦ Quot.mk _ x
@@ -358,13 +358,13 @@ def quotCocone (F : Functor Coequalizer.Shape Type) : Cocone F where
     · sorry
 
 example (F : Functor Coequalizer.Shape Type) : Colimit (quotCocone F) where
-  from_initial t := 
+  fromInitial t := 
     { -- `Quot.lift`を使う
-      hom := Quot.lift (t.to_vertex .tar) <| by
+      hom := Quot.lift (t.toVertex .tar) <| by
         intro x₁ x₂ ⟨x⟩
-        have h₁ : t.to_vertex .tar (F.map .fst x) = t.to_vertex .src x := by
+        have h₁ : t.toVertex .tar (F.map .fst x) = t.toVertex .src x := by
           sorry
-        have h₂ : t.to_vertex .tar (F.map .snd x) = t.to_vertex .src x := by
+        have h₂ : t.toVertex .tar (F.map .snd x) = t.toVertex .src x := by
           sorry
         sorry
       comm := by
