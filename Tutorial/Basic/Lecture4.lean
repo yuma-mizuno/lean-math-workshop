@@ -53,7 +53,7 @@ theorem Injective.comp {f : X → Y} {g : Y → Z} (hfinj : Injective f) (hginj 
 与える必要がないのは、その後の`hfx : f x₁ = f x₂`が与えられれば、
 `x₁ x₂`が何かはそれから分かってしまうからである。
 詳しくは:
-https://leanprover.github.io/theorem_proving_in_lean4/dependent_type_theory.html#implicit-arguments
+https://aconite-ac.github.io/theorem_proving_in_lean4_ja/dependent_type_theory.html#implicit-arguments-%E6%9A%97%E9%BB%99%E3%81%AE%E5%BC%95%E6%95%B0
 -/
 
 -- 別解。実は`have`を使わず`apply`のみで上の証明は書ける。
