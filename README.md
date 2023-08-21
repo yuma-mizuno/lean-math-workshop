@@ -1,5 +1,5 @@
 ## 始め方
-1. VS Code, Git, Leanをインストールします(参考: [Leanのインストール](https://leanprover.github.io/lean4/doc/quickstart.html))。
+1. VS Code, Git, Leanをインストールします。（参考: [Leanのインストール](https://leanprover.github.io/lean4/doc/quickstart.html)）
 2. ターミナル上でチュートリアルファイルを置きたいフォルダに移動して、以下のコマンドを実行します: 
 ```
 git clone https://github.com/yuma-mizuno/lean-math-workshop.git
