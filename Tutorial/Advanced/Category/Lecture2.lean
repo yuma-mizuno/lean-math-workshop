@@ -217,8 +217,9 @@ example (F : Functor Coproduct.Shape Type) : Colimit (sumCocone F) where
     
 variable {R : CommRingCat}
 
-/- 圏`CommAlgCat R`での余積はテンソル積である。`A`と`B`のテンソル積を`A ⊗[R] B`と書く。テンソル積には
-標準的な写像
+/- 圏`CommAlgCat R`での余積はテンソル積である。`A`と`B`のテンソル積を`A ⊗[R] B`と書く。
+また`a : A`と`b : B`に対して`a ⊗ₜ[R] b`で対応する`A ⊗[R] B`の元を表す。
+テンソル積には標準的な写像
 * `Algebra.TensorProduct.includeLeft : A →ₐ[R] (A ⊗[R] B)` 
 * `Algebra.TensorProduct.includeRight : B →ₐ[R] (A ⊗[R] B)`
 が付随する。ここで、`→ₐ[R]`は`AlgHom`を表す記号である。 -/
