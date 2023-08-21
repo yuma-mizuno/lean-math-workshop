@@ -1,0 +1,9 @@
+image:
+  file: ./Dockerfile
+
+vscode:
+  extensions:
+    - leanprover.lean4
+
+tasks:
+  - init: lake exe cache get
