@@ -7,7 +7,7 @@ import Mathlib.Tactic
 namespace Tutorial
 
 -- 以下、`X` `Y` `Z`を集合とする。
-variable {X Y Z : Type u}
+variable {X Y Z : Type}
 
 /- ## 単射
 写像`f : X → Y`が単射であることを`Injective f`で表す。

@@ -27,7 +27,7 @@ Leanでは`G × X → X`という形よりも、`G → X → X`によって、
 「`G`の元が与えられたら「`X`から`X`への写像」を返す関数」で
 作用写像を表すことに注意。
 -/
-class GroupAction (G : Type _) [Group G] (X : Type _) where
+class GroupAction (G : Type) [Group G] (X : Type) where
   smul : G → X → X
   one_smul' : ∀ x, smul 1 x = x
   mul_smul' : ∀ a b x, smul (a * b) x = smul a (smul b x)
