@@ -44,7 +44,7 @@ example : Initial Empty where
   uniq := by
     intro X f
     funext x
-    -- ヒント: 空写像のコドメインには命題でもよい（空虚な真）
+    -- ヒント: 空写像のコドメインは命題でもよい（空虚な真）
     sorry
     
 /-- 整数環`ℤ`は可換環の圏における始対象である。 -/
@@ -87,9 +87,6 @@ structure Cocone (F : Functor J C) where
   /-- 射の族の自然性 -/
   naturality : ∀ {i j : J} (f : Hom i j), F.map f ≫ to_vertex j = to_vertex i
 
-/- 公理の等式をsimp補題に設定しておく -/
-attribute [simp] Cocone.naturality
-
 /- 余錐全体は圏を成す。射の集合は次のように定義される。-/
 
 variable {F : Functor J C}
@@ -100,10 +97,7 @@ structure CoconeHom (s t : Cocone F) where
   /-- 頂点の間の射 -/
   hom : Hom s.vertex t.vertex
   /-- `hom`と余錐の射は可換 -/
-  comm : ∀ j : J, s.to_vertex j ≫ hom = t.to_vertex j := by aesop
-
-/- 公理の等式をsimp補題に設定しておく -/
-attribute [simp] CoconeHom.comm
+  comm : ∀ j : J, s.to_vertex j ≫ hom = t.to_vertex j
 
 /-- 余錐全体は圏を成す。 -/
 instance : Category (Cocone F) where
@@ -344,7 +338,7 @@ inductive coequalizerRel {X Y : Type} (f g : X → Y) : Y → Y → Prop
 /-- 商集合を頂点に持つ余錐 -/
 @[simps]
 def quotCocone (F : Functor Coequalizer.Shape Type) : Cocone F where
-  -- ヒント: `Quot`を使う
+  -- `Quot`を使う
   vertex := Quot (coequalizerRel (F.map .fst) (F.map .snd))
   to_vertex := fun j => match j with
     -- `Quot.mk`を使う

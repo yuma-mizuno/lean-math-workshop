@@ -51,7 +51,8 @@ class Category (C : Type u) where
   公理の証明を書かなかった場合は`aesop` tacticが実行されることを意味する。圏論では`aesop`が成功する
   ような「自明な証明」が多く、このようなデフォルト引数を用いた自動化が非常に有用である。tacicが失敗した
   場合にはエラーが生じる。このような場合にはユーザーは手動で証明を埋める必要がある。`aseop` tacticに
-  関する詳細は https://github.com/JLimperg/aesop を参照せよ。-/
+  関する詳細は https://github.com/JLimperg/aesop を参照せよ。
+-/
 
 open Category
 
@@ -69,10 +70,10 @@ notation "𝟙" => Category.id
 #check comp_id
 #check assoc
 
-variable {C : Type u} [Category.{u, v} C] {a b c d e : C}
-
 /- 公理の等式をsimp補題に設定しておく -/
 attribute [simp] id_comp comp_id assoc
+
+variable {C : Type u} [Category.{u, v} C] {a b c d e : C}
 
 example (f : Hom a b) (g : Hom b c) (h : Hom c d) (i : Hom d e) : 
     (f ≫ (𝟙 b ≫ g)) ≫ (h ≫ i) = f ≫ (g ≫ ((𝟙 c ≫ h) ≫ i)) := by
@@ -142,8 +143,11 @@ instance : Category CommRingCat where
 
 /-- `R`上の可換代数の圏 -/
 structure CommAlgCat (R : CommRingCat) where 
+  -- 底集合
   base : Type
+  -- 底集合上の可換環の構造
   ringStr : CommRing base
+  -- 底集合上の`R`代数の構造
   algStr : Algebra R base
 
 variable {R : CommRingCat}
