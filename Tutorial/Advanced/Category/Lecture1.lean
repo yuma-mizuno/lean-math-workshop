@@ -124,7 +124,7 @@ instance : CoeSort CommRingCat Type := ⟨fun R ↦ R.base⟩
 /- おまじない。`R : CommRingCat`に対しては`R.base`上の環構造として`R.str`を用いる。 -/
 instance (R : CommRingCat) : CommRing R.base := R.str
 
-/- `CommRingCat`が実際に環となることをみてみよう。-/
+/- `CommRingCat`が実際に圏となることをみてみよう。-/
 
 instance : Category CommRingCat where 
   -- 射は環準同型
