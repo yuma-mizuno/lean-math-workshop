@@ -230,7 +230,7 @@ def tensorCocone (F : Functor Coproduct.Shape (CommAlgCat R)) : Cocone F where
     | .l => sorry
     | .r => sorry
   naturality := by
-    -- `rintro`は`intro`と`cases`を合わせたtacticである（1行短く書ける）
+    -- `rintro`は`intro`と`rcases`を合わせたtacticである（1行短く書ける）
     rintro i j ⟨_⟩
     -- ヒント: `simp`を試してみよう
     sorry
