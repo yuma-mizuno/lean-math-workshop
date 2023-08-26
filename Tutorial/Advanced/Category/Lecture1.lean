@@ -172,15 +172,4 @@ instance {R : CommRingCat} : Category (CommAlgCat R) where
 instance {A B : CommAlgCat R} : AlgHomClass (Hom A B) R A B := 
   inferInstanceAs <| AlgHomClass (A →ₐ[R] B) R A B
 
--- おまじない。次の問題の中で使っていない変数があっても警告がでないようにする。
-set_option linter.unusedVariables false in
-
-/- 少し毛色の違う例として、対象が何もない圏を構成しよう。
-これは対象の集合が空集合`Empty`であるような圏である。 -/
--- ヒント: 空集合からの空写像は`Empty.elim`で表される
-instance : Category Empty where
-  Hom a b := sorry
-  comp f g := sorry
-  id a := sorry
-
 end Tutorial
