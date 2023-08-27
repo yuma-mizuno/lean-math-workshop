@@ -305,7 +305,7 @@ end Coequalizer
 
 /- # コイコライザーの例 -/
 
-/- 圏`Type`のコイコライザーについて考える。図式`F : Functor Coequalizer.Shape Type`に対して
+/- 圏`Type`でのコイコライザーについて考える。図式`F : Functor Coequalizer.Shape Type`に対して
 * `X := F.obj .src`
 * `Y := F.obj .tar`
 * `f := F.map .fst`
@@ -315,8 +315,8 @@ end Coequalizer
 
 /- 「生成される同値関係」は帰納型を使ってシンプルに定義できる -/
 
-inductive coequalizerRel {X Y : Type} (f g : X → Y) : Y → Y → Prop
-  | rel : ∀ x : X, coequalizerRel f g (f x) (g x)
+inductive CoequalizerRel {X Y : Type} (f g : X → Y) : Y → Y → Prop
+  | rel : ∀ x : X, CoequalizerRel f g (f x) (g x)
 
 /- （正確にはこれは「生成される二項関係」であるが、商をとったら同じになるので違いは気にしないでおく） -/
 
@@ -342,7 +342,7 @@ inductive coequalizerRel {X Y : Type} (f g : X → Y) : Y → Y → Prop
 @[simps]
 def quotCocone (F : Functor Coequalizer.Shape Type) : Cocone F where
   -- `Quot`を使う
-  vertex := Quot (coequalizerRel (F.map .fst) (F.map .snd))
+  vertex := Quot (CoequalizerRel (F.map .fst) (F.map .snd))
   toVertex := fun j => match j with
     -- `Quot.mk`を使う
     | .src => fun x ↦ Quot.mk _ (F.map .fst x)

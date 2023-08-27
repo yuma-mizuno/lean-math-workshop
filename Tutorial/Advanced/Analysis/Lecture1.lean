@@ -52,7 +52,7 @@ theorem hasDerivAt_iff_isLittleO :
     HasDerivAt f f' a ↔ (fun x ↦ f x - f a - (x - a) * f') =o[𝓝 a] fun x ↦ x - a := by
   rfl
 
-/-- 2. `h`が`0`に近づくとき`f (x + h) = f a + h * f' + o(h)`である -/
+/-- 2. `h`が`0`に近づくとき`f (a + h) = f a + h * f' + o(h)`である -/
 theorem hasDerivAt_iff_isLittleO_nhds_zero : 
     HasDerivAt f f' a ↔ (fun h ↦ f (a + h) - f a - h * f') =o[𝓝 0] fun h ↦ h := by
   rw [hasDerivAt_iff_isLittleO, ← map_add_left_nhds_zero a, Asymptotics.isLittleO_map]
