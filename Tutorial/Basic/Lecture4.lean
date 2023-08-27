@@ -1,8 +1,8 @@
 import Mathlib.Tactic
 
 /- # 単射と全射についての演習問題
-このファイルでは、学部数学の集合論の演習問題でよくある、写像の単射と全射についての問題を通して、`∀`や`∃`についてのより細かい扱いを学ぶ。
-また、`have`についても復習する。
+このファイルでは、学部数学の集合論の演習問題でよくある、写像の単射と全射についての問題を通して、
+`∀`や`∃`についてのより細かい扱いを学ぶ。また、`have`についても復習する。
 -/
 namespace Tutorial
 
@@ -32,7 +32,8 @@ example : Injective (fun x : ℕ ↦ x + 1) := by
 人間はこういうミスをよくするが、Leanは「合成できません」とエラーを出してくる。
 Leanの便利なところの一つでもある。
 -/
-theorem Injective.comp {f : X → Y} {g : Y → Z} (hfinj : Injective f) (hginj : Injective g) : Injective (g ∘ f) := by
+theorem Injective.comp {f : X → Y} {g : Y → Z} (hfinj : Injective f) (hginj : Injective g) : 
+    Injective (g ∘ f) := by
   rw [Injective]
   intro x₁ x₂ hgf
   -- `hgf : (g ∘ f) x₁ = (g ∘ f) x₂`に対して、`g`が単射だということを使って`f x₁ = f x₂`という事実を導いて使いたい。

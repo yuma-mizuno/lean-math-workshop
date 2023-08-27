@@ -56,6 +56,9 @@ example (x : ℤ) (hx : 0 ≤ x) (hy : 3 ≤ y) : 2 < x + y := by
 example (x : ℤ) (h : 1 < x) : 3 < (x + 1) ^ 2 := by
   nlinarith
 
+example (x y : ℤ) : (x + y) ^ 3 = x ^ 3 + 3 * x ^ 2 * y + 3 * x * y ^ 2 + y ^ 3 := by
+  sorry
+
 /- # calc 
 式変形での証明を直観的に書くための機能
 -/
