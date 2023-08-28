@@ -100,7 +100,7 @@ theorem lift_mk (f : G → Y) (h) (a : G) : (lift f h) (a ⋆ H) = f a := rfl
 instance : GroupAction G (G ⧸ H) where
   /-`a : G`が与えられたときに、写像`a • (-) : G ⧸ H → G ⧸ H`
   を対応させたい。
-  このため、`lift`に、関数`G → G ⧸ H, x ↦ (a * x) ⋆ H`と、
+  このため、`lift`に、写像`G → G ⧸ H, x ↦ (a * x) ⋆ H`と、
   それが`G ⧸ H`上でwell-definedなことの証明を与える。
   -/
   smul := fun a ↦ lift (fun x ↦ (a * x) ⋆ H) <| by

@@ -28,8 +28,9 @@ infixr:25 " →* " => GroupHom
 -- 以下この節では`G₁`と`G₂`を群、`f`をその間の準同型とする。
 variable [Group G₁] [Group G₂] {f : G₁ →* G₂}
 
--- `f`と`a : G₁`に対して`f a`などと書くためのおまじない
--- （`f`そのものは、関数と「積を保つという事実」を束ねたもので本来は関数でない）
+-- `f`と`a : G₁`に対して、いちいち`f.toFun a`と書く代わりに、`f a`と書くためのおまじない
+-- （`f`そのものは、写像`f.toFun`と、それが積を保つという事実`f.map_mul'`を束ねたもので、本来は写像でない）
+-- 右側のInfoviewには、`f a`の代わりに`↑f a`と表示されることもあるが、同じなので気にしないでください。
 instance : FunLike (G₁ →* G₂) G₁ (fun _ ↦ G₂) where
   coe := fun f ↦ f.toFun
   coe_injective' f₁ f₂ _ := by cases f₁; cases f₂; congr
@@ -220,7 +221,7 @@ open Equiv
 -/
 instance (X : Type) : Group (Perm X) where
   mul f g := Equiv.trans g f
-  -- この積`f * g`は、先に`g`、次に`f`という、関数の合成の向き。
+  -- この積`f * g`は、先に`g`、次に`f`という、写像の合成の向き。
   one := Equiv.refl X
   inv := Equiv.symm
   mul_assoc _ _ _ := rfl

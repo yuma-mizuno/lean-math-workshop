@@ -44,9 +44,9 @@ theorem Injective.comp {f : X → Y} {g : Y → Z} (hfinj : Injective f) (hginj 
 
 /-
 *補足*
-`hfinj : Injective f`は、「`f x₁ = f x₂`という事実が与えられたら、`x₁ = x₂`という事実を返す関数」と思える。
+`hfinj : Injective f`は、「`f x₁ = f x₂`という事実が与えられたら、`x₁ = x₂`という事実を返す写像」と思える。
 なので、例えば`hfx : f x₁ = f x₂`があれば、
-`hfinj`という関数にそれを代入した`hfinj hfx`は、`x₁ = x₂`という事実になる。
+`hfinj`という写像にそれを代入した`hfinj hfx`は、`x₁ = x₂`という事実になる。
 
 *上級者向け（最初は読み飛ばしてください）*
 「`Injective`の定義を見ると`x₁`と`x₂`も与えなきゃ駄目なんじゃ？」と思った方へ。

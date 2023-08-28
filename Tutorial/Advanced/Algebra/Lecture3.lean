@@ -24,7 +24,7 @@ section Section1
 
 左`G`集合は次のように定式化できる。
 Leanでは`G × X → X`という形よりも、`G → X → X`によって、
-「`G`の元が与えられたら「`X`から`X`への写像」を返す関数」で
+「`G`の元が与えられたら「`X`から`X`への写像」を返す写像」で
 作用写像を表すことに注意。
 -/
 class GroupAction (G : Type) [Group G] (X : Type) where
