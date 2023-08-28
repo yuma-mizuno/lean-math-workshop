@@ -58,7 +58,8 @@ https://aconite-ac.github.io/theorem_proving_in_lean4_ja/dependent_type_theory.h
 -/
 
 -- 別解。実は`have`を使わず`apply`のみで上の証明は書ける。
-example {f : X → Y} {g : Y → Z} (hfinj : Injective f) (hginj : Injective g) : Injective (g ∘ f) := by
+example {f : X → Y} {g : Y → Z} (hfinj : Injective f) (hginj : Injective g) :
+    Injective (g ∘ f) := by
   rw [Injective]
   intro x₁ x₂ hgf
   apply hfinj -- なぜ`apply`でこう書き換わるか考えよう

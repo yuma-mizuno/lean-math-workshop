@@ -174,7 +174,8 @@ theorem inv_eq_of_mul_eq_one_left {a x : G} : x * a = 1 → a⁻¹ = x := by
   sorry
 
 -- その変種。後で便利かも。
-theorem eq_inv_of_mul_eq_one_left {a x : G} : x * a = 1 → x = a⁻¹ := fun h ↦ (inv_eq_of_mul_eq_one_left h).symm
+theorem eq_inv_of_mul_eq_one_left {a x : G} : x * a = 1 → x = a⁻¹ :=
+  fun h ↦ (inv_eq_of_mul_eq_one_left h).symm
 
 @[simp]
 theorem inv_one : (1 : G)⁻¹ = 1 := by

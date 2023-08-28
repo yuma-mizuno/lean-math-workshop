@@ -147,7 +147,8 @@ def GroupActionHom.comp (f₁ : X →[G] Y) (f₂ : Y →[G] Z) : X →[G] Z whe
 
 /-- `G`集合`X`と`Y`の間の`G`集合としての同型、
 つまり単射かつ全射な同変写像。 -/
-structure GroupActionIso (G) [Group G] (X) [GroupAction G X] (Y) [GroupAction G Y] extends X →[G] Y where
+structure GroupActionIso (G X Y) [Group G] [GroupAction G X] [GroupAction G Y]
+    extends X →[G] Y where
   injective : toFun.Injective
   surjective : toFun.Surjective
 
