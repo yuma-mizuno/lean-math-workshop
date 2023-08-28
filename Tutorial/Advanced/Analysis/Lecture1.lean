@@ -285,4 +285,57 @@ example (a : ℝ) : HasDerivAt (fun x ↦ x ^ 2) (2 * a) a := by
   suffices HasDerivAt (fun x ↦ x ^ 2) (((1 : ℕ) + 1) * a ^ 1) a by simpa [one_add_one_eq_two]
   sorry
 
+/- # Leanでの部分関数の扱いについて
+少し発展的な話題となります。読み飛ばしても問題ありません。
+
+`HasDerivAt`による微分の定義は一般性が足りず不十分と思う人がいるかもしれない。というのも、
+`HasDerivAt`は微分係数を関数`f : ℝ → ℝ`に対して定義しているが、実際には定義域が全体でない関数を扱い
+たい場合があるからである（例えば`x⁻¹`や`tan x`など）。しかし実は`HasDerivAt`の定義で十分である。
+全体が定義域とは限らない関数`f : U → ℝ`に対してはその拡張`f⁺ : ℝ → ℝ`を考えることができ（例えば
+`U`の外側では`f x := 0`とすればよい）、`f`について論じる代わりに`f⁺`について論じればよいからである。
+
+一般に、部分関数を扱う方法として以下の3つがある。
+1. 定義域を制限する
+2. 値域に「未定義」という元を付加する
+3. 定義域の外側の値を何でもよいので決めてしまう
+
+数学では多くの場合1.の方法がとられる。プログラミングの世界では2.の方法がとられることも多い（値域を
+拡張する方法としてOption型が知られている）。一方でLeanでは3.の方法が便利な場合ことが多い。実数関数の
+扱いもその一例である。
+
+1.の方法に慣れている数学者からすると3.の方法は受け入れがたいかもしれない。確かに一見「ad-hoc」で
+「不自然」なようにも思える。しかしLeanで数学をやる際にはこの方法がもっとも便利だと考えられている。
+この話題についてより詳しく知りたい場合はブログ記事 
+https://xenaproject.wordpress.com/2020/07/05/division-by-zero-in-type-theory-a-faq/
+を参照せよ。
+
+例として`HasDerivAt`が`x⁻¹`の微分を問題なく扱えることを確認しておく。
+-/
+
+example (a : ℝ) (ha : a ≠ 0) : HasDerivAt (fun x ↦ x⁻¹) (-(a ^ 2)⁻¹) a := by
+  rw [hasDerivAt_iff_tendsto_slope]
+  have hne : ∀ᶠ x in 𝓝[≠] a, x ≠ 0 := eventually_ne_nhdsWithin ha
+  have hne' : ∀ᶠ x in 𝓝[≠] a, x ≠ a := eventually_mem_nhdsWithin
+  have : (fun x ↦ (x⁻¹ - a⁻¹) / (x - a)) =ᶠ[𝓝[≠] a] fun x ↦ - (x⁻¹ * a⁻¹) := by
+    filter_upwards [hne, hne'] with x hx hx'
+    rw [← sub_ne_zero] at hx'
+    field_simp
+    ring
+  apply (tendsto_nhdsWithin_of_tendsto_nhds _).neg.congr' this.symm
+  rw [show (a ^ 2)⁻¹ = a⁻¹ * a⁻¹ by ring]
+  apply (tendsto_inv₀ ha).mul_const a⁻¹
+
+/- 
+この例における`fun x ↦ x⁻¹`の型は`ℝ → ℝ`であり、全域関数として扱われている。つまり`0⁻¹`にも何らか
+の値を割り当てている。その値が気になるかもしれないが...実は気にする必要はない。上の証明は`0⁻¹`の値
+がなんであろうと成立する。また、仮定に`a ≠ 0`があるので、上記の主張では`x⁻¹`の`0`における微分係数に
+ついては何も言っていない。ここではやらないが、`x⁻¹`の`0`における微分係数は存在しないことが証明でき
+るだろう。`x⁻¹`の定義域を制限しない代わりに、`x⁻¹`に関する定理の主張に制限が付くと考えるとよいかも
+しれない。
+-/
+
+/- `0⁻¹`の値が気になる人へ: Leanでは`0⁻¹`は`0`と定義されている -/
+example : (0 : ℚ)⁻¹ = 0 := by rfl
+example : (0 : ℝ)⁻¹ = 0 := by ring
+
 end Tutorial
