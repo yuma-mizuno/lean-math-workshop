@@ -57,7 +57,8 @@ example : Group ℤ where
   one := 0
   inv := fun x ↦ - x
   mul_assoc := by
-    sorry -- ヒント: `apply?`で必要なものを見つけよう
+    -- ヒント: `apply?`で必要なものを見つけよう
+    sorry
   one_mul := by
     sorry
   mul_inv_left := by
@@ -81,7 +82,7 @@ example : Group Aˣ where
 variable [Group G]
 /-
 いちいち`G`の演算を`mul a b`等と書いていたのでは大変なので、
-`*`と`1`と`⁻¹` (`\inv` または `\-` または `\-1`) が使えるようにする。
+`*`と`1`と`⁻¹` (`\inv` または `\-` または `\-1`) が使えるようにするためのおまじない。
 -/
 instance : Mul G := ⟨Group.mul⟩
 instance : One G := ⟨Group.one⟩
@@ -287,8 +288,8 @@ def center (G) [Group G] : Subgroup G where
     sorry
 
 /-
-下の`centrizer`と`noramlizer`は少し面倒で難しいかもしれない。
-以降では使わないので*最初は飛ばす*のをおすすめ。
+下の`centrizer`と`noramlizer`は少し面倒で難しい。
+以降では使わないので*最初は飛ばして*、時間が余ったら解いてみることをおすすめします。
 -/
 variable (H)
 /-- 部分群`H`の中心化群。 -/

@@ -59,6 +59,8 @@ theorem smul_inv_smul {a : G} {x : X} : a • a⁻¹ • x = x := by
 
 /-- `G`集合に対して左から`a : G`を当てる写像は単射。 -/
 theorem GroupAction.injective (a : G) : Function.Injective fun (x : X) ↦ a • x := by
+  intro x y (h : a • x = a • y)
+  -- `calc`を使うとよいかも？
   sorry
 
 -- 上の言い換え、きっといつか使うときに便利。

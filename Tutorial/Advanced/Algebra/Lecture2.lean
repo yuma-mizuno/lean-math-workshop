@@ -1,5 +1,5 @@
 /-
-このファイルでは群準同型と性質や、群準同型の核や像等を扱う。
+このファイルでは群準同型の性質や、群準同型の核や像等を扱う。
 一つの目標は「準同型が単射なことと核が自明なことは同値」である。
 *Lecture1で示したことは自由に使える*ので、必要なら使える定理を探しに行こう。
 
@@ -39,10 +39,11 @@ instance : FunLike (G₁ →* G₂) G₁ (fun _ ↦ G₂) where
 @[simp]
 theorem map_mul {a b : G₁} : f (a * b) = f a * f b := f.map_mul' a b
 
+#check mul_left_cancel -- これが使えるかも
 /-- 群準同型は単位元を保つ。 -/
 @[simp]
 theorem map_one : f 1 = 1 := by
-  have h : f 1 * f 1 = f 1 := by
+  have h : f 1 * f 1 = f 1 * 1 := by
     sorry
   sorry
 
@@ -182,9 +183,11 @@ namespace GroupHom
 
 /-- 群準同型の核が自明なことと単射なことは同値。 -/
 theorem ker_eq_bot : f.ker = ⊥ ↔ Function.Injective f := by
-  -- 上の`injective_iff_map_eq_one`で`rw`してから`constructor`がよい。
-  -- （上を使わず直接示すこともできる）
-  sorry
+  rw [injective_iff_map_eq_one]
+  constructor
+  · sorry
+  · -- 2つの部分群が等しいことを示したいときは、`ext a`を使うと、元を取って比較できる。
+    sorry
 
 /-- 群準同型の像が全体なことと全射なことは同値。 -/
 theorem range_eq_top : f.range = ⊤ ↔ Function.Surjective f := by
@@ -194,8 +197,6 @@ theorem range_eq_top : f.range = ⊤ ↔ Function.Surjective f := by
       sorry
     sorry
   · intro hsurj
-    -- ヒント: 2つの部分群が等しいことを示したいので、
-    -- `ext a`を使うと、元を取って比較できる。
     sorry
 
 end GroupHom
