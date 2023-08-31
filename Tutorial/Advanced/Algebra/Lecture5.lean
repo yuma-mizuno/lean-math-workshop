@@ -1,5 +1,7 @@
 /-
 このファイルでは、群の*正規部分群*やそれによる*商群*、また*準同型定理*について見ていく。
+後半では、準同型定理を述べる前にそもそも、部分群を群だとみなす際の困難や、それを解消する*部分型*についても説明する。
+が初見では難しい概念なので上級者向きである。
 
 # 目次
 - Section 1: 正規部分群と、それによる商群
@@ -23,50 +25,47 @@ class Normal (N : Subgroup G) : Prop where
 
 variable {N : Subgroup G} [N.Normal]
 
-/-- 正規部分群は共役を取る操作で閉じている。-/
-theorem conj_mem (a : G) : n ∈ N → a * n * a⁻¹ ∈ N := Normal.conj_mem a n
-
-/-- 積`a * b`が正規部分群に属することと、`b * a`が属することは同値。
+#check Normal.conj_mem -- この名前で使える。
+/-- 積`a * b`が正規部分群に属するなら、`b * a`も属する。
 あまり有名でなさそうだが有用な補題。-/
 theorem mem_comm {a b} : a * b ∈ N → b * a ∈ N := by
   intro hab
+  -- 一度紙で計算してみて、下のように`calc`するとよいかも。
   calc
-    b * a = a⁻¹ * (a * b) * a⁻¹⁻¹ := by simp
-    _ ∈ N := conj_mem a⁻¹ hab
+    b * a = sorry := by sorry
+    _ = sorry := by sorry
+    _ ∈ N := by
+      sorry
 
-theorem mem_comm_iff (a b : G) : a * b ∈ N ↔ b * a ∈ N :=
-  ⟨mem_comm, mem_comm⟩
+theorem mem_comm_iff (a b : G) : a * b ∈ N ↔ b * a ∈ N := ⟨mem_comm, mem_comm⟩
+
+end Subgroup
+
+variable {N : Subgroup G} [N.Normal]
 
 /- 正規部分群`N`について、左剰余類の集合`G ⧸ N`に群の構造を入れよう。-/
 -- `Quotient.map₂'`は、商集合の上の二項演算を定義するときに使えるもの。
 instance : Group (G ⧸ N) where
-  mul := Quotient.map₂' (fun a b ↦ a * b) <| by -- 積が剰余類上でwell-definedか？
-    intro a₁ a₂ ha b₁ b₂ hb
-    simp only [LeftQuotient.leftRel_apply] at *
-    rw [mul_inv_rev, ← mul_assoc, mem_comm_iff,
-      ← mul_assoc, ← mul_assoc, mul_assoc]
-    exact N.mul_mem (mem_comm hb) ha
+  mul := Quotient.map₂' (fun a b ↦ a * b) <| by
+    -- 積が剰余類上でwell-definedか？
+    -- `mem_comm`や`mem_comm_iff`が役立つかも。
+    sorry
   one := 1 ⋆ N
+  -- 逆元を取る操作は、`a ↦ a⁻¹ ⋆ N`をliftしよう。
   inv := LeftQuotient.lift (fun a ↦ a⁻¹ ⋆ N) <| by
-    intro a₁ a₂ ha
-    simp at *
-    replace ha := N.inv_mem ha
-    simp at ha
-    exact mem_comm ha
+    -- well-defined性
+    sorry
   mul_assoc := by
+    -- 結合性。代表元を取って`change`で見やすくすればすぐ。
     rintro ⟨a⟩ ⟨b⟩ ⟨c⟩
-    -- simp
     change (a * b * c) ⋆ N = (a * (b * c)) ⋆ N
-    rw [mul_assoc]
+    sorry
   one_mul := by
     rintro ⟨a⟩
-    change (1 * a) ⋆ N = a ⋆ N
-    simp 
-
+    -- 上と同じように`change`を使ってみよう。
+    sorry
   mul_inv_left := by
-    rintro ⟨a⟩
-    change (a⁻¹ * a) ⋆ N = 1 ⋆ N
-    simp
+    sorry
 
 @[simp]
 theorem QuotientGroup.mul_eq (a b : G) : (a ⋆ N) * (b ⋆ N) = (a * b) ⋆ N := rfl
@@ -76,97 +75,137 @@ theorem one : (1 : G ⧸ N) = 1 ⋆ N := rfl
 
 @[simp]
 theorem mem_of_eq_one {a : G} : a ⋆ N = (1 : G ⧸ N) ↔ a ∈ N := by
-  simp
-  exact N.inv_mem_iff
-
-
-end Subgroup
-
-instance [Group G] {H : Subgroup G} : Group H where
-  mul := fun a b ↦ ⟨a.1 * b.1, H.mul_mem a.2 b.2⟩
-  one := ⟨1, by simp⟩
-  inv := fun a ↦ ⟨a.1⁻¹, H.inv_mem a.2⟩
-  mul_assoc := by simp [mul_assoc]
-  one_mul := by simp
-  mul_inv_left := by simp
+  sorry
 
 variable [Group G] {N : Subgroup G} [N.Normal] [Group H] 
-/-
-G --→ H
-|   ↗
-v
-G⧸N 
--/
 
-/- 商群の普遍性的な。 -/
-def GroupHom.lift (f : G →* H) (h : ∀ a ∈ N, f a = 1) : (G ⧸ N) →* H where
-  toFun := by
-    apply LeftQuotient.lift f
-    intro a b hab
-    have := h _ hab
-    simp at this
-    rw [←inv_mul_eq_one]
-    exact this
+/-- `N`の元を全て潰す群準同型`f : G →* H`があると、それは商群`G ⧸ N`からの準同型 `G ⧸ N →* H`を誘導する。
+いわゆる商群の普遍性。 -/
+def GroupHom.kerLift (f : G →* H) (h : ∀ a ∈ N, f a = 1) : (G ⧸ N) →* H where
+  toFun := LeftQuotient.lift f <| by
+    sorry
   map_mul' := by
-    rintro ⟨a⟩ ⟨b⟩
-    simp
+    -- `rintro ⟨a⟩`等で代表元をとると良い。
+    sorry
 
 end Section1
 
 
 section Section2
-variable [Group G] [Group H]
+-- 以下群`G`と`H`とその間の群準同型`f`を固定。
+variable [Group G] [Group H] (f : G →* H)
 
+-- 準同型定理を示すにあたって、まだ群の同型を定義していなかったので定義しよう。
+/-- 群の同型。ここでは単射かつ全射な群準同型として定義する。 -/
 structure GroupIso (G) [Group G] (H) [Group H] extends G →* H where
   injective : toFun.Injective
   surjective : toFun.Surjective
 
-infixr:25 (priority := high) " ≅* " => GroupIso
+-- `f : G ≅* H`で群同型が表せるようになるおまじない。
+infixr:25 " ≅* " => GroupIso
 
-instance (f : G →* H) : f.ker.Normal where
+/-- 群準同型の核は正規部分群である。 -/
+instance : f.ker.Normal where
   conj_mem := by
-    intro a n hn
-    simp at *
-    rw [hn]
-    simp
+    sorry
+
+/-
+さて、以下では`f : G →* H`について、`G ⧸ f.ker ≅* f.range`を示したい。
+しかし`f.range`の型は`Subgroup H`であり、（意図的に避けていた）ある問題が生じる。
+
+群`G`の部分群`K : Subgroup G`は、あくまで型が`Subgroup G`であり、そのままでは集合でない（つまり型が`Type`でない）、
+よって`f.range`を群だと思うことはできないはずである（群は`Type`上に乗った構造であるので）。
+同じ状況は、一般に集合`X : Type`の部分集合`A : Set X`についても成り立つ。なぜなら`A`の型は`Set X`であり、`Type`でないからである。
+この状況を解決するため、Leanでは*subtype*という概念が用いられる。
+
+簡単のため`A : Set X`（≒ `A`は`X`の部分集合）の場合を考える。
+この場合、実は`A.Elem := { x : X // x ∈ A } : Type`が使用でき、これは`x ∈ A`が成り立つ元からなる集合と思える。
+`A.Elem`は、`a : A`と`ha : a ∈ A`によるペアリング`⟨a, ha⟩`という形の項からなる型であり、
+逆に`x : A.Elem`について、`x.1 : A`と`x.2 : a ∈ A`が取り出せる。
+このような構成`{ x : X // P x }`は型`X`の*部分型 (subtype)*と呼ばれる。
+単に`a : A`と書いたときは、`A`が`A.Elem`だと自動的にLeanが判断する。
+同じく、単に`A : Type`と書けば自動的にLeanがそれを`A.Elem`だと解釈してくれるので、`A.Elem`等を入力する必要はない。
+
+右側の状況欄には、`↑A : Type`等の`↑`が書かれる場合がある。
+この`↑`は*coercion (型強制)*という、ある型を持つ項を自然な同一視により別の型のものだとみなす場合に表れる。
+今までに出てきた、群準同型`f : G →* H`を写像だと思う`↑f : G → H`や、`a : ℕ`について`a : ℤ`と書けるのはcoercionの例である。
+-/
+#check Subtype
+#check Set.Elem
+example (X : Type) (A : Set X) : (A : Type) = { x : X // x ∈ A } := rfl
+
+/-
+さて、この`K : Subgroup G`に対して自動的に`K : Set G`が使えるので、`K : Type`も自動的に使える。
+なので、`Group K`という記法が通り、このインスタンスを作ることにより、`K : Subgroup G`について`Group K`、
+つまり「`G`の部分群はそれ自身が群となる」という主張が定式化できる。
+ただしこの`Group K`の`K`は実際には`K.Elem`のことなので、それに注意して書く必要がある。
+-/
+namespace Subgroup
+variable {K : Subgroup G}
+instance instGroup : Group K where
+  /-
+  例えば積を定義するときは、`a : K.Elem`と`b : K.Elem`から`K.Elem`の項を構成する必要がある。
+  これには、`a.1 : G`と`b.1 : G`の積をペアの第一成分、
+  そしてその積が`K`に属していることの証明を第二成分に与えれば良く、次のようにかける。
+  ここで`a.2 : a.1 ∈ K`だった。
+  -/
+  mul := fun a b ↦ ⟨a.1 * b.1, K.mul_mem a.2 b.2⟩
+  -- おそらく慣れないと難しいので全て与える。
+  one := ⟨1, by simp⟩
+  inv := fun a ↦ ⟨a.1⁻¹, K.inv_mem a.2⟩
+  mul_assoc := by simp [mul_assoc]
+  one_mul := by simp
+  mul_inv_left := by simp
+
+-- 以下で便利ないくつかの`simp`を書いておく。どれも定義から自明。
+@[simp]
+theorem coe_mul {a b : K} : a * b = ⟨a.1 * b.1, K.mul_mem a.2 b.2⟩ := rfl
+
+@[simp]
+theorem coe_one : (1 : K) = ⟨1, by simp⟩ := rfl
+
+@[simp]
+theorem ext_iff {a b : K} : a = b ↔ a.1 = b.1 := Subtype.ext_iff
+
+-- よって`f : G →* H`の像`f.range : Subgroup H`も群だと思え、準同型定理を示す準備が整った。
+end Subgroup
 
 namespace GroupHom
 
-def restriction (f : G →* H) : G →* f.range where
+/-- `f : G →* H`からcodomainを制限して得られる群準同型`f : G →* f.range`のこと。 -/
+def rangeRestrict : G →* f.range where
   toFun := fun a ↦ ⟨f a, by simp⟩
   map_mul' := by
-    intro a b
-    simp only [map_mul]
-    rfl
+    sorry
 
-def rangeKerLift (f : G →* H) : (G ⧸ f.ker) →* f.range :=
-  f.restriction.lift <| by
-    intro a ha
-    ext
-    change f a = 1
-    rw [ha]
+/-- `rangeRestrict`の定義の確認。 -/
+@[simp]
+theorem rangeRestrict_apply {a : G} : f.rangeRestrict a = f a := rfl
 
+def rangeKerLift : (G ⧸ f.ker) →* f.range :=
+  f.rangeRestrict.kerLift <| by
+    sorry
+
+/-- `rangeKerLift`の定義の確認。 -/
+@[simp]
+theorem rangeKerLift_apply {a : G} : f.rangeKerLift (a ⋆ f.ker) = f a := rfl
+
+#check injective_iff_map_eq_one -- これが便利かも
+/-- `f.rangeKerLift`は単射である。 -/
 theorem rangeKerLift_injective (f : G →* H) : Function.Injective f.rangeKerLift := by
-  rw [injective_iff_map_eq_one]
-  rintro ⟨a⟩
-  simp
-  intro h
-  have : f a = 1 := congrArg Subtype.val h
-  simp [this]
+  sorry
 
+/-- `f.rangeKerLift`は全射である。 -/
 theorem rangeKerLift_surjective (f : G →* H) : Function.Surjective f.rangeKerLift := by
-  intro ⟨y, x, hx⟩
-  exists x ⋆ f.ker
-  apply Subtype.coe_injective
-  simp
-  change f x = _
-  exact hx
+  -- `f.range.Elem`から元を取るとき、下のようにすると`y : H`が取れ、わかりやすい
+  intro ⟨y, hy⟩
+  sorry
 
-variable (f : G →* H)
-
-def quotientKerIsoRange (f : G →* H) : (G ⧸ f.ker) ≅* f.range where
+/-- 群の準同型定理。`G ⧸ f.ker`と`f.range`の間に自然な群同型が誘導される。 -/
+-- 全て必要なことは示したので、やることはない。
+def quotientKerIsoRange : (G ⧸ f.ker) ≅* f.range where
   toFun := f.rangeKerLift
-  map_mul' := by simp
+  map_mul' := f.rangeKerLift.map_mul'
   injective := f.rangeKerLift_injective
   surjective := f.rangeKerLift_surjective
 
