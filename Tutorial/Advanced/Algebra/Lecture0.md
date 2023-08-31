@@ -6,7 +6,7 @@
 - `Lecture2.lean`: 準同型の定義と基本性質
 - `Lecture3.lean`: 群の集合への作用、同変写像など
 - `Lecture4.lean`: 左剰余類の集合、推移的`G`集合の構造定理
-- `Lecture5.lean`: 正規部分群・準同型定理（予定）
+- `Lecture5.lean`: 正規部分群・商群・準同型定理
 
 # 遊び方
 `Tutorial.Basic`と同様に`sorry`が書かれている場所を消して埋めていく。

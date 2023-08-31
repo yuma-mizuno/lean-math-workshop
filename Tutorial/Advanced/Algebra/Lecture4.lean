@@ -53,6 +53,7 @@ infixl:35 " ⧸ " => leftQuotient
 variable [Group G] {H : Subgroup G}
 
 /-- `G`から`G ⧸ H`への自然な全射。 -/
+@[reducible]
 def mk (a : G) : G ⧸ H :=
   Quotient.mk'' a
 
