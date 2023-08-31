@@ -215,7 +215,7 @@ def nestedIntervalCauSeq : CauSeq ℝ abs where
   val := nestedIntervalSeq U
   property := nestedIntervalSeq_isCauSeq U
 
--- この行は無視してください。Leanに`ℝ`が完備であることを思い出させています。
+-- おまじない。Leanに`ℝ`が完備であることを思い出させています。
 local instance : CauSeq.IsComplete ℝ norm := inferInstanceAs (CauSeq.IsComplete ℝ abs)
 
 lemma nestedIntervalSeq_tendsto : 
