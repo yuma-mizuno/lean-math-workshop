@@ -56,13 +56,14 @@ instance : Group (G ⧸ N) where
     -- well-defined性
     sorry
   mul_assoc := by
-    -- 結合性。代表元を取って`change`で見やすくすればすぐ。
+    -- 結合性。まず代表元を取る。
     rintro ⟨a⟩ ⟨b⟩ ⟨c⟩
+    -- 次のように`change`でゴールを見やすくするとよい
     change (a * b * c) ⋆ N = (a * (b * c)) ⋆ N
+    -- もしくは`change`のかわりに、`simp`や`dsimp`を使ってもよい
     sorry
   one_mul := by
     rintro ⟨a⟩
-    -- 上と同じように`change`を使ってみよう。
     sorry
   mul_inv_left := by
     sorry
