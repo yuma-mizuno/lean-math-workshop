@@ -142,8 +142,8 @@ example (X : Type) (A : Set X) : (A : Type) = { x : X // x ∈ A } := rfl
 ただしこの`Group K`の`K`は実際には`K.Elem`のことなので、それに注意して書く必要がある。
 -/
 namespace Subgroup
-variable {K : Subgroup G}
-instance instGroup : Group K where
+variable {K : Subgroup G} -- `K`を`G`の部分群とする
+instance : Group K where
   /-
   例えば積を定義するときは、`a : K.Elem`と`b : K.Elem`から`K.Elem`の項を構成する必要がある。
   これには、`a.1 : G`と`b.1 : G`の積をペアの第一成分、
