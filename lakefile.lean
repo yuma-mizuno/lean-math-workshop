@@ -14,7 +14,7 @@ package «lean-math-workshop» {
 
 require mathlib from git
   "https://github.com/leanprover-community/mathlib4.git"
-    @"c6e395dd3bb117a6db28f2b094bc822994f7cee9"
+    @"23550c1e3b21f7f3312acb901cef261f51219f72"
 
 @[default_target]
 lean_lib «Tutorial» {
