@@ -24,7 +24,7 @@ lake exe cache get
 - [x] Advanced/Algebra/Lecture2 準同型の定義と基本性質
 - [x] Advanced/Algebra/Lecture3 群の集合への作用や同変写像
 - [x] Advanced/Algebra/Lecture4 左剰余類の集合、推移的`G`集合の構造定理
-- [ ] Advanced/Algebra/Lecture5 群の準同型定理（予定）
+- [x] Advanced/Algebra/Lecture5 正規部分群・商群・準同型定理
 - [x] Advanced/Category/Lecture1 圏の定義と例
 - [x] Advanced/Category/Lecture2 余極限の定義と例
 

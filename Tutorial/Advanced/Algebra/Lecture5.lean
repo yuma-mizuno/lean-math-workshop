@@ -146,7 +146,7 @@ instance instGroup : Group K where
   /-
   例えば積を定義するときは、`a : K.Elem`と`b : K.Elem`から`K.Elem`の項を構成する必要がある。
   これには、`a.1 : G`と`b.1 : G`の積をペアの第一成分、
-  そしてその積が`K`に属していることの証明を第二成分に与えれば良く、次のようにかける。
+  そしてその積が`K`に属していることの証明を第二成分に与えれば良く、次のように書ける。
   ここで`a.2 : a.1 ∈ K`だった。
   -/
   mul := fun a b ↦ ⟨a.1 * b.1, K.mul_mem a.2 b.2⟩
@@ -182,7 +182,8 @@ def rangeRestrict : G →* f.range where
 @[simp]
 theorem rangeRestrict_apply {a : G} : f.rangeRestrict a = f a := rfl
 
-def rangeKerLift : (G ⧸ f.ker) →* f.range :=
+/-- `f : G →* H`から誘導される`G ⧸ f.ker →* f.range`。つまり準同型定理で同型であることが主張される準同型。 -/
+def rangeKerLift : G ⧸ f.ker →* f.range :=
   f.rangeRestrict.kerLift <| by
     sorry
 
@@ -192,18 +193,18 @@ theorem rangeKerLift_apply {a : G} : f.rangeKerLift (a ⋆ f.ker) = f a := rfl
 
 #check injective_iff_map_eq_one -- これが便利かも
 /-- `f.rangeKerLift`は単射である。 -/
-theorem rangeKerLift_injective (f : G →* H) : Function.Injective f.rangeKerLift := by
+theorem rangeKerLift_injective : Function.Injective f.rangeKerLift := by
   sorry
 
 /-- `f.rangeKerLift`は全射である。 -/
-theorem rangeKerLift_surjective (f : G →* H) : Function.Surjective f.rangeKerLift := by
+theorem rangeKerLift_surjective : Function.Surjective f.rangeKerLift := by
   -- `f.range.Elem`から元を取るとき、下のようにすると`y : H`が取れ、わかりやすい
   intro ⟨y, hy⟩
   sorry
 
 /-- 群の準同型定理。`G ⧸ f.ker`と`f.range`の間に自然な群同型が誘導される。 -/
 -- 全て必要なことは示したので、やることはない。
-def quotientKerIsoRange : (G ⧸ f.ker) ≅* f.range where
+def quotientKerIsoRange : G ⧸ f.ker ≅* f.range where
   toFun := f.rangeKerLift
   map_mul' := f.rangeKerLift.map_mul'
   injective := f.rangeKerLift_injective
