@@ -134,8 +134,7 @@ namespace Coproduct
 
 /- 2元集合は帰納型として定義される。帰納型は`inductive`コマンドで定義することができる。
 帰納型の詳細については https://aconite-ac.github.io/theorem_proving_in_lean4_ja/inductive_types.html
-を参照せよ。
- -/
+を参照せよ。-/
 
 /-- 2元集合 `{l, r}` -/
 inductive Shape : Type

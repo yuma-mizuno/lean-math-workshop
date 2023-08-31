@@ -27,3 +27,8 @@ lake exe cache get
 - [ ] Advanced/Algebra/Lecture5 群の準同型定理（予定）
 - [x] Advanced/Category/Lecture1 圏の定義と例
 - [x] Advanced/Category/Lecture2 余極限の定義と例
+
+## 参考書など
+- [Theorem Proving in Lean 4](https://leanprover.github.io/theorem_proving_in_lean4/)は基礎的なことが詳しく書いてある教科書です。Leanで証明を書いていて知りたいことが出てきたらまずはこれを参考にすると良いです。[日本語訳](https://aconite-ac.github.io/theorem_proving_in_lean4_ja/)もあります。
+
+- [A mathlib overview](https://leanprover-community.github.io/mathlib-overview.html)では、Leanの数学ライブラリmathlibで扱われている数学を概観できます。
