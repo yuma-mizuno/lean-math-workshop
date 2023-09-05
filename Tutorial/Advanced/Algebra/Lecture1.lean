@@ -184,7 +184,7 @@ theorem inv_one : (1 : G)⁻¹ = 1 := by
   sorry
 
 @[simp]
-theorem inv_inv {a : G} : a⁻¹⁻¹ = a := by
+theorem inv_inv (a : G) : a⁻¹⁻¹ = a := by
   sorry
 
 /-- 積の逆元は逆元をひっくり返した積。 -/
