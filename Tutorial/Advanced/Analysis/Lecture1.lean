@@ -211,7 +211,6 @@ variable {g : ℝ → ℝ} {g' : ℝ}
 /-- 合成関数の微分 -/
 theorem HasDerivAt.comp (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' (f a)) : 
     HasDerivAt (g ∘ f) (g' * f') a := by
-  rw [hasDerivAt_iff_isLittleO] at *
   have h₁ := 
     calc (fun x ↦ g (f x) - g (f a) - (f x - f a) * g') 
         =o[𝓝 a] fun x ↦ f x - f a                := ?eq1
