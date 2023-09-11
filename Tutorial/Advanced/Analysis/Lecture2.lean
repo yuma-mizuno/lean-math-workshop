@@ -47,7 +47,7 @@ theorem IsLocalMax.hasDerivAt_eq_zero (h : IsLocalMax f a) (hf : HasDerivAt f f'
   -- `f' ≤ 0`と`0 ≤ f'`を示す。
   apply le_antisymm ?right ?left
   case right =>
-    -- `x`を`a`に右側から近づけたとき`(f x - f a) / (x - a)`は`f`に収束する。
+    -- `x`を`a`に右側から近づけたとき`(f x - f a) / (x - a)`は`f'`に収束する。
     have hf : Tendsto (fun x ↦ (f x - f a) / (x - a)) (𝓝[>] a) (𝓝 f') := by
       rw [hasDerivAt_iff_tendsto_slope] at hf
       apply hf.mono_left (nhds_right'_le_nhds_ne a)
