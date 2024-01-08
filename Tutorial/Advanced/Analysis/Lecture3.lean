@@ -27,9 +27,23 @@ def «0.9999999» : CauSeq ℚ abs where
     intro j hj
     calc |(10 ^ i : ℚ)⁻¹ - (10 ^ j : ℚ)⁻¹|
       _ ≤ |(10 ^ i : ℚ)⁻¹| + |(10 ^ j : ℚ)⁻¹| := by apply abs_sub
-      _ ≤ |(10 ^ i : ℚ)⁻¹| + |(10 ^ i : ℚ)⁻¹| := by simpa [abs] using inv_pow_le_inv_pow_of_le (by linarith) hj
-      _ = 2 * (10 ^ i : ℚ)⁻¹                  := by simp [abs]; ring
+      _ ≤ |(10 ^ i : ℚ)⁻¹| + |(10 ^ i : ℚ)⁻¹| := ?lem1
+      _ = 2 * (10 ^ i : ℚ)⁻¹                  := ?lem2
       _ < ε                                   := hi
+
+    case lem1 =>
+      suffices |(10 ^ j : ℚ)⁻¹| ≤ |(10 ^ i : ℚ)⁻¹| from by linarith
+      repeat rw [abs_of_pos]
+      apply inv_pow_le_inv_pow_of_le (by linarith) hj
+      all_goals
+        have p_pow (n : ℕ) : (10 ^ n : ℚ)⁻¹ > 0 := inv_pos.mpr (pow_pos (by norm_num) n)
+        simp_all
+
+    case lem2 =>
+      rw [← two_mul, abs_of_pos]
+      simp_rw [inv_pos]
+      apply pow_pos
+      simp_arith
 
 -- `0.9999999...`は`1`と等しい
 theorem «0.9999999 = 1» : Real.ofCauchy (Quotient.mk CauSeq.equiv «0.9999999») = (1 : ℝ) := by
@@ -39,7 +53,17 @@ theorem «0.9999999 = 1» : Real.ofCauchy (Quotient.mk CauSeq.equiv «0.9999999�
   congr 1
   apply Quotient.sound
   intro ε ε0
-  suffices ∃ i, ∀ (j : ℕ), j ≥ i → (10 ^ j : ℚ)⁻¹ < ε by simpa [abs]
+  suffices ∃ i, ∀ (j : ℕ), j ≥ i → (10 ^ j : ℚ)⁻¹ < ε from by
+    simp_all
+    have ⟨i, hi⟩ := this
+    exists i
+    intro j hj
+    replace hi := hi j hj
+    rw [abs_of_pos]
+    · assumption
+    · rw [inv_pos]
+      apply pow_pos
+      simp_arith
   -- ヒント: `pow_unbounded_of_one_lt`と`inv_lt_of_inv_lt`を使って、欲しい`i`を手に入れよう
   sorry
 
