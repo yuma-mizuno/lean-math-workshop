@@ -1,0 +1,47 @@
+name: Test
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain $(cat lean-toolchain)
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./lake-packages
+          key: deps-${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}
+          restore-keys: |
+            deps-${{ runner.os }}-${{ hashFiles('lean-toolchain') }}
+
+      - name: Cache build
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./build
+          key: build-${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{ github.sha }}
+          restore-keys: |
+            build-${{ runner.os }}-${{ hashFiles('lean-toolchain') }}
+
+      - name: get mathlib cache
+        run: lake exe cache get
+
+      - name: run 'lake build'
+        run: lake build
