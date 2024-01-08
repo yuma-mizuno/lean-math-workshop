@@ -1,4 +1,5 @@
 import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 
 /- # mathlib
 mathlibは有志のコミュニテイーによって開発されている数学ライブラリである。
