@@ -15,7 +15,7 @@ mathlibではランダウ記号を次のように記述する。
 
 -- 定数倍は自身のBig O
 example : (fun x ↦ 2 * x : ℝ → ℝ) =O[𝓝 0] (fun x ↦ x : ℝ → ℝ) := by
-  apply Asymptotics.isBigO_const_mul_self 
+  apply Asymptotics.isBigO_const_mul_self
 
 -- `x ^ 2`は`x`よりも速くゼロに近づく
 example : (fun x ↦ x ^ 2 : ℝ → ℝ) =o[𝓝 0] (fun x ↦ x : ℝ → ℝ) := by
@@ -23,13 +23,13 @@ example : (fun x ↦ x ^ 2 : ℝ → ℝ) =o[𝓝 0] (fun x ↦ x : ℝ → ℝ)
 
 -- ランダウ記号の計算は、あたかも等式の変形のように扱えて便利
 example : (fun x ↦ 11 * x ^ 5 + 4 * x ^ 3 : ℝ → ℝ) =o[𝓝 0] (fun x ↦ 23 * x ^ 2 : ℝ → ℝ) := by
-  have h₁ := 
-    calc (fun x ↦  11 * x ^ 5 : ℝ → ℝ) 
+  have h₁ :=
+    calc (fun x ↦  11 * x ^ 5 : ℝ → ℝ)
       _ =O[𝓝 0] fun x ↦ x ^ 5        := by apply isBigO_const_mul_self
       _ =o[𝓝 0] fun x ↦ x ^ 2        := by apply isLittleO_pow_pow (by linarith)
       _ =O[𝓝 0] fun x ↦ 23 * x ^ 2   := by apply isBigO_self_const_mul _ (by linarith)
-  have h₂ := 
-    calc (fun x ↦ 4 * x ^ 3 : ℝ → ℝ) 
+  have h₂ :=
+    calc (fun x ↦ 4 * x ^ 3 : ℝ → ℝ)
       _ =O[𝓝 0] fun x ↦ x ^ 3        := by apply isBigO_const_mul_self
       _ =o[𝓝 0] fun x ↦ x ^ 2        := by apply isLittleO_pow_pow (by linarith)
       _ =O[𝓝 0] fun x ↦ 23 * x ^ 2   := by apply isBigO_self_const_mul _ (by linarith)
@@ -38,26 +38,26 @@ example : (fun x ↦ 11 * x ^ 5 + 4 * x ^ 3 : ℝ → ℝ) =o[𝓝 0] (fun x ↦
 /- # 微分 -/
 
 /-- 関数`f : ℝ → ℝ`の`a : ℝ`における微分係数は`f' : ℝ`である -/
-def HasDerivAt (f : ℝ → ℝ) (f' : ℝ) (a : ℝ) := 
-  (fun x ↦ f x - f a - (x - a) * f') =o[𝓝 a] fun x ↦ x - a 
+def HasDerivAt (f : ℝ → ℝ) (f' : ℝ) (a : ℝ) :=
+  (fun x ↦ f x - f a - (x - a) * f') =o[𝓝 a] fun x ↦ x - a
 
 /- 以下、4つの同値な特徴づけを与える（同値性の証明については読み飛ばしても構わない） -/
 
 variable {f : ℝ → ℝ} {f' : ℝ} {a : ℝ}
 
 /-- 1. `x`が`a`に近づくとき`f x = f a + (x - a) * f' + o(x - a)`である -/
-theorem hasDerivAt_iff_isLittleO : 
+theorem hasDerivAt_iff_isLittleO :
     HasDerivAt f f' a ↔ (fun x ↦ f x - f a - (x - a) * f') =o[𝓝 a] fun x ↦ x - a := by
   rfl
 
 /-- 2. `h`が`0`に近づくとき`f (a + h) = f a + h * f' + o(h)`である -/
-theorem hasDerivAt_iff_isLittleO_nhds_zero : 
+theorem hasDerivAt_iff_isLittleO_nhds_zero :
     HasDerivAt f f' a ↔ (fun h ↦ f (a + h) - f a - h * f') =o[𝓝 0] fun h ↦ h := by
   rw [hasDerivAt_iff_isLittleO, ← map_add_left_nhds_zero a, Asymptotics.isLittleO_map]
   simp [(· ∘ ·)]
 
 /-- 3. `x`が`a`に近づくとき`(f x - f a - (x - a) * f') / (x - a)`は`0`に近づく -/
-theorem hasDerivAt_iff_tendsto : 
+theorem hasDerivAt_iff_tendsto :
     HasDerivAt f f' a ↔ Tendsto (fun x ↦ (f x - f a - (x - a) * f') / (x - a)) (𝓝[≠] a) (𝓝 0) := by
   calc HasDerivAt f f' a
     _ ↔ Tendsto (fun x ↦ (f x - f a - (x - a) * f') / (x - a)) (𝓝 a) (𝓝 0)      := ?iff1
@@ -66,7 +66,7 @@ theorem hasDerivAt_iff_tendsto :
   case iff2 => exact .symm <| tendsto_inf_principal_nhds_iff_of_forall_eq <| by simp
 
 /-- 4. `x`が`a`に近づくとき`(f x - f a) / (x - a)`は`f'`に近づく -/
-theorem hasDerivAt_iff_tendsto_slope : 
+theorem hasDerivAt_iff_tendsto_slope :
     HasDerivAt f f' a ↔ Tendsto (fun x ↦ (f x - f a) / (x - a)) (𝓝[≠] a) (𝓝 f') := by
   calc HasDerivAt f f' a
     _ ↔ Tendsto (fun x ↦ (f x - f a) / (x - a) - (x - a) / (x - a) * f') (𝓝[≠] a) (𝓝 0) := ?iff1
@@ -79,7 +79,7 @@ theorem hasDerivAt_iff_tendsto_slope :
 -- 具体例として、`x ↦ x ^ 2`の微分係数を求める。ここでは2つめの定義を使う。
 example (a : ℝ) : HasDerivAt (fun x ↦ x ^ 2) (2 * a) a := by
   rw [hasDerivAt_iff_isLittleO_nhds_zero]
-  calc (fun h ↦ (a + h) ^ 2 - a ^ 2 - h * (2 * a)) 
+  calc (fun h ↦ (a + h) ^ 2 - a ^ 2 - h * (2 * a))
     _ = fun h ↦ h ^ 2                        := ?eq1
     _ =o[𝓝 0] fun h ↦ h                     := ?eq2
   case eq1 =>
@@ -111,18 +111,18 @@ section Landau
 variable {f g h f₁ g₁ f₂ g₂ : ℝ → ℝ} {a b : ℝ}
 
 theorem IsLittleO.add (h₁ : f₁ =o[𝓝 a] g) (h₂ : f₂ =o[𝓝 a] g) :
-    (fun x ↦ f₁ x + f₂ x) =o[𝓝 a] g := 
+    (fun x ↦ f₁ x + f₂ x) =o[𝓝 a] g :=
   Asymptotics.IsLittleO.add h₁ h₂
 
-theorem IsLittleO.const_mul_left (h : f =o[𝓝 a] g) (c : ℝ) : 
+theorem IsLittleO.const_mul_left (h : f =o[𝓝 a] g) (c : ℝ) :
     (fun x ↦ c * f x) =o[𝓝 a] g :=
   Asymptotics.IsLittleO.const_mul_left h c
 
-theorem isBigO_const_mul_self (c : ℝ) (f : ℝ → ℝ) : 
+theorem isBigO_const_mul_self (c : ℝ) (f : ℝ → ℝ) :
     (fun x ↦ c * f x) =O[𝓝 a] f :=
   Asymptotics.isBigO_const_mul_self c f (𝓝 a)
 
-theorem IsLittleO.comp_tendsto (hfg : f =o[𝓝 b] g) (hh : Tendsto h (𝓝 a) (𝓝 b)) : 
+theorem IsLittleO.comp_tendsto (hfg : f =o[𝓝 b] g) (hh : Tendsto h (𝓝 a) (𝓝 b)) :
     (f ∘ h) =o[𝓝 a] (g ∘ h) :=
   Asymptotics.IsLittleO.comp_tendsto hfg hh
 
@@ -135,7 +135,7 @@ end Landau
 theorem hasDerivAt_const (c : ℝ) : HasDerivAt (fun _ ↦ c) 0 a := by
   rw [hasDerivAt_iff_isLittleO]
   -- ヒント: `simp`を使おう
-  sorry 
+  sorry
 
 theorem hasDerivAt_id (a : ℝ) : HasDerivAt id 1 a := by
   rw [hasDerivAt_iff_isLittleO]
@@ -144,8 +144,8 @@ theorem hasDerivAt_id (a : ℝ) : HasDerivAt id 1 a := by
 theorem HasDerivAt.add (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' a) :
     HasDerivAt (fun x ↦ f x + g x) (f' + g') a := by
   rw [hasDerivAt_iff_isLittleO] at *
-  calc (fun x ↦ f x + g x - (f a + g a) - (x - a) * (f' + g')) 
-    _ = fun x ↦ (f x - f a - (x - a) * f') + (g x - g a - (x - a) * g') := ?eq1 
+  calc (fun x ↦ f x + g x - (f a + g a) - (x - a) * (f' + g'))
+    _ = fun x ↦ (f x - f a - (x - a) * f') + (g x - g a - (x - a) * g') := ?eq1
     _ =o[𝓝 a] fun x ↦ x - a                                            := ?eq2
   case eq1 =>
     -- ヒント: 関数の間の等号を示したいときは`funext`を使おう
@@ -161,7 +161,7 @@ theorem HasDerivAt.const_mul (c : ℝ) (hf : HasDerivAt f f' a) :
   sorry
 
 -- Lecture 2で用いる
-theorem HasDerivAt.neg (hf : HasDerivAt f f' a) : 
+theorem HasDerivAt.neg (hf : HasDerivAt f f' a) :
     HasDerivAt (fun x ↦ -f x) (-f') a :=
   suffices HasDerivAt (fun x ↦ -1 * f x) (-1 * f') a by simpa using this
   hf.const_mul (-1)
@@ -177,11 +177,11 @@ theorem HasDerivAt.sub (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' a) :
 用いるので、まずはそれに関連する命題を示しておく。
 -/
 
-theorem HasDerivAt.isBigO_sub (h : HasDerivAt f f' a) : 
+theorem HasDerivAt.isBigO_sub (h : HasDerivAt f f' a) :
     (fun x ↦ f x - f a) =O[𝓝 a] fun x ↦ x - a := by
   rw [hasDerivAt_iff_isLittleO] at h
   rw [h.isBigO.congr_of_sub]
-  calc (fun x ↦ (x - a) * f') 
+  calc (fun x ↦ (x - a) * f')
     _ = fun x ↦ f' * (x - a)  := ?eq1
     _ =O[𝓝 a] fun x ↦ x - a  := ?eq2
   case eq1 =>
@@ -192,7 +192,7 @@ theorem HasDerivAt.isBigO_sub (h : HasDerivAt f f' a) :
     sorry
 
 /-- 微分可能ならば連続 -/
-theorem HasDerivAt.continuousAt (h : HasDerivAt f f' a) : 
+theorem HasDerivAt.continuousAt (h : HasDerivAt f f' a) :
     Tendsto f (𝓝 a) (𝓝 (f a)) := by
   have : Tendsto (fun x ↦ f x - f a + f a) (𝓝 a) (𝓝 (0 + f a)) := by
     apply Tendsto.add _ tendsto_const_nhds
@@ -209,22 +209,22 @@ theorem HasDerivAt.continuousAt (h : HasDerivAt f f' a) :
 variable {g : ℝ → ℝ} {g' : ℝ}
 
 /-- 合成関数の微分 -/
-theorem HasDerivAt.comp (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' (f a)) : 
+theorem HasDerivAt.comp (hf : HasDerivAt f f' a) (hg : HasDerivAt g g' (f a)) :
     HasDerivAt (g ∘ f) (g' * f') a := by
-  have h₁ := 
-    calc (fun x ↦ g (f x) - g (f a) - (f x - f a) * g') 
+  have h₁ :=
+    calc (fun x ↦ g (f x) - g (f a) - (f x - f a) * g')
         =o[𝓝 a] fun x ↦ f x - f a                := ?eq1
       _ =O[𝓝 a] fun x ↦ x - a                    := ?eq2
-  have h₂ := 
+  have h₂ :=
     calc (fun x ↦ (f x - f a) * g' - (x - a) * (g' * f'))
       _ = fun x ↦ g' * (f x - f a - (x - a) * f') := ?eq3
-      _ =O[𝓝 a] fun x ↦ f x - f a - (x - a) * f' := ?eq4 
+      _ =O[𝓝 a] fun x ↦ f x - f a - (x - a) * f' := ?eq4
       _ =o[𝓝 a] fun x ↦ x - a                    := ?eq5
   apply h₁.triangle h₂
   case eq1 =>
     -- `IsLittleO.comp_tendsto`が使える
     sorry
-  case eq2 => 
+  case eq2 =>
     sorry
   case eq3 =>
     sorry
@@ -241,17 +241,17 @@ theorem HasDerivAt.mul {f : ℝ → ℝ} (hf : HasDerivAt f f' a) (hg : HasDeriv
     HasDerivAt (fun x ↦ f x * g x) (f' * g a + f a * g') a := by
   rw [hasDerivAt_iff_isLittleO]
   calc (fun x ↦ f x * g x - f a * g a - (x - a) * (f' * g a + f a * g'))
-    _ = fun x ↦ g a * (f x - f a - (x - a) * f') + 
+    _ = fun x ↦ g a * (f x - f a - (x - a) * f') +
           (f a * (g x - g a - (x - a) * g') + (f x - f a) * (g x - g a)) := ?eq1
     _ =o[𝓝 a] fun x ↦ x - a                                             := ?eq2
   case eq1 =>
     sorry
   case eq2 =>
-    have hf' : (fun x ↦ g a * (f x - f a - (x - a) * f')) =o[𝓝 a] fun x ↦ x - a := 
+    have hf' : (fun x ↦ g a * (f x - f a - (x - a) * f')) =o[𝓝 a] fun x ↦ x - a :=
       sorry
-    have hg' : (fun x ↦ f a * (g x - g a - (x - a) * g')) =o[𝓝 a] fun x ↦ x - a := 
+    have hg' : (fun x ↦ f a * (g x - g a - (x - a) * g')) =o[𝓝 a] fun x ↦ x - a :=
       sorry
-    have hfg := 
+    have hfg :=
       calc (fun x ↦ (f x - f a) * (g x - g a))
         _ =o[𝓝 a] fun x ↦ (x - a) * 1      := ?eq3
         _ = fun x ↦ x - a                   := ?eq4
@@ -264,17 +264,17 @@ theorem HasDerivAt.mul {f : ℝ → ℝ} (hf : HasDerivAt f f' a) (hg : HasDeriv
       sorry
     case eq4 =>
       sorry
-  
+
 -- 次の問題で使うかも？
 #check Nat.succ_eq_add_one
 
 /-- 単項式の微分 -/
-theorem hasDerivAt_pow (n : ℕ) (a : ℝ) : 
+theorem hasDerivAt_pow (n : ℕ) (a : ℝ) :
     HasDerivAt (fun x ↦ x ^ (n + 1)) ((n + 1) * a ^ n) a := by
   -- ヒント: `induction n`で帰納法が使える。`induction`の使い方は`cases`と大体同じ。
   sorry
 
-/- 
+/-
 TIPS: 右画面の表示に現れる`↑n`はcoercionといって、ここでは自然数を実数と思いたいときに現れる。
 つまり、`n : ℕ`に対して`↑n : ℝ`となる。
 -/
@@ -304,7 +304,7 @@ example (a : ℝ) : HasDerivAt (fun x ↦ x ^ 2) (2 * a) a := by
 
 1.の方法に慣れている数学者からすると3.の方法は受け入れがたいかもしれない。確かに一見「ad-hoc」で
 「不自然」なようにも思える。しかしLeanで数学をやる際にはこの方法がもっとも便利だと考えられている。
-この話題についてより詳しく知りたい場合はブログ記事 
+この話題についてより詳しく知りたい場合はブログ記事
 https://xenaproject.wordpress.com/2020/07/05/division-by-zero-in-type-theory-a-faq/
 を参照せよ。
 
@@ -324,7 +324,7 @@ example (a : ℝ) (ha : a ≠ 0) : HasDerivAt (fun x ↦ x⁻¹) (-(a ^ 2)⁻¹)
   rw [show (a ^ 2)⁻¹ = a⁻¹ * a⁻¹ by ring]
   apply (tendsto_inv₀ ha).mul_const a⁻¹
 
-/- 
+/-
 この例における`fun x ↦ x⁻¹`の型は`ℝ → ℝ`であり、全域関数として扱われている。つまり`0⁻¹`にも何らか
 の値を割り当てている。その値が気になるかもしれないが...実は気にする必要はない。上の証明は`0⁻¹`の値
 がなんであろうと成立する。また、仮定に`a ≠ 0`があるので、上記の主張では`x⁻¹`の`0`における微分係数に

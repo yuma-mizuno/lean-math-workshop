@@ -47,7 +47,7 @@ def leftQuotient (G) [Group G] (H : Subgroup G) :=
   Quotient (leftRel H)
 
 -- `G ⧸ H`と書くおまじない。`⧸`は`\quot`か`\/`で入力。
-infixl:35 " ⧸ " => leftQuotient 
+infixl:35 " ⧸ " => leftQuotient
 
 -- 以下この節では`G`を群、`H`をその部分群とする。
 variable [Group G] {H : Subgroup G}
@@ -71,7 +71,7 @@ theorem eq' {a b : G} : a ⋆ H = b ⋆ H ↔ (leftRel H).r a b :=
 
 /-- 同値類が等しいことの言い換え。 -/
 @[simp]
-theorem eq {a b : G} : a ⋆ H = b ⋆ H ↔ a⁻¹ * b ∈ H := 
+theorem eq {a b : G} : a ⋆ H = b ⋆ H ↔ a⁻¹ * b ∈ H :=
   eq'.trans leftRel_apply
 
 @[simp]

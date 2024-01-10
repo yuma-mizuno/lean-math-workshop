@@ -18,10 +18,10 @@ example (n : ℤ) : ∃ m : ℤ, m < n := by
 def Even (n : ℤ) : Prop := ∃ k, n = 2 * k
 def Odd  (n : ℤ) : Prop := ∃ k, n = 2 * k + 1
 
-example : Even 4 := by 
+example : Even 4 := by
   exists 2
 
-example : Odd 11 := by 
+example : Odd 11 := by
   exists 5
 
 /-
@@ -33,7 +33,7 @@ example (m n : ℤ) (hm : Even m) (hn : Even n) : Even (m + n) := by
   have ⟨k₁, hk₁⟩ := hm
   have ⟨k₂, hk₂⟩ := hn
   exists k₁ + k₂
-  calc m + n = 2 * k₁ + n := by rw [hk₁] 
+  calc m + n = 2 * k₁ + n := by rw [hk₁]
     _ = 2 * k₁ + 2 * k₂   := by rw [hk₂]
     _ = 2 * (k₁ + k₂)     := by ring
 
@@ -41,7 +41,7 @@ example (m n : ℤ) (hm : Odd m) (hn : Even n) : Odd (m + n) := by
   have ⟨k₁, hk₁⟩ := hm
   have ⟨k₂, hk₂⟩ := hn
   exists k₁ + k₂
-  calc m + n = 2 * k₁ + 1 + n := by rw [hk₁] 
+  calc m + n = 2 * k₁ + 1 + n := by rw [hk₁]
     _ = 2 * k₁ + 1 + 2 * k₂   := by rw [hk₂]
     _ = 2 * (k₁ + k₂) + 1   := by ring
 
@@ -57,7 +57,7 @@ example : ∀ x : ℤ, ∃ y : ℤ, x < y := by
 
 example : ∃ x : ℤ, ∀ y : ℤ, y + y = x * y := by
   exists 2
-  intro y 
+  intro y
   ring
 
 

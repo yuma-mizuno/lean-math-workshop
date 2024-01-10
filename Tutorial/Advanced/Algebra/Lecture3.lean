@@ -129,7 +129,7 @@ instance : FunLike (GroupActionHom G X Y) X (fun _ ↦ Y) where
 /-- underlying functionが`f`の同変写像を単なる写像とみなしたものは`f`と等しい。 -/
 -- 当たり前の事実だがsimpで使えるようにしておくと便利なのでそうしておく。
 @[simp]
-theorem GroupActionHom.coe_coe (f : X → Y) (h) : ((⟨f, h⟩ : X →[G] Y) : X → Y) = f := 
+theorem GroupActionHom.coe_coe (f : X → Y) (h) : ((⟨f, h⟩ : X →[G] Y) : X → Y) = f :=
   rfl
 
 -- 定義からすぐ分かること

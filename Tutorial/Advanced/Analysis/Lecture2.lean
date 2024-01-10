@@ -3,9 +3,9 @@ import Tutorial.Advanced.Analysis.Lecture1
 namespace Tutorial
 
 open scoped Topology Uniformity
-open Set Filter 
+open Set Filter
 
-variable {f : ℝ → ℝ} {f' : ℝ} {x a b : ℝ} 
+variable {f : ℝ → ℝ} {f' : ℝ} {x a b : ℝ}
 
 /-
 このファイルの目標は**平均値の定理**の証明である。
@@ -28,7 +28,7 @@ example (P : ℝ → Prop) : (∀ᶠ x in 𝓝 a, P x) ↔ ∃ ε, ε > 0 ∧ �
 ができるが、以下ではmathlibの定理を上手く使うことで`ε > 0`を直接使わないで証明を進める。
 -/
 
-/- 
+/-
 `∀ᶠ x in 𝓝 a, P x`といった記号の正確な意味を理解するには、**フィルター**という概念を知る
 必要がある。といっても、以下の演習問題を解く際にはフィルターとは何かを正確に知らなくても
 問題ないと思う。近傍`𝓝 a`は直感通りの挙動をするだろう。
@@ -42,7 +42,7 @@ example (P : ℝ → Prop) : (∀ᶠ x in 𝓝 a, P x) ↔ ∃ ε, ε > 0 ∧ �
 -/
 
 /-- 極大値を取る点での微分係数はゼロ -/
-theorem IsLocalMax.hasDerivAt_eq_zero (h : IsLocalMax f a) (hf : HasDerivAt f f' a) : 
+theorem IsLocalMax.hasDerivAt_eq_zero (h : IsLocalMax f a) (hf : HasDerivAt f f' a) :
     f' = 0 := by
   -- `f' ≤ 0`と`0 ≤ f'`を示す。
   apply le_antisymm ?right ?left
@@ -114,15 +114,15 @@ theorem exists_local_extr_Ioo (hab : a < b) (hfc : ContinuousOn f (Icc a b)) (hf
   · refine ⟨c, ⟨lt_of_le_of_ne cmem.1 <| mt ?_ hc, lt_of_le_of_ne cmem.2 <| mt ?_ hc⟩, Or.inl cle⟩
     exacts [fun h ↦ by rw [h], fun h ↦ by rw [h, hfI]]
 
-variable {f f' : ℝ → ℝ} {g g' : ℝ → ℝ} {a b : ℝ} 
+variable {f f' : ℝ → ℝ} {g g' : ℝ → ℝ} {a b : ℝ}
 
 /-- Rolleの定理 -/
 theorem exists_hasDerivAt_eq_zero (hab : a < b) (hfc : ContinuousOn f (Icc a b)) (hfI : f a = f b)
     (hff' : ∀ x ∈ Ioo a b, HasDerivAt f (f' x) x) : ∃ c ∈ Ioo a b, f' c = 0 := by
   sorry
-  
+
 /-- Cauchyの平均値の定理 -/
-theorem exists_ratio_hasDerivAt_eq_ratio_slope (hab : a < b) 
+theorem exists_ratio_hasDerivAt_eq_ratio_slope (hab : a < b)
     (hfc : ContinuousOn f (Icc a b)) (hff' : ∀ x ∈ Ioo a b, HasDerivAt f (f' x) x)
       (hgc : ContinuousOn g (Icc a b)) (hgg' : ∀ x ∈ Ioo a b, HasDerivAt g (g' x) x) :
         ∃ c ∈ Ioo a b, (g b - g a) * f' c = (f b - f a) * g' c := by
@@ -135,8 +135,8 @@ theorem exists_ratio_hasDerivAt_eq_ratio_slope (hab : a < b)
 #check eq_div_iff
 
 /-- Lagrangeの平均値の定理 -/
-theorem exists_hasDerivAt_eq_slope (hab : a < b) 
-    (hfc : ContinuousOn f (Icc a b)) (hff' : ∀ x ∈ Ioo a b, HasDerivAt f (f' x) x) : 
+theorem exists_hasDerivAt_eq_slope (hab : a < b)
+    (hfc : ContinuousOn f (Icc a b)) (hff' : ∀ x ∈ Ioo a b, HasDerivAt f (f' x) x) :
       ∃ c ∈ Ioo a b, f' c = (f b - f a) / (b - a) := by
   sorry
 

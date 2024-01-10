@@ -30,13 +30,13 @@ universe u v
 
 /- 圏の定義は驚くほど単純に記述できる。-/
 
-class Category (C : Type u) where 
-  Hom : C → C → Type v 
+class Category (C : Type u) where
+  Hom : C → C → Type v
   comp : ∀ {a b c : C}, Hom a b → Hom b c → Hom a c
   id : ∀ (a : C), Hom a a
   id_comp : ∀ {a b : C} (f : Hom a b), comp (id a) f = f := by aesop
   comp_id : ∀ {a b : C} (f : Hom a b), comp f (id b) = f := by aesop
-  assoc : ∀ {a b c d : C} (f : Hom a b) (g : Hom b c) (h : Hom c d), 
+  assoc : ∀ {a b c d : C} (f : Hom a b) (g : Hom b c) (h : Hom c d),
     comp (comp f g) h = comp f (comp g h) := by aesop
 
 /- 以降、`[Category C]`と書くことで集合`C`に圏構造を載せることができる。
@@ -75,12 +75,12 @@ attribute [simp] id_comp comp_id assoc
 
 variable {C : Type u} [Category.{u, v} C] {a b c d e : C}
 
-example (f : Hom a b) (g : Hom b c) (h : Hom c d) (i : Hom d e) : 
+example (f : Hom a b) (g : Hom b c) (h : Hom c d) (i : Hom d e) :
     (f ≫ (𝟙 b ≫ g)) ≫ (h ≫ i) = f ≫ (g ≫ ((𝟙 c ≫ h) ≫ i)) := by
   -- ヒント: `simp`を使えば圏の公理を使って式が簡略化される
   sorry
 
-example (f : Hom a b) (g : Hom b a) (h₁ h₂ : Hom b c) (Hgf : g ≫ f = 𝟙 b) (Hfh : f ≫ h₁ = f ≫ h₂) : 
+example (f : Hom a b) (g : Hom b a) (h₁ h₂ : Hom b c) (Hgf : g ≫ f = 𝟙 b) (Hfh : f ≫ h₁ = f ≫ h₂) :
     h₁ = h₂ := by
   calc h₁ = 𝟙 b ≫ h₁ := by simp
     _ = (g ≫ f) ≫ h₁ := by rw [Hgf]
@@ -90,7 +90,7 @@ example (f : Hom a b) (g : Hom b a) (h₁ h₂ : Hom b c) (Hgf : g ≫ f = 𝟙 
 /- # 圏の例 -/
 
 /-- 型の圏。Leanにおける「集合の圏」である。-/
-instance : Category Type where 
+instance : Category Type where
   Hom X Y := X → Y
   -- 合成の順序が逆であることに注意する
   comp f g := g ∘ f
@@ -99,7 +99,7 @@ instance : Category Type where
   いることを意味する -/
 
 /- TIPS: `pp.universes`オプションによって、宇宙を明示させることができる。-/
-set_option pp.universes true in 
+set_option pp.universes true in
 #check inferInstanceAs (Category Type)
 /- 先ほど型の圏を定義した際には圏の宇宙を明示していなかったにも関わらず、Leanが
 `u = 1`, `v = 0`という宇宙変数の割り当てを行っていることがわかる。このように、
@@ -114,20 +114,20 @@ theorem id_app (X : Type) (x : X) : 𝟙 X x = x := by
   rfl
 
 /-- 可換環の圏 -/
-structure CommRingCat where 
+structure CommRingCat where
   /- 環は、底集合とその上の環構造から成る。-/
   base : Type
   /- mathlibでは型`R`上の環構造の型を`CommRing R`で表す（なので圏そのものを`CommRing`と書けない...）-/
   str : CommRing base
 
 /- おまじない。`R : CommRingCat`に対して`a : R`と書けるようになる。 -/
-instance : CoeSort CommRingCat Type := ⟨fun R ↦ R.base⟩ 
+instance : CoeSort CommRingCat Type := ⟨fun R ↦ R.base⟩
 /- おまじない。`R : CommRingCat`に対しては`R.base`上の環構造として`R.str`を用いる。 -/
 instance (R : CommRingCat) : CommRing R.base := R.str
 
 /- `CommRingCat`が実際に圏となることをみてみよう。-/
 
-instance : Category CommRingCat where 
+instance : Category CommRingCat where
   -- 射は環準同型
   Hom R S := RingHom R S
   -- 合成と恒等射を与える
@@ -142,7 +142,7 @@ instance : Category CommRingCat where
 /- 次は可換環`R`に対して`R`上の可換代数の圏を定義する。-/
 
 /-- `R`上の可換代数の圏 -/
-structure CommAlgCat (R : CommRingCat) where 
+structure CommAlgCat (R : CommRingCat) where
   -- 底集合
   base : Type
   -- 底集合上の可換環の構造
@@ -153,12 +153,12 @@ structure CommAlgCat (R : CommRingCat) where
 variable {R : CommRingCat}
 
 /- おまじない -/
-instance : CoeSort (CommAlgCat R) Type := ⟨fun M ↦ M.base⟩ 
+instance : CoeSort (CommAlgCat R) Type := ⟨fun M ↦ M.base⟩
 instance {M : CommAlgCat R} : CommRing M := M.ringStr
 instance {M : CommAlgCat R} : Algebra R M := M.algStr
 
 @[simps]
-instance {R : CommRingCat} : Category (CommAlgCat R) where 
+instance {R : CommRingCat} : Category (CommAlgCat R) where
   Hom A B := AlgHom R A B
   comp f g := AlgHom.comp g f
   id A := AlgHom.id R A
@@ -169,7 +169,7 @@ instance {R : CommRingCat} : Category (CommAlgCat R) where
 /- 定義の上の`@[simps]`はおまじないで、ここでは特に意味がない。`Lecture 2`で役に立つ。 -/
 
 -- おまじない。`Lecture 2`で役に立つ。
-instance {A B : CommAlgCat R} : AlgHomClass (Hom A B) R A B := 
+instance {A B : CommAlgCat R} : AlgHomClass (Hom A B) R A B :=
   inferInstanceAs <| AlgHomClass (A →ₐ[R] B) R A B
 
 end Tutorial
