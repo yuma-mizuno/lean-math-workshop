@@ -12,23 +12,23 @@ mathlibは現在も活発に発展しているライブラリであるが、既�
 現在のゴールに適用可能なmathlibの定理(もしくは定義)を探すtactic
 -/
 
-example [Group G] [Group H] (f : G →* H) (a b : G) : 
-    f (a * b) = f a * f b := by 
+example [Group G] [Group H] (f : G →* H) (a b : G) :
+    f (a * b) = f a * f b := by
   -- ヒント: `apply?`を使う
   exact MonoidHom.map_mul f a b
 
 -- TIPS: 関数の適用は`f (x)`ではなく`f x`と書くことが多い
 
 example [Group G] [Group H] (f : G →* H) (a : G) (n : ℤ) :
-    f (a ^ n) = (f a) ^ n := by 
+    f (a ^ n) = (f a) ^ n := by
   exact MonoidHom.map_zpow f a n
 
-example [Group G] (x y : G) : 
+example [Group G] (x y : G) :
     (x * y)⁻¹ = y⁻¹ * x⁻¹ := by
   exact mul_inv_rev x y
 
 -- 環準同型の合成
-example [Ring R] [Ring S] [Ring T] (f : R →+* S) (g : S →+* T) : 
+example [Ring R] [Ring S] [Ring T] (f : R →+* S) (g : S →+* T) :
     R →+* T := by
   exact RingHom.comp g f
 
@@ -36,8 +36,8 @@ example [Ring R] [Ring S] [Ring T] (f : R →+* S) (g : S →+* T) :
 mathlibの定理を使って式を簡略化するtactic
 -/
 
-example [Ring R] [Ring S] (f : R →+* S) (a b c) : 
-    f (a + b * c) = f a + f b * f c := by 
+example [Ring R] [Ring S] (f : R →+* S) (a b c) :
+    f (a + b * c) = f a + f b * f c := by
   -- ヒント: `simp`を使う
   simp
 
@@ -47,7 +47,7 @@ example [Ring R] [Ring S] (f : R →+* S) (a b c) :
 - `nlinarith`: 非線形不等式を証明するtactic
 -/
 
-example (x y : ℤ) : (x + y) ^ 2 = x ^ 2 + 2 * x * y + y ^ 2 := by 
+example (x y : ℤ) : (x + y) ^ 2 = x ^ 2 + 2 * x * y + y ^ 2 := by
   ring
 
 example (x : ℤ) (hx : 0 ≤ x) (hy : 3 ≤ y) : 2 < x + y := by
@@ -59,7 +59,7 @@ example (x : ℤ) (h : 1 < x) : 3 < (x + 1) ^ 2 := by
 example (x y : ℤ) : (x + y) ^ 3 = x ^ 3 + 3 * x ^ 2 * y + 3 * x * y ^ 2 + y ^ 3 := by
   ring
 
-/- # calc 
+/- # calc
 式変形での証明を直観的に書くための機能
 -/
 
@@ -69,7 +69,7 @@ example [CommRing R] (a b c : R) : a * b * c = c * b * a := by
     _ = c * (b * a)               := by ring
     _ = (c * b) * a               := by ring
 
-example (a b c : ℤ) (h₁ : a ≤ b) (h₂ : b = c + 5) : 
+example (a b c : ℤ) (h₁ : a ≤ b) (h₂ : b = c + 5) :
     a ≤ c + 5 := by
   -- 等式と不等式をつなげることもできる
   calc a ≤ b       := by apply h₁

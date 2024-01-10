@@ -118,7 +118,7 @@ def ker (f : G₁ →* G₂) : Subgroup G₁ where
 
 /-- 核に入ることと飛ばして`1`に行くことは同値。 -/
 @[simp]
-theorem mem_ker {f : G₁ →* G₂} {a : G₁} : a ∈ f.ker ↔ f a = 1 := Iff.rfl 
+theorem mem_ker {f : G₁ →* G₂} {a : G₁} : a ∈ f.ker ↔ f a = 1 := Iff.rfl
 
 /-- 像に入ることの定義の確認。 -/
 @[simp]
@@ -177,7 +177,7 @@ variable {f : G₁ →* G₂}
 theorem injective_iff_map_eq_one : Function.Injective f ↔ (∀ a, f a = 1 → a = 1) := by
   constructor
   · sorry
-  · sorry 
+  · sorry
 
 namespace GroupHom
 

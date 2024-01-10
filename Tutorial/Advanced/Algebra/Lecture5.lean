@@ -78,7 +78,7 @@ theorem one : (1 : G ⧸ N) = 1 ⋆ N := rfl
 theorem mem_of_eq_one {a : G} : a ⋆ N = (1 : G ⧸ N) ↔ a ∈ N := by
   sorry
 
-variable [Group G] {N : Subgroup G} [N.Normal] [Group H] 
+variable [Group G] {N : Subgroup G} [N.Normal] [Group H]
 
 /-- `N`の元を全て潰す群準同型`f : G →* H`があると、それは商群`G ⧸ N`からの準同型 `G ⧸ N →* H`を誘導する。
 いわゆる商群の普遍性。 -/

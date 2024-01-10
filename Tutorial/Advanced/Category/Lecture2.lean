@@ -1,7 +1,7 @@
 import Tutorial.Advanced.Category.Lecture1
 import Mathlib.RingTheory.TensorProduct
 
-namespace Tutorial 
+namespace Tutorial
 
 open Category
 
@@ -33,7 +33,7 @@ end Category
 
 /- # 始対象の例 -/
 
-/-- 空集合は集合の圏における始対象である。 -/ 
+/-- 空集合は集合の圏における始対象である。 -/
 -- 正確には、「空型は型の圏における始対象である。」
 -- Leanにおける型と一般的な数学書における集合はほとんど同じ意味です。
 example : Initial Empty where
@@ -46,7 +46,7 @@ example : Initial Empty where
     funext x
     -- ヒント: 空写像のコドメインは命題でもよい（空虚な真）
     sorry
-    
+
 /-- 整数環`ℤ`は可換環の圏における始対象である。 -/
 /- 環とは底集合と環構造の組であった。底集合`ℤ`に対して、`inferInstance`がmathlibのどこかで定義されて
 いる適切な環構造を探してくれている。 -/
@@ -105,15 +105,15 @@ attribute [pp_dot] Functor.obj Functor.map Cocone.toVertex CoconeHom.hom
 /-- 余錐全体は圏を成す。 -/
 instance : Category (Cocone F) where
   Hom s t := CoconeHom s t
-  comp {r s t} (f : CoconeHom r s) (g : CoconeHom s t) := 
+  comp {r s t} (f : CoconeHom r s) (g : CoconeHom s t) :=
     { hom := f.hom ≫ g.hom
-      comm := by 
+      comm := by
         intro j
-        calc r.toVertex j ≫ f.hom ≫ g.hom 
+        calc r.toVertex j ≫ f.hom ≫ g.hom
           _ = (r.toVertex j ≫ f.hom) ≫ g.hom := by sorry
           _ = s.toVertex j ≫ g.hom := by sorry
           _ = t.toVertex j := by sorry }
-  id t := 
+  id t :=
     { hom := 𝟙 t.vertex
       comm := by
         sorry }
@@ -187,7 +187,7 @@ def sumCocone (F : Functor Coproduct.Shape Type) : Cocone F where
   naturality f := match f with
     | .id _ => by
       sorry
-    
+
 /- 集合の圏における余積はdisjoint union -/
 example (F : Functor Coproduct.Shape Type) : Colimit (sumCocone F) where
   fromInitial t := {
@@ -196,13 +196,13 @@ example (F : Functor Coproduct.Shape Type) : Colimit (sumCocone F) where
       | .inl x => sorry
       | .inr x => sorry
     comm := by
-      intro j 
+      intro j
       -- `.l`か`.r`で場合分け
       rcases j with _ | _
       · sorry
       · sorry }
-  uniq := by 
-    intro t f 
+  uniq := by
+    intro t f
     apply CoconeHom.ext
     funext x
     -- `.inl`か`.inr`で場合分け
@@ -210,13 +210,13 @@ example (F : Functor Coproduct.Shape Type) : Colimit (sumCocone F) where
     -- `f = g`のとき`f x = g x`という事実を使いたい場合は、`congrFun`を使うとよい。
     · sorry
     · sorry
-    
+
 variable {R : CommRingCat}
 
 /- 圏`CommAlgCat R`での余積はテンソル積である。`A`と`B`のテンソル積を`A ⊗[R] B`と書く。
 また`a : A`と`b : B`に対して`a ⊗ₜ[R] b`で対応する`A ⊗[R] B`の元を表す。
 テンソル積には標準的な写像
-* `Algebra.TensorProduct.includeLeft : A →ₐ[R] (A ⊗[R] B)` 
+* `Algebra.TensorProduct.includeLeft : A →ₐ[R] (A ⊗[R] B)`
 * `Algebra.TensorProduct.includeRight : B →ₐ[R] (A ⊗[R] B)`
 が付随する。ここで、`→ₐ[R]`は`AlgHom`を表す記号である。 -/
 
@@ -242,13 +242,13 @@ example (F : Functor Coproduct.Shape (CommAlgCat R)) : Colimit (tensorCocone F) 
   fromInitial t := {
     -- ヒント: `Algebra.TensorProduct.productMap`を使う
     hom := sorry
-    comm := by 
+    comm := by
       rintro (_ | _)
       -- ヒント: `simp`を試してみよう
       · sorry
       · sorry }
-  uniq := by 
-    intro t f 
+  uniq := by
+    intro t f
     apply CoconeHom.ext
     have hₗ : ∀ a : F.obj .l, f.hom (a ⊗ₜ[R.base] 1) = t.toVertex .l a := by
       -- ヒント: `AlgHom.congr_fun`を使う
@@ -262,10 +262,10 @@ example (F : Functor Coproduct.Shape (CommAlgCat R)) : Colimit (tensorCocone F) 
 
 namespace Coequalizer
 
-/- まずはコイコライザーの図式を定義する。コイコライザーの図式とは以下の圏からの関手である。 
+/- まずはコイコライザーの図式を定義する。コイコライザーの図式とは以下の圏からの関手である。
 * 対象: `src`, `tar`
 * 射: `src`から`tar`へのふたつの射`fst`, `snd`
-```   
+```
 src ---- fst, snd ----> tar
 ```
 -/
@@ -284,7 +284,7 @@ inductive ShapeHom : Shape → Shape → Type
 /- 合成と恒等射はパターンマッチで定義する -/
 
 instance : Category Shape where
-  Hom i j := ShapeHom i j 
+  Hom i j := ShapeHom i j
   comp {i j k} f g := match i, j, k with
     | .src, .src, .src => ShapeHom.id .src
     | .tar, .tar, .tar => ShapeHom.id .tar
@@ -346,18 +346,18 @@ def quotCocone (F : Functor Coequalizer.Shape Type) : Cocone F where
     -- `Quot.mk`を使う
     | .src => fun x ↦ Quot.mk _ (F.map .fst x)
     | .tar => fun x ↦ Quot.mk _ x
-  naturality := by 
+  naturality := by
     rintro (_ | _) (_ | _) ⟨_⟩
     · sorry
     · sorry
     · symm
-      funext x   
-      -- `Quot.sound`を使う   
+      funext x
+      -- `Quot.sound`を使う
       sorry
     · sorry
 
 example (F : Functor Coequalizer.Shape Type) : Colimit (quotCocone F) where
-  fromInitial t := 
+  fromInitial t :=
     { -- `Quot.lift`を使う
       hom := Quot.lift (t.toVertex .tar) <| by
         intro x₁ x₂ ⟨x⟩
@@ -373,9 +373,9 @@ example (F : Functor Coequalizer.Shape Type) : Colimit (quotCocone F) where
         · sorry
         · sorry }
   uniq := by
-    intro t f 
+    intro t f
     apply CoconeHom.ext
-    funext x 
+    funext x
     -- `Quot.ind`を使う。`apply Quot.ind _ x`のように使うとよい。
     sorry
 
