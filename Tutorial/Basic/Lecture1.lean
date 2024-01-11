@@ -76,7 +76,7 @@ example : ¬¬¬P → ¬P := by
 example : False → P := by
   apply False.elim
 
-example (h : ¬P) : P → Q := by 
+example (h : ¬P) : P → Q := by
   sorry
 
 /- # かつ
@@ -123,9 +123,9 @@ example : P ∨ Q → (P → R) → (Q → R) → R := by
   -- (これらの名前はinsert leftとinsert rightの略らしい)
   cases h
   -- `case inl hP`で左側の命題`P`の証明に`hP`という名前を付けている。
-  case inl hP => 
+  case inl hP =>
     sorry
-  case inr hQ => 
+  case inr hQ =>
     sorry
 
 example : P ∨ Q → (P → R) → (Q → R) → R := by
@@ -139,7 +139,7 @@ example : P ∨ Q → (P → R) → (Q → R) → R := by
 example (h : P ∨ Q) : (P → R) → (Q → P) → R := by
   sorry
 
-example : ¬¬P → P := by 
+example : ¬¬P → P := by
   -- `have` tacticで仮定を追加することができる。以降のファイルではヒントとしても用いる。
   have h : P ∨ ¬P := by apply Classical.em
   sorry
@@ -156,7 +156,7 @@ VS Codeを使っている場合は、エラーが残っているとその箇所�
 example (h : P → Q) (h' : Q → R) : P → R := by
   intro hP
   apply h'
-  apply h 
+  apply h
   apply hP
 
 -- このようにまとめることができる。なぜなら`h : P → Q`と`hP : P`に対して`h hP : Q`だからである。

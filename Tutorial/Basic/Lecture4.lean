@@ -14,7 +14,7 @@ variable {X Y Z : Type}
 これは以下のように定義できる。
 -/
 def Injective (f : X → Y) : Prop :=
-  ∀ {x₁ x₂ : X}, f x₁ = f x₂ → x₁ = x₂ 
+  ∀ {x₁ x₂ : X}, f x₁ = f x₂ → x₁ = x₂
 
 -- mathlibには既に単射を表す`Function.Injective f`がある。
 -- 上の定義はこれと同じである。実用では`Function.Injective f`を使おう。
@@ -32,7 +32,7 @@ example : Injective (fun x : ℕ ↦ x + 1) := by
 人間はこういうミスをよくするが、Leanは「合成できません」とエラーを出してくる。
 Leanの便利なところの一つでもある。
 -/
-theorem Injective.comp {f : X → Y} {g : Y → Z} (hfinj : Injective f) (hginj : Injective g) : 
+theorem Injective.comp {f : X → Y} {g : Y → Z} (hfinj : Injective f) (hginj : Injective g) :
     Injective (g ∘ f) := by
   rw [Injective]
   intro x₁ x₂ hgf
@@ -139,6 +139,6 @@ theorem Surjective.of_comp (h : Surjective (g ∘ f)) : Surjective g := by
 
 end Tutorial
 
-/-  
+/-
 Basicチュートリアルは以上です。Advancedチュートリアルではより実践的な数学を扱います。
 -/
