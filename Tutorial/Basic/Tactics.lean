@@ -19,7 +19,7 @@ https://github.com/madvorak/lean4-cheatsheet/blob/main/lean-tactics.pdf
 また`intro name₁ name₂ name₃`のようにまとめて取ってこれる。
 ゴールが`∀ x`だったり`P → Q`の形だったらとりあえず`intro`するとよいかも。
 -/
-example : ∀ x : ℕ, ∀ f : ℕ → ℕ, f x = 0 → 2 * (f x) = 0 := by 
+example : ∀ x : ℕ, ∀ f : ℕ → ℕ, f x = 0 → 2 * (f x) = 0 := by
   intro x f hf
   -- `x : ℕ, f : ℕ → ℕ, hf : f x = 0 `
   simp_all
