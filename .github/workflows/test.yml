@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   build:
@@ -19,26 +20,22 @@ jobs:
 
       - name: Install elan
         run: |
+          set -o pipefail
           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain $(cat lean-toolchain)
           echo "$HOME/.elan/bin" >> $GITHUB_PATH
 
-      - name: Cache dependencies
+      - name: Cache .lake
         uses: actions/cache@v3
         with:
-          path: |
-            ./lake-packages
-          key: deps-${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}
-          restore-keys: |
-            deps-${{ runner.os }}-${{ hashFiles('lean-toolchain') }}
+          path: .lake
+          key: ${{ runner.os }}-${{ hashFiles('lake-manifest.json') }}-${{ hashFiles('lean-toolchain') }}
 
       - name: Cache build
         uses: actions/cache@v3
         with:
-          path: |
-            ./build
+          path: ./build
           key: build-${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{ github.sha }}
-          restore-keys: |
-            build-${{ runner.os }}-${{ hashFiles('lean-toolchain') }}
+          restore-keys: build-${{ runner.os }}-${{ hashFiles('lean-toolchain') }}
 
       - name: get mathlib cache
         run: lake exe cache get
