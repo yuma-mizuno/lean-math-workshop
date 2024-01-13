@@ -44,4 +44,4 @@ jobs:
         run: lake exe cache get
 
       - name: run 'lake build'
-        run: lake build
+        run: lake build Tutorial
