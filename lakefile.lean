@@ -6,18 +6,15 @@ def moreServerArgs := #[
   "-DrelaxedAutoImplicit=false"
 ]
 
-package «lean-math-workshop» {
+package «lean-math-workshop» where
   -- add any package configuration options here
   -- moreLeanArgs := moreLeanArgs
   moreServerArgs := moreServerArgs
-}
 
 require mathlib from git
-  "https://github.com/leanprover-community/mathlib4.git"
-    @"23550c1e3b21f7f3312acb901cef261f51219f72"
+  "https://github.com/leanprover-community/mathlib4.git" @ "afe6b29fd5ae8baf11db1d2c2921b9730d9f7ad0"
 
 @[default_target]
-lean_lib «Tutorial» {
+lean_lib «Tutorial» where
   -- add any library configuration options here
   -- moreLeanArgs := moreLeanArgs
-}

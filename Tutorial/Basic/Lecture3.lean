@@ -1,4 +1,5 @@
 import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 
 namespace Tutorial
 

@@ -211,6 +211,9 @@ example (F : Functor Coproduct.Shape Type) : Colimit (sumCocone F) where
     · sorry
     · sorry
 
+-- おまじない (https://github.com/leanprover-community/mathlib4/pull/7281 を見よ)
+noncomputable section TensorProduct
+
 variable {R : CommRingCat}
 
 /- 圏`CommAlgCat R`での余積はテンソル積である。`A`と`B`のテンソル積を`A ⊗[R] B`と書く。
@@ -257,6 +260,8 @@ example (F : Functor Coproduct.Shape (CommAlgCat R)) : Colimit (tensorCocone F) 
       sorry
     -- ヒント: `Algebra.TensorProduct.ext'`を使う（`ext`ではなくて`ext'`）
     sorry
+
+end TensorProduct
 
 /- # コイコライザー -/
 

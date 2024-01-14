@@ -14,6 +14,10 @@ Cauchy列の同値類として定義される。
 example : (1 : ℝ) = Real.ofCauchy (Quotient.mk CauSeq.equiv (CauSeq.const abs 1)) :=
   Real.ofCauchy_one.symm
 
+-- 以下の証明で用いる補題
+theorem abs_of_ten_inv (i : ℕ) : |(10 ^ i : ℚ)⁻¹| = (10 ^ i : ℚ)⁻¹ :=
+  abs_of_pos <| inv_pos.mpr <| pow_pos (by linarith) i
+
 -- `0.9999999...`をCauchy列として定義する
 def «0.9999999» : CauSeq ℚ abs where
   val n := 1 - (10 ^ n : ℚ)⁻¹
@@ -27,8 +31,8 @@ def «0.9999999» : CauSeq ℚ abs where
     intro j hj
     calc |(10 ^ i : ℚ)⁻¹ - (10 ^ j : ℚ)⁻¹|
       _ ≤ |(10 ^ i : ℚ)⁻¹| + |(10 ^ j : ℚ)⁻¹| := by apply abs_sub
-      _ ≤ |(10 ^ i : ℚ)⁻¹| + |(10 ^ i : ℚ)⁻¹| := by simpa [abs] using inv_pow_le_inv_pow_of_le (by linarith) hj
-      _ = 2 * (10 ^ i : ℚ)⁻¹                  := by simp [abs]; ring
+      _ ≤ |(10 ^ i : ℚ)⁻¹| + |(10 ^ i : ℚ)⁻¹| := by simpa [abs_of_ten_inv] using inv_pow_le_inv_pow_of_le (by linarith) hj
+      _ = 2 * (10 ^ i : ℚ)⁻¹                  := by simp [abs_of_ten_inv]; ring
       _ < ε                                   := hi
 
 -- `0.9999999...`は`1`と等しい
@@ -39,7 +43,7 @@ theorem «0.9999999 = 1» : Real.ofCauchy (Quotient.mk CauSeq.equiv «0.9999999�
   congr 1
   apply Quotient.sound
   intro ε ε0
-  suffices ∃ i, ∀ (j : ℕ), j ≥ i → (10 ^ j : ℚ)⁻¹ < ε by simpa [abs]
+  suffices ∃ i, ∀ (j : ℕ), j ≥ i → (10 ^ j : ℚ)⁻¹ < ε by simpa [abs_of_ten_inv]
   -- ヒント: `pow_unbounded_of_one_lt`と`inv_lt_of_inv_lt`を使って、欲しい`i`を手に入れよう
   sorry
 
