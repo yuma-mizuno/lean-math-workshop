@@ -44,14 +44,15 @@ theorem map_mul {a b : G₁} : f (a * b) = f a * f b := f.map_mul' a b
 @[simp]
 theorem map_one : f 1 = 1 := by
   have h : f 1 * f 1 = f 1 * 1 := by
-    sorry
-  sorry
+    rw [← map_mul, mul_one, mul_one]
+  exact mul_left_cancel _ h
 
 #check eq_inv_of_mul_eq_one_left -- これが使えるかも
 /-- 群準同型は逆元を保つ。 -/
 @[simp]
 theorem map_inv {a : G₁} : f (a⁻¹) = (f a)⁻¹ := by
-  sorry
+  apply eq_inv_of_mul_eq_one_left
+  rw [← map_mul, inv_mul_self, map_one]
 
 /--
 2つの群準同型`f₁ : G₁ →* G₂`と`f₂ : G₂ →* G₃`の合成`f₂ ∘ f₁`も準同型。
@@ -61,19 +62,19 @@ def GroupHom.comp [Group G₁] [Group G₂] [Group G₃]
   toFun := f₂ ∘ f₁
   map_mul' := by
     -- ヒント: まずは`simp`を試そう
-    sorry
+    simp
 
 -- 恒等写像は準同型
 def GroupHom.id (G) [Group G] : G →* G where
   toFun := fun a ↦ a
   map_mul' := by
-    sorry
+    simp
 
 -- 全てを`1`に飛ばす写像は準同型
 def GroupHom.one : G₁ →* G₂ where
   toFun := fun _ ↦ 1
   map_mul' := by
-    sorry
+    simp
 
 end Section1
 
@@ -99,22 +100,27 @@ def range (f : G₁ →* G₂) : Subgroup G₂ where
     -- ヒント: とりあえず`simp`して考えよう
     -- `∃ a : A, P a`を示したかったら、
     -- 条件を満たす`a`を探して`exists a`しよう
-    sorry
+    exists 1
+    simp
   mul_mem' := by
-    sorry
+    intro a b ⟨x, hx⟩ ⟨y, hy⟩
+    exists x * y
+    simp [hx, hy]
   inv_mem' := by
-    sorry
+    intro a ⟨x, hx⟩
+    exists x⁻¹
+    simp [hx]
 
 /-- 群準同型`f : G₁ →* G₂`の核（`G₁`の部分群）。`f.ker`でアクセス可能。 -/
 def ker (f : G₁ →* G₂) : Subgroup G₁ where
   carrier := { a : G₁ | f a = 1 } -- このような直感的な記法が使える
   -- 部分群の公理を満たすことを示そう。
   one_mem' := by
-    sorry
+    simp
   mul_mem' := by
-    sorry
+    simp_all
   inv_mem' := by
-    sorry
+    simp_all
 
 /-- 核に入ることと飛ばして`1`に行くことは同値。 -/
 @[simp]
@@ -138,11 +144,11 @@ instance : Top (Subgroup G) where
   top := {
     carrier := Set.univ -- これは`G`を`G`の部分集合とみなしたもの
     one_mem' := by
-      sorry
+      simp
     mul_mem' := by
-      sorry
+      simp
     inv_mem' := by
-      sorry
+      simp
   }
 
 -- これは以下のように使える。`⊤`は`\top`で入力し、これはこの部分群が
@@ -154,11 +160,11 @@ instance : Bot (Subgroup G) where
   bot := {
     carrier := { 1 } -- `1`のみからなる一元集合
     one_mem' := by
-      sorry
+      simp
     mul_mem' := by
-      sorry
+      simp
     inv_mem' := by
-      sorry
+      simp
   }
 
 /-- 自明部分群`⊥`に属することと`1`なことは同値。 -/
@@ -176,8 +182,13 @@ variable {f : G₁ →* G₂}
 #check mul_inv_eq_one -- これが役立つかも
 theorem injective_iff_map_eq_one : Function.Injective f ↔ (∀ a, f a = 1 → a = 1) := by
   constructor
-  · sorry
-  · sorry
+  · intro hf a ha
+    apply hf
+    rw [ha, map_one]
+  · intro h a b hab
+    rw [← mul_inv_eq_one] at *
+    apply h
+    rw [map_mul, map_inv, hab]
 
 namespace GroupHom
 
@@ -185,19 +196,32 @@ namespace GroupHom
 theorem ker_eq_bot : f.ker = ⊥ ↔ Function.Injective f := by
   rw [injective_iff_map_eq_one]
   constructor
-  · sorry
+  · intro h a (hf : a ∈ f.ker)
+    simpa [h] using hf
   · -- 2つの部分群が等しいことを示したいときは、`ext a`を使うと、元を取って比較できる。
-    sorry
+    intro h
+    ext a
+    simp only [mem_ker, mem_bot]
+    constructor
+    · intro ha
+      apply h
+      apply ha
+    · intro ha
+      rw [ha, map_one]
 
 /-- 群準同型の像が全体なことと全射なことは同値。 -/
 theorem range_eq_top : f.range = ⊤ ↔ Function.Surjective f := by
   constructor
-  · intro hrange y
+  · intro hf y
     have hy : y ∈ (⊤ : Subgroup G₂) := by
-      sorry
-    sorry
-  · intro hsurj
-    sorry
+      simp
+    rw [← hf] at hy
+    have ⟨x, hx⟩ := hy
+    exists x
+  · intro hf
+    ext y
+    simp only [mem_range, mem_top, iff_true]
+    apply hf y
 
 end GroupHom
 
@@ -244,19 +268,20 @@ def homToPerm : G →* Perm G where
     -- `G → G, x ↦ a * x`に対応する`Perm G`の元を構成する
     toFun := fun x ↦ a * x
     -- この写像の逆写像は何であろうか。
-    invFun := sorry
+    invFun := fun x ↦ a⁻¹ * x
     -- これらが互いに逆写像なことを示していく。
     left_inv := by
-      rw [Function.LeftInverse]
-      sorry
+      simp [Function.LeftInverse]
     right_inv := by
-      sorry
+      simp [Function.RightInverse, Function.LeftInverse]
   }
   map_mul' := by
     -- 上の写像が積を保つことの証明
     -- ヒント: ゴールが`f g : Perm G`について`f = g`なら、
     -- `ext x`とすると、`f x = g x`を示すことの帰着される。
-    sorry
+    intro a b
+    ext c
+    simp [mul_assoc]
 
 #check homToPerm G -- `homToPerm G`で群準同型`G →* Perm G`を表す
 
@@ -270,9 +295,9 @@ theorem homToPerm_injective : Function.Injective (homToPerm G) := by
     _ = (homToPerm G a) 1 := by
       -- 冷静に考えるとこれは`homToPerm`の定義。
       -- 定義から両辺が等しいときは`rfl` tacticが使える。
-      sorry
+      rfl
     _ = 1 := by
-      sorry
+      simp [h]
 
 -- 以上により任意の群`G`に対して、単射準同型`G →* Perm G`が構成できた！
 

@@ -78,14 +78,17 @@ variable {C : Type u} [Category.{u, v} C] {a b c d e : C}
 example (f : Hom a b) (g : Hom b c) (h : Hom c d) (i : Hom d e) :
     (f ≫ (𝟙 b ≫ g)) ≫ (h ≫ i) = f ≫ (g ≫ ((𝟙 c ≫ h) ≫ i)) := by
   -- ヒント: `simp`を使えば圏の公理を使って式が簡略化される
-  sorry
+  simp
 
 example (f : Hom a b) (g : Hom b a) (h₁ h₂ : Hom b c) (Hgf : g ≫ f = 𝟙 b) (Hfh : f ≫ h₁ = f ≫ h₂) :
     h₁ = h₂ := by
   calc h₁ = 𝟙 b ≫ h₁ := by simp
     _ = (g ≫ f) ≫ h₁ := by rw [Hgf]
-    -- 必要に応じて行を追加しよう
-    _ = h₂ := by sorry
+    _ = g ≫ (f ≫ h₁) := by simp
+    _ = g ≫ (f ≫ h₂) := by rw [Hfh]
+    _ = (g ≫ f) ≫ h₂ := by simp
+    _ = 𝟙 b ≫ h₂ := by rw [Hgf]
+    _ = h₂ := by simp
 
 /- # 圏の例 -/
 
@@ -133,11 +136,6 @@ instance : Category CommRingCat where
   -- 合成と恒等射を与える
   comp f g := RingHom.comp g f
   id R := RingHom.id R
-  /- 以下の公理については証明を書いてもよいが、省略してもエラーがでないかどうかをまず確認してみよう。
-  もしエラーが出なければ、それは`aesop`が成功したことを意味する。 -/
-  id_comp := sorry
-  comp_id := sorry
-  assoc := sorry
 
 /- 次は可換環`R`に対して`R`上の可換代数の圏を定義する。-/
 
@@ -162,9 +160,6 @@ instance {R : CommRingCat} : Category (CommAlgCat R) where
   Hom A B := AlgHom R A B
   comp f g := AlgHom.comp g f
   id A := AlgHom.id R A
-  id_comp := sorry
-  comp_id := sorry
-  assoc := sorry
 
 /- 定義の上の`@[simps]`はおまじないで、ここでは特に意味がない。`Lecture 2`で役に立つ。 -/
 
