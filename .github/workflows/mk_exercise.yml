@@ -1,0 +1,35 @@
+name: Make Exercise
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          set -o pipefail
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      - name: make exercise
+        run: lake exe mk_exercise Tutorial Exercise
+
+      - name: commit
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'Exercise'
+          author_name: GitHub Action
+          author_email: action@github.com
