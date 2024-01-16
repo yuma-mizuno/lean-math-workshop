@@ -5,11 +5,15 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  pull_request:
   push:
     branches:
       - master
   workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   build:
