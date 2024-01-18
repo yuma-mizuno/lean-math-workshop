@@ -8,7 +8,7 @@
 - Section 2. 群準同型に付随する部分群
 - Appendix. Cayleyの定理（群は自己全単射のなす群に埋め込める）
 -/
-import Tutorial.Advanced.Algebra.Lecture1
+import Solution.Advanced.Algebra.Lecture1
 namespace Tutorial
 
 section Section1

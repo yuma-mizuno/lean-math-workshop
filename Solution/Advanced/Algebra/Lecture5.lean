@@ -7,8 +7,8 @@
 - Section 1: 正規部分群と、それによる商群
 - Section 2: 群の準同型定理
 -/
-import Tutorial.Advanced.Algebra.Lecture2
-import Tutorial.Advanced.Algebra.Lecture4
+import Solution.Advanced.Algebra.Lecture2
+import Solution.Advanced.Algebra.Lecture4
 
 namespace Tutorial
 
