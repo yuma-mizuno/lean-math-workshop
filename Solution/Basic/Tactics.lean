@@ -145,7 +145,7 @@ example : (fun x : ℕ ↦ x + x) = (fun x ↦ 2 * x) := by
   linarith
 
 /-
-その他`linarith`, `ring`等については`Tutorial/Basic/Lecture2.lean`を参照せよ。
+その他`linarith`, `ring`等については`Basic/Lecture2.lean`を参照せよ。
 -/
 
 /-
