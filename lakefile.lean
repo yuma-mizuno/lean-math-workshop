@@ -8,8 +8,7 @@ def moreServerArgs := #[
 
 package «lean-math-workshop» where
   -- add any package configuration options here
-  -- moreLeanArgs := moreLeanArgs
-  moreServerArgs := moreServerArgs
+  moreGlobalServerArgs := moreServerArgs
 
 require «mk-exercise» from git
   "https://github.com/Seasawher/mk-exercise" @ "main"
