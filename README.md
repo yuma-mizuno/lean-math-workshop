@@ -1,3 +1,5 @@
+# Lean Math Workshop 2023
+
 ## 始め方
 1. VS Code, Git, Leanをインストールします。（参考: [Leanのインストール](https://leanprover.github.io/lean4/doc/quickstart.html)）
 2. ターミナル上でチュートリアルファイルを置きたいフォルダに移動して、以下のコマンドを実行します:
@@ -7,14 +9,16 @@ cd lean-math-workshop
 lake exe cache get
 ```
 3. VS Codeで`lean-math-workshop`フォルダを開きます。
-4. VS Codeのエクスプローラーから、最初のレクチャーファイル`Tutorial/Basic/Lecture1.lean`を開きます。
+4. VS Codeのエクスプローラーから、[最初のレクチャーファイル](./Exercise/Basic/Lecture1.lean) を開きます。
 
 以上の手順を最初から初心者向けにまとめたYouTubeの動画：
 - [Windows編](https://youtu.be/LDfmNmzY5_8)
 - [Mac編](https://youtu.be/d8DSHFBMWwU)
 
 ## 内容
-Tutorialフォルダの中に以下の教材が入っています。
+
+Exercise フォルダの中に以下の教材が入っています。Solution フォルダの中に入っているファイルは演習問題への解答を含みます。
+
 ### Basic
 Leanの基礎的な使い方や命題論理について
 - Basic/Lecture1 命題論理
