@@ -9,7 +9,7 @@
 - Section 1: 部分群による左剰余類の集合
 - Section 2: 推移的G集合の構造定理
 -/
-import Tutorial.Advanced.Algebra.Lecture3
+import Solution.Advanced.Algebra.Lecture3
 namespace Tutorial
 
 section Section1

@@ -9,7 +9,7 @@
 - Section 2. `G`集合の同変写像
 - Appendix. `G`集合の軌道についての練習問題
 -/
-import Tutorial.Advanced.Algebra.Lecture1
+import Solution.Advanced.Algebra.Lecture1
 namespace Tutorial
 attribute [-instance] Mul.toSMul
 

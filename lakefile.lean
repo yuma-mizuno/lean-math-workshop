@@ -17,6 +17,6 @@ require mathlib from git
   "https://github.com/leanprover-community/mathlib4.git" @ "afe6b29fd5ae8baf11db1d2c2921b9730d9f7ad0"
 
 @[default_target]
-lean_lib «Tutorial» where
+lean_lib «Solution» where
   -- add any library configuration options here
   -- moreLeanArgs := moreLeanArgs
