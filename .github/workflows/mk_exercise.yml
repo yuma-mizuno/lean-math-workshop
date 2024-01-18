@@ -29,7 +29,7 @@ jobs:
           echo "$HOME/.elan/bin" >> $GITHUB_PATH
 
       - name: make exercise
-        run: lake exe mk_exercise Tutorial Exercise
+        run: lake exe mk_exercise Solution Exercise
 
       - name: commit
         run: |
