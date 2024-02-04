@@ -9,7 +9,7 @@ cd lean-math-workshop
 lake exe cache get
 ```
 3. VS Codeで`lean-math-workshop`フォルダを開きます。
-4. VS Codeのエクスプローラーから、[最初のレクチャーファイル](./Exercise/Basic/Lecture1.lean) を開きます。
+4. VS Codeのエクスプローラーから、[最初のレクチャーファイル](./Tutorial/Basic/Lecture1.lean) を開きます。
 
 以上の手順を最初から初心者向けにまとめたYouTubeの動画：
 - [Windows編](https://youtu.be/LDfmNmzY5_8)
@@ -17,7 +17,7 @@ lake exe cache get
 
 ## 内容
 
-Exercise フォルダの中に以下の教材が入っています。Solution フォルダの中に入っているファイルは演習問題への解答を含みます。
+Tutorial フォルダの中に以下の教材が入っています。Solution フォルダの中に入っているファイルは演習問題への解答を含みます。
 
 ### Basic
 Leanの基礎的な使い方や命題論理について
