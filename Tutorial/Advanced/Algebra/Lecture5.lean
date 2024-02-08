@@ -32,8 +32,8 @@ theorem mem_comm {a b} : a * b ∈ N → b * a ∈ N := by
   intro hab
   -- 一度紙で計算してみて、下のように`calc`するとよいかも。
   calc
-    b * a = sorry := by sorry
-    _ = sorry := by sorry
+    b * a = b * a⁻¹⁻¹ := by sorry
+    _ = a⁻¹ * (a * b) * a⁻¹⁻¹ := by sorry
     _ ∈ N := by
       sorry
 
