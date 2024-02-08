@@ -105,18 +105,19 @@ attribute [pp_dot] Functor.obj Functor.map Cocone.toVertex CoconeHom.hom
 /-- 余錐全体は圏を成す。 -/
 instance : Category (Cocone F) where
   Hom s t := CoconeHom s t
-  comp {r s t} (f : CoconeHom r s) (g : CoconeHom s t) :=
-    { hom := f.hom ≫ g.hom
-      comm := by
-        intro j
-        calc r.toVertex j ≫ f.hom ≫ g.hom
-          _ = (r.toVertex j ≫ f.hom) ≫ g.hom := by sorry
-          _ = s.toVertex j ≫ g.hom := by sorry
-          _ = t.toVertex j := by sorry }
-  id t :=
-    { hom := 𝟙 t.vertex
-      comm := by
-        sorry }
+  comp {r s t} (f : CoconeHom r s) (g : CoconeHom s t) := {
+    hom := f.hom ≫ g.hom
+    comm := by
+      intro j
+      calc r.toVertex j ≫ f.hom ≫ g.hom
+        _ = (r.toVertex j ≫ f.hom) ≫ g.hom := by sorry
+        _ = s.toVertex j ≫ g.hom := by sorry
+        _ = t.toVertex j := by sorry
+  }
+  id t := {
+    hom := 𝟙 t.vertex
+    comm := by sorry
+  }
 
 /- これで余極限を定義する準備が整った。余極限は普遍性を持つ余錐であると述べたが、ここでいう普遍性とは
 始対象のことである。-/
@@ -200,7 +201,8 @@ example (F : Functor Coproduct.Shape Type) : Colimit (sumCocone F) where
       -- `.l`か`.r`で場合分け
       rcases j with _ | _
       · sorry
-      · sorry }
+      · sorry
+  }
   uniq := by
     intro t f
     apply CoconeHom.ext
@@ -249,7 +251,8 @@ example (F : Functor Coproduct.Shape (CommAlgCat R)) : Colimit (tensorCocone F) 
       rintro (_ | _)
       -- ヒント: `simp`を試してみよう
       · sorry
-      · sorry }
+      · sorry
+  }
   uniq := by
     intro t f
     apply CoconeHom.ext
@@ -362,21 +365,22 @@ def quotCocone (F : Functor Coequalizer.Shape Type) : Cocone F where
     · sorry
 
 example (F : Functor Coequalizer.Shape Type) : Colimit (quotCocone F) where
-  fromInitial t :=
-    { -- `Quot.lift`を使う
-      hom := Quot.lift (t.toVertex .tar) <| by
-        intro x₁ x₂ ⟨x⟩
-        have h₁ : t.toVertex .tar (F.map .fst x) = t.toVertex .src x := by
-          sorry
-        have h₂ : t.toVertex .tar (F.map .snd x) = t.toVertex .src x := by
-          sorry
+  fromInitial t := {
+    -- `Quot.lift`を使う
+    hom := Quot.lift (t.toVertex .tar) <| by
+      intro x₁ x₂ ⟨x⟩
+      have h₁ : t.toVertex .tar (F.map .fst x) = t.toVertex .src x := by
         sorry
-      comm := by
-        intro j
-        funext x
-        cases j
-        · sorry
-        · sorry }
+      have h₂ : t.toVertex .tar (F.map .snd x) = t.toVertex .src x := by
+        sorry
+      sorry
+    comm := by
+      intro j
+      funext x
+      cases j
+      · sorry
+      · sorry
+  }
   uniq := by
     intro t f
     apply CoconeHom.ext
