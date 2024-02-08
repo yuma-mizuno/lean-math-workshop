@@ -9,7 +9,7 @@ cd lean-math-workshop
 lake exe cache get
 ```
 3. VS Codeで`lean-math-workshop`フォルダを開きます。
-4. VS Codeのエクスプローラーから、[最初のレクチャーファイル](./Tutorial/Basic/Lecture1.lean) を開きます。
+4. VS Codeのエクスプローラーから、最初のレクチャーファイル`Tutorial/Basic/Lecture1.lean`を開きます。
 
 以上の手順を最初から初心者向けにまとめたYouTubeの動画：
 - [Windows編](https://youtu.be/LDfmNmzY5_8)
