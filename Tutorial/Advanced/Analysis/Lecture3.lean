@@ -292,10 +292,8 @@ example (hU : ∀ (i : ι), IsOpen (U i)) (cover : Icc 0 1 ⊆ ⋃ (i : ι), U i
     (mem_nhdsWithin_of_mem_nhds <| (hU i).mem_nhds hUc') with ⟨c', ⟨hc'1, hc'2⟩, hc'U⟩
   have : c' ∈ A := by
     constructor
-    focus
-      sorry
-    focus
-      apply hasFinSubCover_concat hcA.2
+    · sorry
+    · apply hasFinSubCover_concat hcA.2
       dsimp [Icc] at hc
       have : c' ∈ Icc 0 1 := ⟨by linarith, by linarith⟩
       rcases cover this with ⟨_, ⟨i', rfl⟩, hUc' : c' ∈ U i'⟩

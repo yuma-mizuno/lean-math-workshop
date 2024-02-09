@@ -218,14 +218,12 @@ variable {f : G₁ →* G₂}
 #check mul_inv_eq_one -- これが役立つかも
 theorem injective_iff_map_eq_one : Function.Injective f ↔ (∀ a, f a = 1 → a = 1) := by
   constructor
-  focus
-    -- sorry
+  · -- sorry
     intro hf a ha
     apply hf
     rw [ha, map_one]
     -- sorry
-  focus
-    -- sorry
+  · -- sorry
     intro h a b hab
     rw [← mul_inv_eq_one] at *
     apply h
@@ -238,12 +236,11 @@ namespace GroupHom
 theorem ker_eq_bot : f.ker = ⊥ ↔ Function.Injective f := by
   rw [injective_iff_map_eq_one]
   constructor
-  focus
-    -- sorry
+  · -- sorry
     intro h a (hf : a ∈ f.ker)
     simpa [h] using hf
     -- sorry
-  focus -- 2つの部分群が等しいことを示したいときは、`ext a`を使うと、元を取って比較できる。
+  · -- 2つの部分群が等しいことを示したいときは、`ext a`を使うと、元を取って比較できる。
     -- sorry
     intro h
     ext a

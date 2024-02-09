@@ -84,10 +84,7 @@ example (f : Hom a b) (g : Hom b a) (h₁ h₂ : Hom b c) (Hgf : g ≫ f = 𝟙 
     h₁ = h₂ := by
   calc h₁ = 𝟙 b ≫ h₁ := by simp
     _ = (g ≫ f) ≫ h₁ := by rw [Hgf]
-    _ = g ≫ (f ≫ h₁) := by sorry
-    _ = g ≫ (f ≫ h₂) := by sorry
-    _ = (g ≫ f) ≫ h₂ := by sorry
-    _ = 𝟙 b ≫ h₂ := by sorry
+    -- 必要に応じて行を追加しよう
     _ = h₂ := by sorry
 
 /- # 圏の例 -/

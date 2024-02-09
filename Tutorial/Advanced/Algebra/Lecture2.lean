@@ -176,10 +176,8 @@ variable {f : G₁ →* G₂}
 #check mul_inv_eq_one -- これが役立つかも
 theorem injective_iff_map_eq_one : Function.Injective f ↔ (∀ a, f a = 1 → a = 1) := by
   constructor
-  focus
-    sorry
-  focus
-    sorry
+  · sorry
+  · sorry
 
 namespace GroupHom
 
@@ -187,9 +185,8 @@ namespace GroupHom
 theorem ker_eq_bot : f.ker = ⊥ ↔ Function.Injective f := by
   rw [injective_iff_map_eq_one]
   constructor
-  focus
-    sorry
-  focus -- 2つの部分群が等しいことを示したいときは、`ext a`を使うと、元を取って比較できる。
+  · sorry
+  · -- 2つの部分群が等しいことを示したいときは、`ext a`を使うと、元を取って比較できる。
     sorry
 
 /-- 群準同型の像が全体なことと全射なことは同値。 -/
