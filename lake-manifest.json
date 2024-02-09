@@ -4,7 +4,7 @@
  [{"url": "https://github.com/Seasawher/mk-exercise",
    "type": "git",
    "subDir": null,
-   "rev": "c84cc31354ea4e08f53d82c8f3e9b7591515d23f",
+   "rev": "70102f2963f5bc19aac0339d9464b72a1de2e1cb",
    "name": "«mk-exercise»",
    "manifestFile": "lake-manifest.json",
    "inputRev": "main",
