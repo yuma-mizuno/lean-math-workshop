@@ -1,4 +1,4 @@
-# Lean Math Workshop 2023
+# 数学系のためのLean勉強会
 
 ## 始め方
 1. VS Code, Git, Leanをインストールします。（参考: [Leanのインストール](https://leanprover.github.io/lean4/doc/quickstart.html)）
