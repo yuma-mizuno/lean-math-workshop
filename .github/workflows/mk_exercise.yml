@@ -31,7 +31,15 @@ jobs:
       - name: make exercise
         run: lake exe mk_exercise Solution Tutorial
 
+      - name: diff
+        id: diff
+        run: |
+          git add -N Tutorial
+          git diff --name-only --exit-code
+        continue-on-error: true
+
       - name: commit
+        if: steps.diff.outcome == 'failure'
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
