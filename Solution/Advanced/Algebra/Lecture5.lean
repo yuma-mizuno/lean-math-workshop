@@ -31,13 +31,21 @@ variable {N : Subgroup G} [N.Normal]
 theorem mem_comm {a b} : a * b ∈ N → b * a ∈ N := by
   intro hab
   -- 一度紙で計算してみて、下のように`calc`するとよいかも。
+  /-
+  ```
   calc
-    b * a = b * a⁻¹⁻¹ := by /- sorry -/ simp
-    _ = a⁻¹ * (a * b) * a⁻¹⁻¹ := by /- sorry -/ simp
+    b * a = _ := by sorry
+      _ = _ := by sorry
+      _ ∈ N := by sorry
+  ```
+  -/
+  -- sorry --
+  calc
+    b * a = b * a⁻¹⁻¹ := by simp
+    _ = a⁻¹ * (a * b) * a⁻¹⁻¹ := by simp --#
     _ ∈ N := by
-      -- sorry
       apply Normal.conj_mem a⁻¹ (a * b) hab
-      -- sorry
+  -- sorry --
 
 theorem mem_comm_iff (a b : G) : a * b ∈ N ↔ b * a ∈ N := ⟨mem_comm, mem_comm⟩
 
