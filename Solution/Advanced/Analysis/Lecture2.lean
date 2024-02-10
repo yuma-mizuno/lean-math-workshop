@@ -66,19 +66,42 @@ theorem IsLocalMax.hasDerivAt_eq_zero (h : IsLocalMax f a) (hf : HasDerivAt f f'
     · linarith only [ha]
   case left =>
     -- 右側の場合を真似て証明してみよう。最後は`div_nonneg_of_nonpos`を使うとよい。
-    sorry
+    -- sorry
+    have hf : Tendsto (fun x ↦ (f x - f a) / (x - a)) (𝓝[<] a) (𝓝 f') := by
+      rw [hasDerivAt_iff_tendsto_slope] at hf
+      apply hf.mono_left (nhds_left'_le_nhds_ne a)
+    suffices ∀ᶠ x in 𝓝[<] a, (f x - f a) / (x - a) ≥ 0 from ge_of_tendsto hf this
+    have ha : ∀ᶠ x in 𝓝[<] a, x < a := eventually_nhdsWithin_of_forall fun x hx ↦ hx
+    have h : ∀ᶠ x in 𝓝[<] a, f x ≤ f a := h.filter_mono nhdsWithin_le_nhds
+    filter_upwards [ha, h]
+    intro x ha h
+    apply div_nonneg_of_nonpos
+    · linarith
+    · linarith
+    -- sorry
 
 /-- 極小値を取る点での微分係数はゼロ -/
 theorem IsLocalMin.hasDerivAt_eq_zero (h : IsLocalMin f a) (hf : HasDerivAt f f' a) : f' = 0 := by
   -- ヒント: `IsLocalMax.hasDerivAt_eq_zero`を`x ↦ - f x`に対して使おう。
-  sorry
+  -- sorry
+  suffices -f' = 0 from neg_eq_zero.mp this
+  apply IsLocalMax.hasDerivAt_eq_zero
+  apply IsLocalMin.neg h
+  apply hf.neg
+  -- sorry
 
 -- 次の問題で使うかも？
 #check IsLocalExtr.elim
 
 /-- 極値を取る点での微分係数はゼロ -/
 theorem IsLocalExtr.hasDerivAt_eq_zero (h : IsLocalExtr f a) (hf : HasDerivAt f f' a) : f' = 0 := by
-  sorry
+  -- sorry
+  apply IsLocalExtr.elim h
+  · intro h
+    apply IsLocalMin.hasDerivAt_eq_zero h hf
+  · intro h
+    apply IsLocalMax.hasDerivAt_eq_zero h hf
+  -- sorry
 
 /-
 次の定理はRolleの定理の証明に用いる。
@@ -98,9 +121,13 @@ theorem exists_local_extr_Ioo (hab : a < b) (hfc : ContinuousOn f (Icc a b)) (hf
     apply hc.isLocalExtr <| Icc_mem_nhds cmem.1 cmem.2
   have ne : (Icc a b).Nonempty := nonempty_Icc.2 (le_of_lt hab)
   have ⟨C, Cmem, Cge⟩ : ∃ C ∈ Icc a b, IsMaxOn f (Icc a b) C := by
-    sorry
+    -- sorry
+    apply isCompact_Icc.exists_isMaxOn ne hfc
+    -- sorry
   have ⟨c, cmem, cle⟩ : ∃ c ∈ Icc a b, IsMinOn f (Icc a b) c := by
-    sorry
+    -- sorry
+    apply isCompact_Icc.exists_isMinOn ne hfc
+    -- sorry
   change ∀ x ∈ Icc a b, f x ≤ f C at Cge
   change ∀ x ∈ Icc a b, f c ≤ f x at cle
   by_cases hc : f c = f a
@@ -119,7 +146,10 @@ variable {f f' : ℝ → ℝ} {g g' : ℝ → ℝ} {a b : ℝ}
 /-- Rolleの定理 -/
 theorem exists_hasDerivAt_eq_zero (hab : a < b) (hfc : ContinuousOn f (Icc a b)) (hfI : f a = f b)
     (hff' : ∀ x ∈ Ioo a b, HasDerivAt f (f' x) x) : ∃ c ∈ Ioo a b, f' c = 0 := by
-  sorry
+  -- sorry
+  have ⟨c, cmem, hc⟩ := exists_local_extr_Ioo hab hfc hfI
+  exact ⟨c, cmem, IsLocalExtr.hasDerivAt_eq_zero hc <| hff' c cmem⟩
+  -- sorry
 
 /-- Cauchyの平均値の定理 -/
 theorem exists_ratio_hasDerivAt_eq_ratio_slope (hab : a < b)
@@ -129,7 +159,15 @@ theorem exists_ratio_hasDerivAt_eq_ratio_slope (hab : a < b)
   let h x := (g b - g a) * f x - (f b - f a) * g x
   have hhc : ContinuousOn h (Icc a b) :=
     (continuousOn_const.mul hfc).sub (continuousOn_const.mul hgc)
-  sorry
+  -- sorry
+  have hI : h a = h b := by ring
+  let h' x := (g b - g a) * f' x - (f b - f a) * g' x
+  have hhh' : ∀ x ∈ Ioo a b, HasDerivAt h (h' x) x := by
+    intro x hx
+    apply ((hff' x hx).const_mul (g b - g a)).sub ((hgg' x hx).const_mul (f b - f a))
+  have ⟨c, cmem, hc⟩ := exists_hasDerivAt_eq_zero hab hhc hI hhh'
+  exact ⟨c, cmem, sub_eq_zero.mp hc⟩
+  -- sorry
 
 -- 次の問題で使うかも？
 #check eq_div_iff
@@ -138,6 +176,10 @@ theorem exists_ratio_hasDerivAt_eq_ratio_slope (hab : a < b)
 theorem exists_hasDerivAt_eq_slope (hab : a < b)
     (hfc : ContinuousOn f (Icc a b)) (hff' : ∀ x ∈ Ioo a b, HasDerivAt f (f' x) x) :
       ∃ c ∈ Ioo a b, f' c = (f b - f a) / (b - a) := by
-  sorry
+  -- sorry
+  have ⟨c, cmem, hc⟩ := exists_ratio_hasDerivAt_eq_ratio_slope hab hfc hff'
+    continuousOn_id fun x _ ↦ hasDerivAt_id x
+  exact ⟨c, cmem, by rw [eq_div_iff (by linarith), mul_comm]; simpa using hc⟩
+  -- sorry
 
 end Tutorial

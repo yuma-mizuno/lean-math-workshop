@@ -53,5 +53,4 @@ example : ∀ x : ℤ, ∃ y : ℤ, x < y := by
 example : ∃ x : ℤ, ∀ y : ℤ, y + y = x * y := by
   sorry
 
-
 end Tutorial

@@ -1,3 +1,5 @@
+# 数学系のためのLean勉強会
+
 ## 始め方
 1. VS Code, Git, Leanをインストールします。（参考: [Leanのインストール](https://leanprover.github.io/lean4/doc/quickstart.html)）
 2. ターミナル上でチュートリアルファイルを置きたいフォルダに移動して、以下のコマンドを実行します:
@@ -14,7 +16,9 @@ lake exe cache get
 - [Mac編](https://youtu.be/d8DSHFBMWwU)
 
 ## 内容
-Tutorialフォルダの中に以下の教材が入っています。
+
+Tutorialフォルダの中に以下の教材が入っています。Solutionフォルダの中に入っているファイルは演習問題への解答を含みます。
+
 ### Basic
 Leanの基礎的な使い方や命題論理について
 - Basic/Lecture1 命題論理
