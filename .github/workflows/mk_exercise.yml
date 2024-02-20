@@ -18,6 +18,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.repository_owner == 'yuma-mizuno'
     steps:
       - name: checkout
         uses: actions/checkout@v4
