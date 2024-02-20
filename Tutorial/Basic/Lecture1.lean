@@ -41,20 +41,17 @@ variable (P Q R : Prop)
 
 example (hP : P) : P := by
   -- ヒント: `apply hP`と入力すれば仮定をゴールに適用できる。
-  assumption
+  sorry
 
 example (h : P → Q) (hP : P) : Q := by
   -- 改行して複数のtacticを並べることもできる。インデント（行の頭の空白の個数）を
   -- 揃える必要があることに注意しよう。
   -- ヒント: `apply`を2回使う。
-  repeat apply_assumption
+  sorry
 
 example (h : P → Q) (h' : Q → R) : P → R := by
   -- ヒント: `intro hP`と入力すれば仮定`hP : P`が得られる。
-  intro hP
-  apply h'
-  apply h
-  assumption
+  sorry
 
 -- TIPS: 入力した`intro`や`apply`の上にカーソルを乗せるとtacticの説明が表示される。
 
