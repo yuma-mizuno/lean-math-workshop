@@ -50,3 +50,7 @@ Leanの基礎的な使い方や命題論理について
 - [Theorem Proving in Lean 4](https://leanprover.github.io/theorem_proving_in_lean4/)は基礎的なことが詳しく書いてある教科書です。Leanで証明を書いていて知りたいことが出てきたらまずはこれを参考にすると良いです。[日本語訳](https://aconite-ac.github.io/theorem_proving_in_lean4_ja/)もあります。
 
 - [A mathlib overview](https://leanprover-community.github.io/mathlib-overview.html)では、Leanの数学ライブラリmathlibで扱われている数学を概観できます。
+
+## 開発者向け情報
+
+[mk-exercise](https://github.com/Seasawher/mk-exercise)というツールを用いて、Solutionディレクトリの内容からTutorialディレクトリの演習問題を自動的に生成しています。Solutionディレクトリに変更を加えても、それに合わせてTutorialディレクトリに変更を加える必要はありません。
