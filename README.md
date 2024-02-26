@@ -53,4 +53,4 @@ Leanの基礎的な使い方や命題論理について
 
 ## 開発者向け情報
 
-[mk-exercise](https://github.com/Seasawher/mk-exercise) というツールを用いて，Solution ディレクトリの内容から Tutorial ディレクトリの演習問題を自動的に生成しています．Solution ディレクトリに変更を加えても，それに合わせて Tutorial ディレクトリに変更を加える必要はありません．
+[mk-exercise](https://github.com/Seasawher/mk-exercise)というツールを用いて、Solutionディレクトリの内容からTutorialディレクトリの演習問題を自動的に生成しています。Solutionディレクトリに変更を加えても、それに合わせてTutorialディレクトリに変更を加える必要はありません。
