@@ -56,6 +56,75 @@ theorem hasDerivAt_iff_isLittleO_nhds_zero :
   rw [hasDerivAt_iff_isLittleO, ← map_add_left_nhds_zero a, Asymptotics.isLittleO_map]
   simp [(· ∘ ·)]
 
+/--
+- 数理論理学での文字列とは
+    - variable symbol(変数記号)
+    - constant symbol(定数記号)
+    - function symbol(関数記号)
+    - proposition symbol(命題記号)
+    - predicate symbol(述語記号): = 等
+    - logic symbol(論理記号): ∧, ∨, ¬(否定), →, ↔, ∀, ∃, ⊥(矛盾) 等
+        - ∧, ∨, →, ↔: 2つの logical formulaを受け取って logical formula を返す
+        - ¬: 1つの logical formula を受け取って logical formula を返す
+        - ⊥: TODO まだわからない: 0このlogical formula を受け取って logical formula を返す
+        - quantifier(量化子): ∀ と ∃ のみで、変数に作用させたものを logical formula に作用させて使う
+        - 名前がない: ∀ と ∃ のみ
+    - auxiliary symbol(補助記号)
+- function symbol と predicate symbol と auxiliary symbol は単体で存在できない
+- term(項):
+    - variable symbol
+    - constant symbol
+    - function symbol と auxiliary symbol を variable symbol や constant symbol に作用させたもの
+- logical formula (論理式)は以下のみ:
+    - proposition symbol
+    - predicate symble を term に作用させたもの
+    - quantifier 以外の logic symbol を logical formula に作用させたもの
+    - quantifier を variable symbol に作用させて、それを logical formula に作用させたもの
+- closed formula(閉じた式): すべての variable symbol に quantifier がついている logical fomula
+- theorem(Leanの型の): closed formula
+- Prop(Leanの型の): logical fomula
+
+-----まだこれから
+- Prop ↔ Prop
+- Term = Term
+- Prop → Prop
+
+
+
+
+
+
+## `∀ a, a ^ 2 = 1` を A とおく
+- `∀` は logic symbol かつ quantifier
+- `a` は variable symbol
+- `∀ a` は名前無し(quantifier を variable symbol に作用させたもの)
+- `^` は function symbol
+- `2` は constant symbol
+- `a ^ 2` は Term
+- `=` は predicate symbol
+- `1` は constant symbol かつ term
+- `a ^ 2 = 1` は logical expression
+- `∀ a, a ^ 2 = 1` は logical expression
+- `A` は proposition symbol
+- `おく` は
+
+
+------
+
+
+順序
+
+
+
+=>,<=,ならば
+
+
+
+
+
+
+-/
+
 /-- 3. `x`が`a`に近づくとき`(f x - f a - (x - a) * f') / (x - a)`は`0`に近づく -/
 theorem hasDerivAt_iff_tendsto :
     HasDerivAt f f' a ↔ Tendsto (fun x ↦ (f x - f a - (x - a) * f') / (x - a)) (𝓝[≠] a) (𝓝 0) := by
