@@ -174,15 +174,9 @@ instance {R : CommRingCat} : Category (CommAlgCat R) where
 
 /- 定義の上の`@[simps]`はおまじないで、ここでは特に意味がない。`Lecture 2`で役に立つ。 -/
 
--- おまじない
-instance {A B : CommAlgCat R} : FunLike (Hom A B) A B where
-  coe f := f.toFun
-  coe_injective' f g h := by
-    rcases f with ⟨⟨⟨⟨_, _⟩, _⟩, _, _⟩, _⟩
-    rcases g with ⟨⟨⟨⟨_, _⟩, _⟩, _, _⟩, _⟩
-    congr
-
 -- おまじない。`Lecture 2`で役に立つ。
+instance {A B : CommAlgCat R} : FunLike (Hom A B) A B :=
+  inferInstanceAs <| FunLike (A →ₐ[R] B) A B
 instance {A B : CommAlgCat R} : AlgHomClass (Hom A B) R A B :=
   inferInstanceAs <| AlgHomClass (A →ₐ[R] B) R A B
 
