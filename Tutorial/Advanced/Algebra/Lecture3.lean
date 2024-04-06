@@ -122,7 +122,7 @@ notation:25 X " →[" G:25 "] " Y:0 => GroupActionHom G X Y
 variable [Group G] [GroupAction G X] [GroupAction G Y] [GroupAction G Z]
 
 -- `f : X →[G] Y`に対して`f x`のように書くためのおまじない。
-instance : FunLike (GroupActionHom G X Y) X (fun _ ↦ Y) where
+instance : DFunLike (GroupActionHom G X Y) X (fun _ ↦ Y) where
   coe f := f.toFun
   coe_injective' f₁ f₂ _ := by cases f₁; cases f₂; congr
 
@@ -135,7 +135,7 @@ theorem GroupActionHom.coe_coe (f : X → Y) (h) : ((⟨f, h⟩ : X →[G] Y) : 
 -- 定義からすぐ分かること
 @[ext]
 theorem GroupActionHom.ext {f₁ f₂ : X →[G] Y} : (∀ x, f₁ x = f₂ x) → f₁ = f₂ :=
-  FunLike.ext f₁ f₂
+  DFunLike.ext f₁ f₂
 
 theorem map_smul (f : X →[G] Y) : ∀ (a : G) (x : X), f (a • x) = a • f x := f.map_smul'
 
