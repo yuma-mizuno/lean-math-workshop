@@ -31,7 +31,7 @@ variable [Group G₁] [Group G₂] {f : G₁ →* G₂}
 -- `f`と`a : G₁`に対して、いちいち`f.toFun a`と書く代わりに、`f a`と書くためのおまじない
 -- （`f`そのものは、写像`f.toFun`と、それが積を保つという事実`f.map_mul'`を束ねたもので、本来は写像でない）
 -- 右側のInfoviewには、`f a`の代わりに`↑f a`と表示されることもあるが、同じなので気にしないでください。
-instance : FunLike (G₁ →* G₂) G₁ (fun _ ↦ G₂) where
+instance : DFunLike (G₁ →* G₂) G₁ (fun _ ↦ G₂) where
   coe := fun f ↦ f.toFun
   coe_injective' f₁ f₂ _ := by cases f₁; cases f₂; congr
 
