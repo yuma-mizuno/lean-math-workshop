@@ -1,5 +1,5 @@
 import Solution.Advanced.Category.Lecture1
-import Mathlib.RingTheory.TensorProduct
+import Mathlib.RingTheory.TensorProduct.Basic
 
 namespace Tutorial
 
