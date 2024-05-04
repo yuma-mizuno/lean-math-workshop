@@ -51,6 +51,8 @@ Leanの基礎的な使い方や命題論理について
 
 - [A mathlib overview](https://leanprover-community.github.io/mathlib-overview.html)では、Leanの数学ライブラリmathlibで扱われている数学を概観できます。
 
+- [タクティク逆引きリスト](https://lean-ja.github.io/tactic-cheatsheet/)は、Mathlibで使用できるタクティクやコマンドが使い方から逆引きできるようにまとめられた，**日本語の**資料です。
+
 ## 開発者向け情報
 
 [mk-exercise](https://github.com/Seasawher/mk-exercise)というツールを用いて、Solutionディレクトリの内容からTutorialディレクトリの演習問題を自動的に生成しています。Solutionディレクトリに変更を加えても、それに合わせてTutorialディレクトリに変更を加える必要はありません。
