@@ -55,46 +55,69 @@ theorem hasDerivAt_iff_isLittleO_nhds_zero :
     HasDerivAt f f' a ↔ (fun h ↦ f (a + h) - f a - h * f') =o[𝓝 0] fun h ↦ h := by
   rw [hasDerivAt_iff_isLittleO, ← map_add_left_nhds_zero a, Asymptotics.isLittleO_map]
   simp [(· ∘ ·)]
+  sorry
 
-/--
-- 数理論理学での文字列とは
+/-
+- 数理論理学での文字列とは下記の7つで、各サンプルは後からここに当てはまるのもを書いた
+  - symbol(記号)は以下のみ:
     - variable symbol(変数記号)
     - constant symbol(定数記号)
+        - 0,1,...等, true, false
+        - π, e, √2
     - function symbol(関数記号)
+        - sin, cos, exp
     - proposition symbol(命題記号)
-    - predicate symbol(述語記号): = 等
-    - logic symbol(論理記号): ∧, ∨, ¬(否定), →, ↔, ∀, ∃, ⊥(矛盾) 等
+        - `∀ a, a ^ 2 = 1`
+    - predicate symbol(述語記号)
+        - =, <, >
+        - 述語とは`Xが性質Pをもつ`のP
+        - 関係がある、もしくは性質を持つ
+    - logic symbol(論理記号)
+        - ∧, ∨, ¬(否定), →, ↔, ∀, ∃, ⊥(矛盾) 等
         - ∧, ∨, →, ↔: 2つの logical formulaを受け取って logical formula を返す
         - ¬: 1つの logical formula を受け取って logical formula を返す
         - ⊥: TODO まだわからない: 0このlogical formula を受け取って logical formula を返す
         - quantifier(量化子): ∀ と ∃ のみで、変数に作用させたものを logical formula に作用させて使う
-        - 名前がない: ∀ と ∃ のみ
-    - auxiliary symbol(補助記号)
-- function symbol と predicate symbol と auxiliary symbol は単体で存在できない
-- term(項):
+    - auxiliary symbol(補助記号)アグズィルイエリー
+        - (, ),
+        - なくても別の書き方ができる
+  - function symbol と predicate symbol と auxiliary symbol は単体で存在できない
+
+- term(項)は以下のみ:
     - variable symbol
     - constant symbol
     - function symbol と auxiliary symbol を variable symbol や constant symbol に作用させたもの
 - logical formula (論理式)は以下のみ:
     - proposition symbol
-    - predicate symble を term に作用させたもの
+    - predicate symbol を term に作用させたもの
     - quantifier 以外の logic symbol を logical formula に作用させたもの
     - quantifier を variable symbol に作用させて、それを logical formula に作用させたもの
-- closed formula(閉じた式): すべての variable symbol に quantifier がついている logical fomula
+- closed logical formula(閉じた論理式): すべての variable symbol に quantifier がついている logical fomula
 - theorem(Leanの型の): closed formula
 - Prop(Leanの型の): logical fomula
 
------まだこれから
-- Prop ↔ Prop
-- Term = Term
-- Prop → Prop
+
+
+## Prop ↔ Prop
+- `Prop` は logical formula
+- `↔` は logic symbol
+- `Prop` は logical formula
+- `Prop ↔ Pro` は logical formula
+
+
+
+## term = term
+`term` は Term
+- `=` は predicate symbol
+- `term = term` は logical formula
 
 
 
 
-
-
-## `∀ a, a ^ 2 = 1` を A とおく
+## A = (∀ a, a ^ 2 = 1)
+- `A` は proposition symbol
+- `=` は predicate symbol
+- `(` は auxiliary symbol
 - `∀` は logic symbol かつ quantifier
 - `a` は variable symbol
 - `∀ a` は名前無し(quantifier を variable symbol に作用させたもの)
@@ -103,18 +126,22 @@ theorem hasDerivAt_iff_isLittleO_nhds_zero :
 - `a ^ 2` は Term
 - `=` は predicate symbol
 - `1` は constant symbol かつ term
+- `)` は auxiliary symbol
 - `a ^ 2 = 1` は logical expression
 - `∀ a, a ^ 2 = 1` は logical expression
-- `A` は proposition symbol
-- `おく` は
-
+## `Xは性質Pをもつ`という意味で `P(X)`と書く
+- `P`は predicate symbol
+- `(` は auxiliary symbol
+- `X`は term
+- `)` は auxiliary symbol
+## 'X, Yに関係Rがある'という意味で'R(X, Y)'と書く
+- 'X', 'Y'は variable symbol
+- 'R'は predicate symbol
 
 ------
 
 
 順序
-
-
 
 =>,<=,ならば
 
@@ -122,8 +149,11 @@ theorem hasDerivAt_iff_isLittleO_nhds_zero :
 
 
 
-
 -/
+
+
+file:///home/hiromi/Downloads/%E6%95%B0%E7%90%86%E8%AB%96%E7%90%86%E5%AD%A6%20-%20(%E8%91%97)%E9%B9%BF%E5%B3%B6%E4%BA%AE.pdf
+数理論理学のp43代入可能性の具体例から
 
 /-- 3. `x`が`a`に近づくとき`(f x - f a - (x - a) * f') / (x - a)`は`0`に近づく -/
 theorem hasDerivAt_iff_tendsto :
