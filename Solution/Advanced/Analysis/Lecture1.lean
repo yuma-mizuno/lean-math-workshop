@@ -95,8 +95,16 @@ theorem hasDerivAt_iff_isLittleO_nhds_zero :
 - closed logical formula(閉じた論理式): すべての variable symbol に quantifier がついている logical fomula
 - theorem(Leanの型の): closed formula
 - Prop(Leanの型の): logical fomula
+    - (quantifire をつけなくても定義できる)
 
 
+## 数理論理の本の代入
+-自由/束縛:
+- 閉じているのニュアンス
+    - 閉じたら完成したみたいなニュアンスがある
+    - 閉じたものがさらに閉じることはないニュアンス
+    - 証明が完成したとはいっていない(真か偽かは何もいっていない)
+    - 命題の意味が固定されて他の文字に置き換えられなくなった状態
 
 ## Prop ↔ Prop
 - `Prop` は logical formula
