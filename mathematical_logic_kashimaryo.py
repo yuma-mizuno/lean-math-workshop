@@ -45,8 +45,8 @@ def is_auxiliary(x: str) -> bool:
 
 def restore_full_form(x_original: str) -> str:
     x = x_original.replace(' ', '')
-    # 1. loop
-    # 2. if function or predicate or logic add '()'
+    1. loop
+    2. if function or predicate or logic add '()'
     return x
 
 def is_correct_block_syntax(x: str) -> bool:
