@@ -1,3 +1,6 @@
+from sympy.testing import pytest
+
+
 def test_is_variable():
     from mathematical_logic_kashimaryo import is_variable
     assert is_variable('x') == True
@@ -213,8 +216,19 @@ def test_is_auxiliary():
     assert is_auxiliary('∧∨∨∧') == False
 
 def test_restore_full_form():
-    from mathematical_logic_kashimaryo import restore_full_form
-    # assert restore_full_form('x') == 'x'
+    from mathematical_logic_kashimaryo import restore_full_form_and_check_syntax
+    restore_full_form_and_check_syntax('∀a(A)')
+    restore_full_form_and_check_syntax('+(1,2)')
+    with pytest.raises(ValueError):
+        restore_full_form_and_check_syntax('aa(A)')
+    #function
+    with pytest.raises(ValueError):
+        restore_full_form_and_check_syntax('+a')
+
+    with pytest.raises(ValueError):
+        restore_full_form_and_check_syntax('+')
+    with pytest.raises(ValueError):
+        restore_full_form_and_check_syntax('=')
 
 def test_is_correct_block_syntax():
     from mathematical_logic_kashimaryo import is_correct_block_syntax
