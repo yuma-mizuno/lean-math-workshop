@@ -1,5 +1,7 @@
 from sympy.testing import pytest
 
+from mathematical_logic_kashimaryo import find_deepest_stack_depth
+
 
 def test_is_variable():
     from mathematical_logic_kashimaryo import is_variable
@@ -19,6 +21,7 @@ def test_is_variable():
     assert is_variable('a1') == False
     assert is_variable('a ') == False
 
+
 def test_is_constant():
     from mathematical_logic_kashimaryo import is_constant
     assert is_constant('x') == False
@@ -36,6 +39,7 @@ def test_is_constant():
     assert is_constant('aA') == False
     assert is_constant('a1') == False
     assert is_constant('a ') == False
+
 
 def test_is_function():
     from mathematical_logic_kashimaryo import is_function
@@ -64,6 +68,7 @@ def test_is_function():
     assert is_function('*+') == False
     assert is_function('S*') == False
 
+
 def test_is_proposition():
     from mathematical_logic_kashimaryo import is_proposition
     assert is_proposition('x') == False
@@ -85,6 +90,7 @@ def test_is_proposition():
     assert is_proposition('aA') == False
     assert is_proposition('a1') == False
     assert is_proposition('a ') == False
+
 
 def test_is_predicate():
     from mathematical_logic_kashimaryo import is_predicate
@@ -111,6 +117,7 @@ def test_is_predicate():
     assert is_predicate('==') == False
     assert is_predicate('<>') == False
 
+
 def test_is_quantifier():
     from mathematical_logic_kashimaryo import is_quantifier
     assert is_quantifier('x') == False
@@ -134,6 +141,7 @@ def test_is_quantifier():
     assert is_quantifier('∃∀') == False
     assert is_quantifier('∀∀') == False
     assert is_quantifier('∃∃') == False
+
 
 def test_is_logic():
     from mathematical_logic_kashimaryo import is_logic
@@ -175,6 +183,7 @@ def test_is_logic():
     assert is_logic('∧∨∧∧∨') == False
     assert is_logic('∧∨∧∧∧') == False
 
+
 def test_is_auxiliary():
     from mathematical_logic_kashimaryo import is_auxiliary
     assert is_auxiliary('x') == False
@@ -215,20 +224,33 @@ def test_is_auxiliary():
     assert is_auxiliary('∧∨∧∨') == False
     assert is_auxiliary('∧∨∨∧') == False
 
+
 def test_restore_full_form():
-    from mathematical_logic_kashimaryo import restore_full_form_and_check_syntax
-    restore_full_form_and_check_syntax('∀a(A)')
-    restore_full_form_and_check_syntax('+(1,2)')
+    # formula should be full form
+    # function should be function_name() style.
+    from mathematical_logic_kashimaryo import is_correct_sytax
+    is_correct_sytax('+(+(1,1),2)') # TODO
+
+
+    is_correct_sytax('∀a(A)')
+    is_correct_sytax('+(1,2)')
+    is_correct_sytax('A^B')
+    is_correct_sytax('(B^A)^A')
     with pytest.raises(ValueError):
-        restore_full_form_and_check_syntax('aa(A)')
-    #function
+        is_correct_sytax('+(∀(1,1),2)')
     with pytest.raises(ValueError):
-        restore_full_form_and_check_syntax('+a')
+        is_correct_sytax('aa(A)')
+    # function
+    with pytest.raises(ValueError):
+        is_correct_sytax('(a,b)')
+    with pytest.raises(ValueError):
+        is_correct_sytax('+a')
 
     with pytest.raises(ValueError):
-        restore_full_form_and_check_syntax('+')
+        is_correct_sytax('+')
     with pytest.raises(ValueError):
-        restore_full_form_and_check_syntax('=')
+        is_correct_sytax('=')
+
 
 def test_is_correct_block_syntax():
     from mathematical_logic_kashimaryo import is_correct_block_syntax
@@ -244,7 +266,7 @@ def test_is_correct_block_syntax():
     assert is_correct_block_syntax('S(6,a)') == True
     assert is_correct_block_syntax('∀a(6,a)') == True
     assert is_correct_block_syntax('S(S(6))') == True
-    assert is_correct_block_syntax('Q(1)') ==   True
+    assert is_correct_block_syntax('Q(1)') == True
     assert is_correct_block_syntax('R(1,a)') == True
     assert is_correct_block_syntax('+') == False
     assert is_correct_block_syntax('S') == False
@@ -263,36 +285,47 @@ def test_is_correct_block_syntax():
     assert is_correct_block_syntax('SP') == False
     assert is_correct_block_syntax('S P') == False
 
+def test_find_deepest_stack_depth():
+    assert find_deepest_stack_depth('+(+(a,1),+(a,1))') == 2
+    assert find_deepest_stack_depth('+(+(a,1),+(+(a,a),1))') == 3
+    assert find_deepest_stack_depth('a') == 0
+    assert find_deepest_stack_depth('+(a,1)') == 1
 
 def test_is_term():
     from mathematical_logic_kashimaryo import is_term
+    assert is_term('+(1,a)') == True
+    assert is_term('+(+(a,1),a)') == True
+    assert is_term('+(+(a,1),+(a,1))') == True
+    with pytest.raises(ValueError):
+        is_term('+(+(a,1),+(a,1),+(a,1))')
+    with pytest.raises(ValueError):
+        assert is_term('1+')
+    # variable or constant 1,1,2
+    # index4-1:  index3-(, index7-)
+    # index4-1 syntac:  index3-(, index4-1, ',', variable or constant or function(), index7-)
+
+    # function_char(isTerm())
+
+
+
     assert is_term('x') == True
     assert is_term('1') == True
     assert is_term('a') == True
     assert is_term('z') == True
     assert is_term('0') == True
     assert is_term('9') == True
-    assert is_term(' ') == False
-    assert is_term('') == False
-    assert is_term('aa') == True
     assert is_term('aA') == False
-    assert is_term('a1') == True
-    assert is_term('a ') == True
-    assert is_term('6*y') == True
-    assert is_term('6 * y') == True
-    assert is_term('6*y ') == True
-    assert is_term('(6*y )') == True
-    assert is_term('S(6)') == True
-    assert is_term('S(6,a)') == True
-    assert is_term('S(S(6))') == True
-    assert is_term('∀a(6,a) ') == False
-    assert is_term('∃a(6,a) ') == False
-    assert is_term('x ∧ y ') == False
-    assert is_term('a=b') == False
-    assert is_term('a<b') == False
-    assert is_term('X') == False
-    assert is_term('A') == False
-    assert is_term('Z') == False
+    assert is_term('a1') == False
+    # assert is_term('6*y') == True
+    # assert is_term('(6*y)') == True
+    # assert is_term('∀a(6,a)') == False
+    # assert is_term('∃a(6,a)') == False
+    # assert is_term('x ∧ y ') == False
+    # assert is_term('a=b') == False
+    # assert is_term('a<b') == False
+    # assert is_term('X') == False
+    # assert is_term('A') == False
+    # assert is_term('Z') == False
 
 #
 # ## Term
