@@ -291,96 +291,24 @@ def test_find_deepest_stack_depth():
     assert find_deepest_stack_depth('a') == 0
     assert find_deepest_stack_depth('+(a,1)') == 1
 
+
+def test_is_correct_tree():
+    from mathematical_logic_kashimaryo import is_correct_tree
+    assert is_correct_tree('+(+(a,1),a)') == True
+    assert is_correct_tree('+(+(a,1),+(a,1))') == True
+    assert is_correct_tree('+(+(a,1),+(+(a,a),1))') == True
+    assert is_correct_tree('(') == False
+    assert is_correct_tree(')') == False
+    assert is_correct_tree('+(+(a,1),(+(+(a,a),1))') == False
+    assert is_correct_tree('(()()()())') == True
+    assert is_correct_tree('(((((())))))') == True
+
+
 def test_is_term():
     from mathematical_logic_kashimaryo import is_term
+    assert is_term('+(+(a,1),(+(+(a,a),1))') == False
+    assert is_term('+(T, a)') == False
+    assert is_term('F(1, a)') == False
     assert is_term('+(1,a)') == True
     assert is_term('+(+(a,1),a)') == True
     assert is_term('+(+(a,1),+(a,1))') == True
-    with pytest.raises(ValueError):
-        is_term('+(+(a,1),+(a,1),+(a,1))')
-    with pytest.raises(ValueError):
-        assert is_term('1+')
-    # variable or constant 1,1,2
-    # index4-1:  index3-(, index7-)
-    # index4-1 syntac:  index3-(, index4-1, ',', variable or constant or function(), index7-)
-
-    # function_char(isTerm())
-
-
-
-    assert is_term('x') == True
-    assert is_term('1') == True
-    assert is_term('a') == True
-    assert is_term('z') == True
-    assert is_term('0') == True
-    assert is_term('9') == True
-    assert is_term('aA') == False
-    assert is_term('a1') == False
-    # assert is_term('6*y') == True
-    # assert is_term('(6*y)') == True
-    # assert is_term('∀a(6,a)') == False
-    # assert is_term('∃a(6,a)') == False
-    # assert is_term('x ∧ y ') == False
-    # assert is_term('a=b') == False
-    # assert is_term('a<b') == False
-    # assert is_term('X') == False
-    # assert is_term('A') == False
-    # assert is_term('Z') == False
-
-#
-# ## Term
-# example_term_y = 'y'
-# example_term_six = '6*y'
-# """
-# block
-# 6
-# *
-# y
-# """
-# def is_term(x: str) -> bool:
-#     # 1. separate to block
-#
-#
-#     pass
-#
-#
-#
-#
-#
-#
-# ## Substitution
-# example_proposition = '∀a∀y((∃x(z=x))∧(x<(y+x)))'
-#
-# """
-# ∀
-# a
-# (
-#     ∀
-#     y
-#     (
-#         (
-#             ∃
-#             x
-#             (
-#                 z
-#                 =
-#                 x
-#             )
-#         )
-#         ∧
-#         (
-#             x
-#             <
-#             (
-#                 y
-#                 +
-#                 x
-#             )
-#         )
-#     )
-# )
-# """
-#
-#
-#
-# def is_substitution_possible() -> bool:

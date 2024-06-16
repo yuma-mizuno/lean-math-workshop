@@ -178,6 +178,7 @@ def get_stack_depth(x: str, target_index: int) -> int:
             stack_count -= 1
     return stack_count
 
+
 class CharWithDepth:
     def __init__(self, index: int, char: str, depth: int):
         self.index = index
@@ -185,73 +186,40 @@ class CharWithDepth:
         self.depth = depth
 
 
+def is_correct_tree(x: str) -> bool:
+    stack_count = 0
+    for i in range(len(x)):
+        if x[i] == "(":
+            stack_count += 1
+        elif x[i] == ")":
+            stack_count -= 1
+        if stack_count < 0:
+            return False
+    return stack_count == 0
+
+
 def is_term(x_original: str) -> bool:
     x = x_original
-    if len(x) == 1:
-        return is_variable(x) or is_constant(x)
-    all_variable_or_constant_with_index: Dict[int, str] = {}
-    for i in range(len(x)):
-        if is_variable(x[i]) or is_constant(x[i]):
-            all_variable_or_constant_with_index[i] = x[i]
-
-    deepest_stack_depth = find_deepest_stack_depth(x)
-    all_variable_or_constant_with_index_and_depth: List[CharWithDepth] = []
-    # assert is_term('+(a,1)') == True
-    for current_char_index, current_cher in all_variable_or_constant_with_index.items():
-        # i = 3, current_cher = 'a'
-        depth = get_stack_depth(x, current_char_index)
-        all_variable_or_constant_with_index_and_depth.append(CharWithDepth(current_char_index, current_cher, depth))
-
-    for stack_depth in range(deepest_stack_depth, 0, -1):
-        for char_with_index_and_depth in all_variable_or_constant_with_index_and_depth:
-            深いものから変数と定数と置き換え文字を取り出す
-            もしくは
-            最初に見つけた')'から文字を置き換えていく
-
-
-            if current_char.depth == stack_depth:
-                open_parenthesis_index = find_open_parenthesis_index(x, current_char_index)
-                if open_parenthesis_index is None:
-                    raise ValueError(f"Syntax Error: {x}. Because current '{current_char_index}' is variable and not found '('")
-                close_parenthesis_index = find_close_parenthesis_index(x, current_char_index)
-                if close_parenthesis_index is None:
-                    raise ValueError(f"Syntax Error: {x}. Because current '{current_char_index}' is variable and not found ')'")
-                if open_parenthesis_index > close_parenthesis_index:
-                    raise ValueError(f"Syntax Error: {x}. Because current '{current_char_index}' is variable and not found ')'")
-                charactor_before_open_parenthesis = x[open_parenthesis_index - 1]
-                if not is_function(charactor_before_open_parenthesis):
-                    raise ValueError(f"Syntax Error: {x}. Because current '{current_char_index}' is variable and not found ')'")
-                characters_between_parenthesis = x[open_parenthesis_index + 1:close_parenthesis_index]
-                if not is_term(characters_between_parenthesis):
-                    return False
-
-    for current_char_index, current_char in all_variable_or_constant_with_index_and_depth:
-        #--------------
-
-        open_parenthesis_index = find_open_parenthesis_index(x, current_char_index)
-        if open_parenthesis_index is None:
-            raise ValueError(f"Syntax Error: {x}. Because current '{current_char_index}' is variable and not found '('")
-        close_parenthesis_index = find_close_parenthesis_index(x, current_char_index)
-        if close_parenthesis_index is None:
-            raise ValueError(f"Syntax Error: {x}. Because current '{current_char_index}' is variable and not found ')'")
-        if open_parenthesis_index > close_parenthesis_index:
-            raise ValueError(f"Syntax Error: {x}. Because current '{current_char_index}' is variable and not found ')'")
-        charactor_before_open_parenthesis = x[open_parenthesis_index - 1]
-        if not is_function(charactor_before_open_parenthesis):
-            raise ValueError(f"Syntax Error: {x}. Because current '{current_char_index}' is variable and not found ')'")
-        characters_between_parenthesis = x[open_parenthesis_index + 1:close_parenthesis_index]
-
-
-    for i in range(len(x)):
-        if is_variable(x[i]) \
-                or is_constant(x[i]) \
-                or is_function(x[i]) \
-                or is_auxiliary(x[i]) \
-                :
-            continue
+    term_mark = "T"
+    function_mark = "F"
+    if not is_correct_tree(x):
         return False
-        # TODO
-    return True
+    if term_mark in x:
+        return False
+    if function_mark in x:
+        return False
+
+    for i in range(len(x)):
+        current_char = x[i]
+        if is_variable(current_char) or is_constant(current_char):
+            x = x.replace(current_char, term_mark)
+        if is_function(current_char):
+            x = x.replace(current_char, function_mark)
+
+    while f"{function_mark}({term_mark},{term_mark})" in x:
+        x = x.replace(f"{function_mark}({term_mark},{term_mark})", term_mark)
+
+    return x == term_mark
 
 
 def is_logical_formula(x_original: str) -> bool:
