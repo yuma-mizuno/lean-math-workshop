@@ -1,7 +1,5 @@
 from sympy.testing import pytest
 
-from mathematical_logic_kashimaryo import find_deepest_stack_depth
-
 
 def test_is_variable():
     from mathematical_logic_kashimaryo import is_variable
@@ -228,28 +226,28 @@ def test_is_auxiliary():
 def test_restore_full_form():
     # formula should be full form
     # function should be function_name() style.
-    from mathematical_logic_kashimaryo import is_correct_sytax
-    is_correct_sytax('+(+(1,1),2)') # TODO
+    from mathematical_logic_kashimaryo import is_correct_syntax
+    is_correct_syntax('+(+(1,1),2)') # TODO
 
 
-    is_correct_sytax('∀a(A)')
-    is_correct_sytax('+(1,2)')
-    is_correct_sytax('A^B')
-    is_correct_sytax('(B^A)^A')
+    is_correct_syntax('∀a(A)')
+    is_correct_syntax('+(1,2)')
+    is_correct_syntax('A^B')
+    is_correct_syntax('(B^A)^A')
     with pytest.raises(ValueError):
-        is_correct_sytax('+(∀(1,1),2)')
+        is_correct_syntax('+(∀(1,1),2)')
     with pytest.raises(ValueError):
-        is_correct_sytax('aa(A)')
+        is_correct_syntax('aa(A)')
     # function
     with pytest.raises(ValueError):
-        is_correct_sytax('(a,b)')
+        is_correct_syntax('(a,b)')
     with pytest.raises(ValueError):
-        is_correct_sytax('+a')
+        is_correct_syntax('+a')
 
     with pytest.raises(ValueError):
-        is_correct_sytax('+')
+        is_correct_syntax('+')
     with pytest.raises(ValueError):
-        is_correct_sytax('=')
+        is_correct_syntax('=')
 
 
 def test_is_correct_block_syntax():
@@ -286,6 +284,7 @@ def test_is_correct_block_syntax():
     assert is_correct_block_syntax('S P') == False
 
 def test_find_deepest_stack_depth():
+    from mathematical_logic_kashimaryo import find_deepest_stack_depth
     assert find_deepest_stack_depth('+(+(a,1),+(a,1))') == 2
     assert find_deepest_stack_depth('+(+(a,1),+(+(a,a),1))') == 3
     assert find_deepest_stack_depth('a') == 0
@@ -303,6 +302,12 @@ def test_is_correct_tree():
     assert is_correct_tree('(()()()())') == True
     assert is_correct_tree('(((((())))))') == True
 
+def test_replace_term_to_t():
+    from mathematical_logic_kashimaryo import replace_term_to_t
+    assert replace_term_to_t('+(+(a,1),a)', 'T', 'F') == 'T'
+    assert replace_term_to_t('+(+(a,1),+(a,1))', 'T', 'F') == 'T'
+    assert replace_term_to_t('+(+(a,1),+(+(a,a),1))', 'T', 'F') == 'T'
+    assert replace_term_to_t('=(+(a,1),+(+(a,a),1))', 'T', 'F') == '=(T,T)'
 
 def test_is_term():
     from mathematical_logic_kashimaryo import is_term
@@ -312,3 +317,10 @@ def test_is_term():
     assert is_term('+(1,a)') == True
     assert is_term('+(+(a,1),a)') == True
     assert is_term('+(+(a,1),+(a,1))') == True
+
+
+def test_is_logical_formula():
+    from mathematical_logic_kashimaryo import is_logical_formula
+    assert is_logical_formula('A') == True
+    assert is_logical_formula('+(+(a,1),+(+(a,a),1))') == False
+    assert is_logical_formula('=(+(a,1),+(+(a,a),1))') == True

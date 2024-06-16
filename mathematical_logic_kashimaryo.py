@@ -51,6 +51,9 @@ def is_predicate(x: str) -> bool:
     # =(1,2)
     # <(1,2)
     # >(1,2)
+    # Q(1) # Q: is even
+    # Q(x,2)
+    #
     return re.match(r'^[=<>QPR]$', x) is not None
 
 
@@ -67,7 +70,7 @@ def is_auxiliary(x: str) -> bool:
     return re.match(r'^[(),]$', x) is not None
 
 
-def is_correct_sytax(x_original: str) -> str:
+def is_correct_syntax(x_original: str) -> str:
     x = x_original.replace(' ', '')
     if len(x) == 0:
         raise ValueError('Empty string')
@@ -198,6 +201,43 @@ def is_correct_tree(x: str) -> bool:
     return stack_count == 0
 
 
+def replace_term_to_t(
+        x: str,
+        term_mark: str,
+        function_mark: str,
+) -> str:
+    for i in range(len(x)):
+        current_char = x[i]
+        if is_variable(current_char) or is_constant(current_char):
+            x = x.replace(current_char, term_mark)
+        if is_function(current_char):
+            x = x.replace(current_char, function_mark)
+
+    while f"{function_mark}({term_mark},{term_mark})" in x:
+        x = x.replace(f"{function_mark}({term_mark},{term_mark})", term_mark)
+    return x
+
+
+def replace_logical_formula_to_l(
+        x: str,
+        term_mark: str,
+        function_mark: str,
+        predicate_mark: str,
+        logical_formula_mark: str,
+) -> str:
+    x = replace_term_to_t(x, term_mark, function_mark)
+    P と L に置き換える
+    for i in range(len(x)):
+        current_char = x[i]
+        if is_predicate(current_char):
+            x = x.replace(current_char, logical_formula_mark)
+
+    while f"{logical_formula_mark}({term_mark},{term_mark})" \
+            or f"{logical_formula_mark}({logical_formula_mark})" in x:
+    # x = x.replace(f"{function_mark}({term_mark},{term_mark})", term_mark)
+    return x
+
+
 def is_term(x_original: str) -> bool:
     x = x_original
     term_mark = "T"
@@ -208,25 +248,38 @@ def is_term(x_original: str) -> bool:
         return False
     if function_mark in x:
         return False
+    return replace_term_to_t(x, term_mark, function_mark) == term_mark
 
-    for i in range(len(x)):
-        current_char = x[i]
-        if is_variable(current_char) or is_constant(current_char):
-            x = x.replace(current_char, term_mark)
-        if is_function(current_char):
-            x = x.replace(current_char, function_mark)
+
+def is_logical_formula(x_original: str) -> bool:
+    x = x_original
+
+    term_mark = "T"
+    function_mark = "F"
+    logical_formula_mark = "L"
+    if not is_correct_tree(x):
+        return False
+    elif term_mark in x \
+            or function_mark in x \
+            or logical_formula_mark in x:
+        return False
+
+    if is_proposition(x):
+        return True
+    x = replace_term_to_t(x, term_mark, function_mark)
 
     while f"{function_mark}({term_mark},{term_mark})" in x:
         x = x.replace(f"{function_mark}({term_mark},{term_mark})", term_mark)
 
-    return x == term_mark
-
-
-def is_logical_formula(x_original: str) -> bool:
-    x = is_correct_sytax(x_original)
-    if is_proposition(x):
+    if x == "=(T,T)":
         return True
+    # Q(T)
+    # <(T,T)
+    # P(T)
+    # R(T,T)
+
     # TODO
+    return False
 
 
 ## Substitution
