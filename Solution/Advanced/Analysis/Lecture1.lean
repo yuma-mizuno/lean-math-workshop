@@ -325,8 +325,6 @@ theorem HasDerivAt.mul {f : ℝ → ℝ} (hf : HasDerivAt f f' a) (hg : HasDeriv
       ring
       -- sorry
 
--- 次の問題で使うかも？
-#check Nat.succ_eq_add_one
 
 /-- 単項式の微分 -/
 theorem hasDerivAt_pow (n : ℕ) (a : ℝ) :
@@ -336,7 +334,6 @@ theorem hasDerivAt_pow (n : ℕ) (a : ℝ) :
   induction n
   case zero => simp [hasDerivAt_iff_isLittleO_nhds_zero]
   case succ n ih =>
-    rw [Nat.succ_eq_add_one]
     suffices HasDerivAt (fun x => x ^ (n + 1) * x) (((n + 1) * a ^ n) * a + a ^ (n + 1) * 1) a by
       apply IsLittleO.congr_left this
       intro x
