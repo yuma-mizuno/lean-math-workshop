@@ -1,4 +1,4 @@
-import Std
+import Batteries
 
 /- # 遊び方 -/
 
