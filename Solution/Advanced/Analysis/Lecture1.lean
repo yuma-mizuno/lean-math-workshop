@@ -325,8 +325,6 @@ theorem HasDerivAt.mul {f : ℝ → ℝ} (hf : HasDerivAt f f' a) (hg : HasDeriv
       ring
       -- sorry
 
--- 次の問題で使うかも？
-#check Nat.succ_eq_add_one
 
 /-- 単項式の微分 -/
 theorem hasDerivAt_pow (n : ℕ) (a : ℝ) :
