@@ -51,7 +51,7 @@ Leanの基礎的な使い方や命題論理について
 
 - [A mathlib overview](https://leanprover-community.github.io/mathlib-overview.html)では、Leanの数学ライブラリmathlibで扱われている数学を概観できます。
 
-- [タクティク逆引きリスト](https://lean-ja.github.io/tactic-cheatsheet/)は、Mathlibで使用できるタクティクやコマンドが使い方から逆引きできるようにまとめられた，**日本語の**資料です。
+- [Lean by Example](https://lean-ja.github.io/lean-by-example/)は、Lean言語に関する**日本語**リファレンスです。定理証明をサポートするタクティクの紹介に加えて、各種コマンドも説明されています。初心者が調べるときに使いやすいよう、理論的な説明は最小限にとどめられ、コード例が豊富に紹介されています。
 
 ## 開発者向け情報
 
