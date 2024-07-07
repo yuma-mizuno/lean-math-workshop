@@ -352,4 +352,4 @@ a
 
 
 def is_substitution_possible() -> bool:
-    pass
+    次は代入可能性
