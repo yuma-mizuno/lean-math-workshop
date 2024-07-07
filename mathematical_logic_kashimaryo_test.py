@@ -1,4 +1,4 @@
-from sympy.testing import pytest
+import pytest
 
 
 def test_is_variable():
@@ -158,8 +158,8 @@ def test_is_logic():
     assert is_logic('aA') == False
     assert is_logic('a1') == False
     assert is_logic('a ') == False
-    assert is_logic('∀') == True
-    assert is_logic('∃') == True
+    assert is_logic('∀') == False
+    assert is_logic('∃') == False
     assert is_logic('∧') == True
     assert is_logic('∨') == True
     assert is_logic('¬') == True
@@ -235,8 +235,6 @@ def test_restore_full_form():
     is_correct_syntax('A^B')
     is_correct_syntax('(B^A)^A')
     with pytest.raises(ValueError):
-        is_correct_syntax('+(∀(1,1),2)')
-    with pytest.raises(ValueError):
         is_correct_syntax('aa(A)')
     # function
     with pytest.raises(ValueError):
@@ -249,6 +247,10 @@ def test_restore_full_form():
     with pytest.raises(ValueError):
         is_correct_syntax('=')
 
+    with pytest.raises(ValueError):
+        is_correct_syntax('∀')
+    with pytest.raises(ValueError):
+        is_correct_syntax('+(∀(1,1),2)')
 
 def test_is_correct_block_syntax():
     from mathematical_logic_kashimaryo import is_correct_block_syntax
@@ -324,3 +326,16 @@ def test_is_logical_formula():
     assert is_logical_formula('A') == True
     assert is_logical_formula('+(+(a,1),+(+(a,a),1))') == False
     assert is_logical_formula('=(+(a,1),+(+(a,a),1))') == True
+    assert is_logical_formula('Q(+(a,1),+(+(a,a),1))') == True
+    assert is_logical_formula('<(+(a,1),+(+(a,a),1))') == True
+    assert is_logical_formula('R(+(a,1),+(+(a,a),1))') == True
+    assert is_logical_formula('⊥()') == True
+    assert is_logical_formula('¬(A)') == True
+    assert is_logical_formula('∧(A,B)') == True
+    assert is_logical_formula('∨(A,B)') == True
+    assert is_logical_formula('→(A,B)') == True
+    assert is_logical_formula('↔(A,B)') == True
+    assert is_logical_formula('∀(x,A)') == True
+    assert is_logical_formula('∀+(a,1)(A)') == False
+
+

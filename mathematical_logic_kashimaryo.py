@@ -36,6 +36,8 @@ def is_constant(x: str) -> bool:
 
 def is_function(x: str) -> bool:
     # 1char(left: Term, right: Term) -> Term
+    # 1char(left: Variable|Constant|Function, right: Variable|Constant|Function) -> Variable|Constant|Function
+    # Termはこの時点では定義できてないはずシンボルだけを列挙して定義することになる
     # S: suc
     # +(1,2)
     # *(1,2)
@@ -51,19 +53,32 @@ def is_predicate(x: str) -> bool:
     # =(1,2)
     # <(1,2)
     # >(1,2)
-    # Q(1) # Q: is even
+    # Q(1,2) # Q: is even
     # Q(x,2)
-    #
-    return re.match(r'^[=<>QPR]$', x) is not None
+    return re.match(r'^[=<>QR]$', x) is not None
 
 
 def is_quantifier(x: str) -> bool:
+    # ∀(Variable, LogicalFormula) -> LogicalFormula
+    # ∃(Variable, LogicalFormula) -> LogicalFormula
     return re.match(r'^[∀∃]$', x) is not None
 
 
 def is_logic(x: str) -> bool:
+    # 1char(LogicalFormula, LogicalFormula) -> LogicalFormula
+    # ∧(A,B)
+    # ∨(A,B)
+    # →(A,B)
+    # ¬だけはLogicalFormulaが1つだけ
+    # 1char(LogicalFormula) -> LogicalFormula
+    # ¬(A)
+    # ⊥だけはLogicalFormulaがいらない
+    # 1char() -> LogicalFormula
+    # ⊥()
+
+    # LogicalFormula: φ,ψ,⊥,
     return is_quantifier(x) \
-        or re.match(r'^[∧∨¬→↔]$', x) is not None
+        or re.match(r'^[∧∨¬→↔⊥]$', x) is not None
 
 
 def is_auxiliary(x: str) -> bool:
@@ -74,6 +89,7 @@ def is_correct_syntax(x_original: str) -> str:
     x = x_original.replace(' ', '')
     if len(x) == 0:
         raise ValueError('Empty string')
+
     # correct all variable and
     # 1. loop
     stack: List[str] = []
@@ -226,16 +242,36 @@ def replace_logical_formula_to_l(
         logical_formula_mark: str,
 ) -> str:
     x = replace_term_to_t(x, term_mark, function_mark)
-    P と L に置き換える
+
     for i in range(len(x)):
         current_char = x[i]
-        if is_predicate(current_char):
+        if is_proposition(current_char):
             x = x.replace(current_char, logical_formula_mark)
+        if is_predicate(current_char):
+            x = x.replace(current_char, predicate_mark)
+    # Replaced: Variable, Constant, Function, Predicate
 
-    while f"{logical_formula_mark}({term_mark},{term_mark})" \
-            or f"{logical_formula_mark}({logical_formula_mark})" in x:
-    # x = x.replace(f"{function_mark}({term_mark},{term_mark})", term_mark)
-    return x
+    while (f"{predicate_mark}({term_mark},{term_mark})" in x \
+           or f"⊥()" in x \
+           or f"¬({logical_formula_mark})" in x \
+           or f"∧({logical_formula_mark},{logical_formula_mark})" in x \
+           or f"∨({logical_formula_mark},{logical_formula_mark})" in x \
+           or f"→({logical_formula_mark},{logical_formula_mark})" in x \
+           or f"↔({logical_formula_mark},{logical_formula_mark})" in x \
+           or f"∀({term_mark},{logical_formula_mark})" in x \
+           or f"∃({term_mark},{logical_formula_mark})" in x \
+            ):
+        x = x.replace(f"{predicate_mark}({term_mark},{term_mark})", logical_formula_mark)
+        x = x.replace(f"⊥()", logical_formula_mark)
+        x = x.replace(f"¬({logical_formula_mark})", logical_formula_mark)
+        x = x.replace(f"∧({logical_formula_mark},{logical_formula_mark})", logical_formula_mark)
+        x = x.replace(f"∨({logical_formula_mark},{logical_formula_mark})", logical_formula_mark)
+        x = x.replace(f"→({logical_formula_mark},{logical_formula_mark})", logical_formula_mark)
+        x = x.replace(f"↔({logical_formula_mark},{logical_formula_mark})", logical_formula_mark)
+        x = x.replace(f"∀({term_mark},{logical_formula_mark})", logical_formula_mark)
+        x = x.replace(f"∃({term_mark},{logical_formula_mark})", logical_formula_mark)
+
+        return x
 
 
 def is_term(x_original: str) -> bool:
@@ -256,6 +292,7 @@ def is_logical_formula(x_original: str) -> bool:
 
     term_mark = "T"
     function_mark = "F"
+    predicate_mark = "P"
     logical_formula_mark = "L"
     if not is_correct_tree(x):
         return False
@@ -266,20 +303,18 @@ def is_logical_formula(x_original: str) -> bool:
 
     if is_proposition(x):
         return True
-    x = replace_term_to_t(x, term_mark, function_mark)
 
-    while f"{function_mark}({term_mark},{term_mark})" in x:
-        x = x.replace(f"{function_mark}({term_mark},{term_mark})", term_mark)
+    for i in range(len(x)):
+        current_char = x[i]
+        if not is_quantifier(current_char):
+            continue
+        elif len(x) < i + 2:
+            return False
+        elif not is_variable(x[i + 2]):
+            return False
 
-    if x == "=(T,T)":
-        return True
-    # Q(T)
-    # <(T,T)
-    # P(T)
-    # R(T,T)
-
-    # TODO
-    return False
+    x = replace_logical_formula_to_l(x, term_mark, function_mark, predicate_mark, logical_formula_mark)
+    return x == logical_formula_mark
 
 
 ## Substitution
