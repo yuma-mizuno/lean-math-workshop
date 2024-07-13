@@ -103,9 +103,6 @@ structure CoconeHom (s t : Cocone F) where
   /-- `hom`と余錐の射は可換 -/
   comm : ∀ j : J, s.toVertex j ≫ hom = t.toVertex j
 
--- おまじない。右画面の表示が少しきれいになる。
-attribute [pp_dot] Functor.obj Functor.map Cocone.toVertex CoconeHom.hom
-
 /-- 余錐全体は圏を成す。 -/
 instance : Category (Cocone F) where
   Hom s t := CoconeHom s t
