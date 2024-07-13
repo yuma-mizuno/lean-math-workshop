@@ -11,10 +11,10 @@ package «lean-math-workshop» where
   moreGlobalServerArgs := moreServerArgs
 
 require «mk-exercise» from git
-  "https://github.com/Seasawher/mk-exercise.git" @ "70102f2963f5bc19aac0339d9464b72a1de2e1cb"
+  "https://github.com/Seasawher/mk-exercise.git" @ "lean/v4.10.0-rc1"
 
 require mathlib from git
-  "https://github.com/leanprover-community/mathlib4.git" @ "v4.8.0"
+  "https://github.com/leanprover-community/mathlib4.git" @ "v4.10.0-rc2"
 
 @[default_target]
 lean_lib «Solution» where
