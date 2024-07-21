@@ -286,6 +286,39 @@ def is_term(x_original: str) -> bool:
         return False
     return replace_term_to_t(x, term_mark, function_mark) == term_mark
 
+def is_no_vioration_of_nested_quantifier(x: str) -> bool:
+    syntax_template = "∀(a,P)"
+    for i in range(len(x)):
+        current_char = x[i]
+        if not is_quantifier(current_char):
+            continue
+        if i + len(syntax_template) > len(x):
+            return False
+        next_char = x[i + 1]
+        if next_char != "(":
+            return False
+        bound_variable = x[i + 2]
+        if not is_variable(bound_variable):
+            return False
+        stack_count = 0
+        for j in range(i + 3, len(x)):
+            current_char_in_quantifier = x[j]
+            if current_char_in_quantifier == "(":
+                stack_count += 1
+                continue
+            elif current_char_in_quantifier == ")":
+                stack_count -= 1
+                continue
+            if stack_count == -1:
+                break
+            if not is_quantifier(current_char_in_quantifier):
+                continue
+            if len(x) < j + 2:
+                return False
+            if x[j + 2] == bound_variable:
+                return False
+
+    return True
 
 def is_logical_formula(x_original: str) -> bool:
     x = x_original
@@ -303,6 +336,9 @@ def is_logical_formula(x_original: str) -> bool:
 
     if is_proposition(x):
         return True
+
+    if not is_no_vioration_of_nested_quantifier(x):
+        return False
 
     for i in range(len(x)):
         current_char = x[i]
@@ -351,5 +387,55 @@ a
 """
 
 
-def is_substitution_possible() -> bool:
-    次は代入可能性
+def get_variable_symbol_from_term(t: str) -> List[str]:
+    variables = [char for char in t if is_variable(char)]
+    return list(set(variables))
+
+
+def is_substitution_possible(param_x: str, target_variable_symbol: str, target_term: str) -> bool:
+    テストの3つめでコケている
+    phi = param_x
+    x = target_variable_symbol
+    t = target_term
+
+    if not is_logical_formula(phi):
+        return False
+
+    # ∀(Variable, LogicalFormula) -> LogicalFormula
+    # ∃(Variable, LogicalFormula) -> LogicalFormula
+
+    # y ∈ Var(t)
+    variables_in_t = get_variable_symbol_from_term(t)
+
+    for i in range(len(phi)):
+        current_char = phi[len(phi)-i-1]
+        if current_char != x:
+            continue
+        stack_count = 0
+        bound_variables = []
+        for j in range(len(phi)-i):
+            current_char_before_target_variable = phi[len(phi)-i-j-1]
+            if current_char_before_target_variable == "(":
+                stack_count += 1
+                continue
+            elif current_char_before_target_variable == ")":
+                stack_count -= 1
+                continue
+            if stack_count < 0:
+                continue
+
+            if len(phi)-i-j-1-2 < 0:
+                break
+            quantifier_for_current_char_before_target_variable = phi[len(phi)-i-j-1-2]
+            if not is_quantifier(quantifier_for_current_char_before_target_variable):
+                continue
+            bound_variables.append(current_char_before_target_variable)
+
+        if x in bound_variables:
+            continue
+        if x in variables_in_t:
+            return False
+
+    return True
+
+

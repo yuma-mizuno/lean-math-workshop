@@ -339,3 +339,56 @@ def test_is_logical_formula():
     assert is_logical_formula('∀+(a,1)(A)') == False
 
 
+def test_get_variable_symbol_from_term():
+    from mathematical_logic_kashimaryo import get_variable_symbol_from_term
+    assert get_variable_symbol_from_term('+(+(a,1),a)') == ['a']
+    assert get_variable_symbol_from_term('+(+(a,1),+(a,1))') == ['a']
+    assert get_variable_symbol_from_term('+(+(a,1),+(+(a,a),1))') == ['a']
+    assert get_variable_symbol_from_term('+(+(a,1),+(+(a,a),b))') == ['a', 'b']
+    assert get_variable_symbol_from_term('+(+(a,1),+(+(a,a),b))') == ['a', 'b']
+    assert get_variable_symbol_from_term('+(+(a,1),+(+(a,a),+(b,1)))') == ['a', 'b']
+
+
+def test_is_no_vioration_of_nested_quantifier():
+    from mathematical_logic_kashimaryo import is_no_vioration_of_nested_quantifier
+    assert is_no_vioration_of_nested_quantifier('∃(x,A)') == True
+    assert is_no_vioration_of_nested_quantifier('∀(x,A)') == True
+    assert is_no_vioration_of_nested_quantifier('∀(x,∃(y,A))') == True
+    assert is_no_vioration_of_nested_quantifier('∃(x,∀(y,A))') == True
+    assert is_no_vioration_of_nested_quantifier('∀(x,∀(y,A))') == True
+    assert is_no_vioration_of_nested_quantifier('∃(x,∃(y,A))') == True
+    assert is_no_vioration_of_nested_quantifier('∃(x,∃(x,A))') == False
+    assert is_no_vioration_of_nested_quantifier('∀(x,∃(x,A))') == False
+    assert is_no_vioration_of_nested_quantifier('∀(x,∀(y,∃(z,A)))') == True
+    assert is_no_vioration_of_nested_quantifier('∀(x,∃(y,∀(y,A)))') == False
+
+
+def test_is_substitution_possible():
+    from mathematical_logic_kashimaryo import is_substitution_possible
+    assert is_substitution_possible('∀(y,=(a,1))', 'a', '1') == True
+    assert is_substitution_possible('∀(y,A)', 'a', '1') == True
+    assert is_substitution_possible('∀(y,=(a,1))', 'a', '+(1,a)') == True
+    assert is_substitution_possible('∀(a,=(a,1))', 'a', '+(1,a)') == True
+    assert is_substitution_possible('∀(a,=(b,1))', 'b', '+(1,a)') == False
+    assert is_substitution_possible('∀(a,∀(b,=(c,1)))', 'c', '1') == True
+    assert is_substitution_possible('∀(a,∀(b,=(c,1)))', 'b', '1') == True
+    assert is_substitution_possible('∀(a,∀(b,=(b,1)))', 'b', '1') == True
+    # assert is_substitution_possible('+(+(a,1),a)', 'a', 'a') == False
+    # assert is_substitution_possible('+(+(a,1),a)', 'b', '1') == False
+    # assert is_substitution_possible('+(+(a,1),a)', 'b', 'b') == False
+    # assert is_substitution_possible('+(+(a,1),a)', '1', '1') == False
+    # assert is_substitution_possible('+(+(a,1),a)', '1', 'a') == False
+    # assert is_substitution_possible('+(+(a,1),a)', '1', 'b') == False
+    # assert is_substitution_possible('+(+(a,1),a)', '1', '1') == False
+    # assert is_substitution_possible('+(+(a,1),a)', '1', 'a') == False
+    # assert is_substitution_possible('+(+(a,1),a)', '1', 'b') == False
+    # assert is_substitution_possible('+(+(a,1),a)', 'a', '1') == True
+    # assert is_substitution_possible('+(+(a,1),a)', 'a', 'a') == False
+    # assert is_substitution_possible('+(+(a,1),a)', 'b', '1') == False
+    # assert is_substitution_possible('+(+(a,1),a)', 'b', 'b') == False
+    # assert is_substitution_possible('+(+(a,1),a)', '1', '1') == False
+    # assert is_substitution_possible('+(+(a,1),a)', '1', 'a') == False
+    # assert is_substitution_possible('+(+(a,1),a)', '1', 'b') == False
+    # assert is_substitution_possible('+(+(a,1),a)', '1', '1') == False
+    # assert is_substitution_possible('+(+(a,1),a)', '1', 'a') == False
+    # assert is_substitution_possible('+(+(a,1),a)', '1', 'b') == False
