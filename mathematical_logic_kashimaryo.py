@@ -369,3 +369,17 @@ def substitute(expression: str, target_variable_symbol: str, target_term: str) -
     if not is_substitution_possible(phi, x, t):
         raise ValueError("Substitution is not possible.")
 
+    phi_length = len(phi)
+    for i in range(phi_length):
+        current_index = phi_length - i - 1
+        current_char = phi[current_index]
+        if current_char != x:
+            continue
+        bound_variables = find_bound_variables(phi, i)
+        if x in bound_variables:
+            continue
+        phi = phi[:current_index] + t + phi[current_index + 1:]
+
+    return phi
+
+
