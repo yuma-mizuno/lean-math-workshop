@@ -271,7 +271,7 @@ def replace_logical_formula_to_l(
         x = x.replace(f"∀({term_mark},{logical_formula_mark})", logical_formula_mark)
         x = x.replace(f"∃({term_mark},{logical_formula_mark})", logical_formula_mark)
 
-        return x
+    return x
 
 
 def is_term(x_original: str) -> bool:
@@ -393,7 +393,6 @@ def get_variable_symbol_from_term(t: str) -> List[str]:
 
 
 def is_substitution_possible(param_x: str, target_variable_symbol: str, target_term: str) -> bool:
-    テストの3つめでコケている
     phi = param_x
     x = target_variable_symbol
     t = target_term
@@ -432,9 +431,11 @@ def is_substitution_possible(param_x: str, target_variable_symbol: str, target_t
             bound_variables.append(current_char_before_target_variable)
 
         if x in bound_variables:
-            continue
-        if x in variables_in_t:
-            return False
+            continue  # x is free variable
+
+        for bound_variable in bound_variables:
+            if bound_variable in variables_in_t:
+                return False
 
     return True
 

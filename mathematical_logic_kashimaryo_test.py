@@ -368,27 +368,16 @@ def test_is_substitution_possible():
     assert is_substitution_possible('∀(y,=(a,1))', 'a', '1') == True
     assert is_substitution_possible('∀(y,A)', 'a', '1') == True
     assert is_substitution_possible('∀(y,=(a,1))', 'a', '+(1,a)') == True
+    # すでに束縛されている場合はそもそも代入しないから式に変化がないので代入可能
     assert is_substitution_possible('∀(a,=(a,1))', 'a', '+(1,a)') == True
     assert is_substitution_possible('∀(a,=(b,1))', 'b', '+(1,a)') == False
     assert is_substitution_possible('∀(a,∀(b,=(c,1)))', 'c', '1') == True
     assert is_substitution_possible('∀(a,∀(b,=(c,1)))', 'b', '1') == True
     assert is_substitution_possible('∀(a,∀(b,=(b,1)))', 'b', '1') == True
-    # assert is_substitution_possible('+(+(a,1),a)', 'a', 'a') == False
-    # assert is_substitution_possible('+(+(a,1),a)', 'b', '1') == False
-    # assert is_substitution_possible('+(+(a,1),a)', 'b', 'b') == False
-    # assert is_substitution_possible('+(+(a,1),a)', '1', '1') == False
-    # assert is_substitution_possible('+(+(a,1),a)', '1', 'a') == False
-    # assert is_substitution_possible('+(+(a,1),a)', '1', 'b') == False
-    # assert is_substitution_possible('+(+(a,1),a)', '1', '1') == False
-    # assert is_substitution_possible('+(+(a,1),a)', '1', 'a') == False
-    # assert is_substitution_possible('+(+(a,1),a)', '1', 'b') == False
-    # assert is_substitution_possible('+(+(a,1),a)', 'a', '1') == True
-    # assert is_substitution_possible('+(+(a,1),a)', 'a', 'a') == False
-    # assert is_substitution_possible('+(+(a,1),a)', 'b', '1') == False
-    # assert is_substitution_possible('+(+(a,1),a)', 'b', 'b') == False
-    # assert is_substitution_possible('+(+(a,1),a)', '1', '1') == False
-    # assert is_substitution_possible('+(+(a,1),a)', '1', 'a') == False
-    # assert is_substitution_possible('+(+(a,1),a)', '1', 'b') == False
-    # assert is_substitution_possible('+(+(a,1),a)', '1', '1') == False
-    # assert is_substitution_possible('+(+(a,1),a)', '1', 'a') == False
-    # assert is_substitution_possible('+(+(a,1),a)', '1', 'b') == False
+    assert is_substitution_possible('∀(a,∀(b,=(c,1)))', 'b', '+(a,1)') == True
+    assert is_substitution_possible('∀(a,∀(b,=(a,1)))', 'a', '+(a,1)') == True
+    assert is_substitution_possible('∀(a,∀(b,=(c,1)))', 'c', '+(d,1)') == True
+    assert is_substitution_possible('∀(a,∀(b,=(c,d)))', 'c', '+(d,1)') == True
+    assert is_substitution_possible('∀(a,∀(b,=(c,1)))', 'c', '+(a,1)') == False
+    assert is_substitution_possible('∀(a,∀(b,=(c,1)))', 'c', '+(b,1)') == False
+
