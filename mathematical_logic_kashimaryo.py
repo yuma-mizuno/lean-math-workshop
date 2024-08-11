@@ -309,26 +309,35 @@ def find_bound_variables(
         expression: str,
         target_index: int,
 ) -> List[str]:
-    stack_count = 0
     bound_variables = []
-    for j in range(len(expression) - target_index):
-        current_char_before_target_variable = expression[len(expression) - target_index - j - 1]
-        if current_char_before_target_variable == "(":
-            stack_count += 1
-            continue
-        elif current_char_before_target_variable == ")":
-            stack_count -= 1
-            continue
-        if stack_count < 0:
+    for current_index in range(target_index):
+        quantifier = expression[current_index]
+        if not is_quantifier(quantifier):
             continue
 
-        if len(expression)-target_index-j-1-2 < 0:
+        stack_count = 0
+        finished_current_scope_of_quantifier = False
+        for j in range(current_index+1, len(expression)):
+            current_char = expression[j]
+            if current_char == "(":
+                stack_count += 1
+            elif current_char == ")":
+                stack_count -= 1
+            if stack_count == 0:
+                finished_current_scope_of_quantifier = True
+                break
+            if j == target_index:
+                break
+        if finished_current_scope_of_quantifier:
+            continue
+
+        bound_variable_index = current_index + 2
+        if bound_variable_index >= len(expression):
             break
-        quantifier_for_current_char_before_target_variable = expression[len(expression) - target_index - j - 1 - 2]
-        if not is_quantifier(quantifier_for_current_char_before_target_variable):
-            continue
-        bound_variables.append(current_char_before_target_variable)
+        bound_variable = expression[bound_variable_index]
+        bound_variables.append(bound_variable)
 
+    bound_variables.sort()
     return bound_variables
 
 
@@ -375,7 +384,7 @@ def substitute(expression: str, target_variable_symbol: str, target_term: str) -
         current_char = phi[current_index]
         if current_char != x:
             continue
-        bound_variables = find_bound_variables(phi, i)
+        bound_variables = find_bound_variables(phi, current_index)
         if x in bound_variables:
             continue
         phi = phi[:current_index] + t + phi[current_index + 1:]

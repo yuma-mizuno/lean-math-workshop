@@ -1,4 +1,5 @@
 import pytest
+from nltk.internals import find_file
 
 
 def test_is_variable():
@@ -380,15 +381,16 @@ def test_is_substitution_possible():
     assert is_substitution_possible('∀(a,∀(b,=(c,d)))', 'c', '+(d,1)') == True
     assert is_substitution_possible('∀(a,∀(b,=(c,1)))', 'c', '+(a,1)') == False
     assert is_substitution_possible('∀(a,∀(b,=(c,1)))', 'c', '+(b,1)') == False
-
+    assert is_substitution_possible('∀(b,∧(∀(a,=(a,1)),=(a,1)))', 'a', '+(1,a)') == True
 
 def test_substitute():
     from mathematical_logic_kashimaryo import substitute
     assert substitute('∀(y,=(a,1))', 'a', '1') == '∀(y,=(1,1))'
     assert substitute('∀(y,A)', 'a', '1') == '∀(y,A)'
     assert substitute('∀(y,=(a,1))', 'a', '+(1,a)') == '∀(y,=(+(1,a),1))'
+    assert substitute('∀(a,=(a,1))', 'a', '+(1,a)') == '∀(a,=(a,1))'
+    assert substitute('∀(b,∧(∀(a,=(a,1)),=(a,1)))', 'a', '+(1,a)') == '∀(b,∧(∀(a,=(a,1)),=(+(1,a),1)))'
     テストケースの追加から
-    # assert substitute('∀(a,=(a,1))', 'a', '+(1,a)') == '∀(a,=(+(1,a),1))'
     # assert substitute('∀(a,=(b,1))', 'b', '+(1,a)') == '∀(a,=(+(1,a),1))'
     # assert substitute('∀(a,∀(b,=(c,1)))', 'c', '1') == '∀(a,∀(b,=(1,1)))'
     # assert substitute('∀(a,∀(b,=(c,1)))', 'b', '1') == '∀(a,∀(b,=(c,1))'
@@ -396,3 +398,11 @@ def test_substitute():
     # assert substitute('∀(a,��(b,=(c,1)))', 'b', '+(a,1)') == '∀(a,∀(b,=(c,1))'
     # assert substitute('∀(a,∀(b,=(a,1)))', 'a', '+(a,1)') == '∀(a,∀(b,=(+(a,1),1))'
     # assert substitute('∀(a,∀(b,=(c,1)))', 'c', '+(d,1)') == '∀(a,∀(b,=(+(d,1),1))'
+
+def test_find_bound_variables():
+    from mathematical_logic_kashimaryo import find_bound_variables
+    assert find_bound_variables('∀(a,=(a,1))',6) == ['a']
+    assert find_bound_variables('∀(a,P)',4) == ['a']
+    assert find_bound_variables('∀(b,∧(∀(a,=(a,1)),=(a,1)))',12) == ['a', 'b']
+    assert find_bound_variables('∀(b,∧(∀(a,=(a,1)),=(+(1,a),1)))', 12) == ['a', 'b']
+    assert find_bound_variables('∀(b,∧(∀(a,=(a,1)),=(a,1)))',20) == ['b']
