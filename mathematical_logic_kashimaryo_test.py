@@ -382,6 +382,7 @@ def test_is_substitution_possible():
     assert is_substitution_possible('∀(a,∀(b,=(c,1)))', 'c', '+(a,1)') == False
     assert is_substitution_possible('∀(a,∀(b,=(c,1)))', 'c', '+(b,1)') == False
     assert is_substitution_possible('∀(b,∧(∀(a,=(a,1)),=(a,1)))', 'a', '+(1,a)') == True
+    assert is_substitution_possible('∀(b,∀(b,=(b,1)))', 'b', '+(1,a)') == False
 
 def test_substitute():
     from mathematical_logic_kashimaryo import substitute
@@ -390,14 +391,9 @@ def test_substitute():
     assert substitute('∀(y,=(a,1))', 'a', '+(1,a)') == '∀(y,=(+(1,a),1))'
     assert substitute('∀(a,=(a,1))', 'a', '+(1,a)') == '∀(a,=(a,1))'
     assert substitute('∀(b,∧(∀(a,=(a,1)),=(a,1)))', 'a', '+(1,a)') == '∀(b,∧(∀(a,=(a,1)),=(+(1,a),1)))'
-    テストケースの追加から
-    # assert substitute('∀(a,=(b,1))', 'b', '+(1,a)') == '∀(a,=(+(1,a),1))'
-    # assert substitute('∀(a,∀(b,=(c,1)))', 'c', '1') == '∀(a,∀(b,=(1,1)))'
-    # assert substitute('∀(a,∀(b,=(c,1)))', 'b', '1') == '∀(a,∀(b,=(c,1))'
-    # assert substitute('∀(a,∀(b,=(b,1)))', 'b', '1') == '∀(a,∀(b,=(1,1))'
-    # assert substitute('∀(a,��(b,=(c,1)))', 'b', '+(a,1)') == '∀(a,∀(b,=(c,1))'
-    # assert substitute('∀(a,∀(b,=(a,1)))', 'a', '+(a,1)') == '∀(a,∀(b,=(+(a,1),1))'
-    # assert substitute('∀(a,∀(b,=(c,1)))', 'c', '+(d,1)') == '∀(a,∀(b,=(+(d,1),1))'
+
+    with pytest.raises(ValueError):
+        substitute('∀(b,∀(b,=(b,1)))', 'b', '+(1,a)')
 
 def test_find_bound_variables():
     from mathematical_logic_kashimaryo import find_bound_variables
