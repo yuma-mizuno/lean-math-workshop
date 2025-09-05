@@ -30,21 +30,10 @@ variable {N : Subgroup G} [N.Normal]
 あまり有名でなさそうだが有用な補題。-/
 theorem mem_comm {a b} : a * b ∈ N → b * a ∈ N := by
   intro hab
-  -- 一度紙で計算してみて、下のように`calc`するとよいかも。
-  /-
-  ```
-  calc
-    b * a = _ := by sorry
-      _ = _ := by sorry
-      _ ∈ N := by sorry
-  ```
-  -/
   -- sorry --
-  calc
-    b * a = b * a⁻¹⁻¹ := by simp
-    _ = a⁻¹ * (a * b) * a⁻¹⁻¹ := by simp
-    _ ∈ N := by
-      apply Normal.conj_mem a⁻¹ (a * b) hab
+  have : b * a = a⁻¹ * (a * b) * a⁻¹⁻¹ := by simp
+  rw [this]
+  apply Normal.conj_mem a⁻¹ (a * b) hab
   -- sorry --
 
 theorem mem_comm_iff (a b : G) : a * b ∈ N ↔ b * a ∈ N := ⟨mem_comm, mem_comm⟩
@@ -203,7 +192,7 @@ theorem coe_mul {a b : K} : a * b = ⟨a.1 * b.1, K.mul_mem a.2 b.2⟩ := rfl
 theorem coe_one : (1 : K) = ⟨1, by simp⟩ := rfl
 
 @[simp]
-theorem ext_iff {a b : K} : a = b ↔ a.1 = b.1 := Subtype.ext_iff
+theorem ext_iff' {a b : K} : a = b ↔ a.1 = b.1 := Subtype.ext_iff
 
 -- よって`f : G →* H`の像`f.range : Subgroup H`も群だと思え、準同型定理を示す準備が整った。
 end Subgroup

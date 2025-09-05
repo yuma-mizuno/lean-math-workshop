@@ -1,20 +1,20 @@
 import Lake
 open Lake DSL
 
-def moreServerArgs := #[
-  "-Dpp.unicode.fun=true", -- pretty-prints `fun a ↦ b`
-  "-DrelaxedAutoImplicit=false"
+def moreServerArgs : Array LeanOption := #[
+    ⟨`pp.unicode.fun, true⟩, -- pretty-prints `fun a ↦ b`
+    ⟨`relaxedAutoImplicit, false⟩
 ]
 
 package «lean-math-workshop» where
   -- add any package configuration options here
-  moreGlobalServerArgs := moreServerArgs
+  leanOptions := moreServerArgs
 
 require «mk-exercise» from git
-  "https://github.com/Seasawher/mk-exercise.git" @ "lean/v4.10.0-rc1"
+  "https://github.com/Seasawher/mk-exercise.git" @ "2.1.1"
 
 require mathlib from git
-  "https://github.com/leanprover-community/mathlib4.git" @ "v4.10.0-rc2"
+  "https://github.com/leanprover-community/mathlib4.git" @ "v4.12.0"
 
 @[default_target]
 lean_lib «Solution» where

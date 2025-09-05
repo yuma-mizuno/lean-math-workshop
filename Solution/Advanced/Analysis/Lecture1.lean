@@ -54,7 +54,7 @@ theorem hasDerivAt_iff_isLittleO :
 theorem hasDerivAt_iff_isLittleO_nhds_zero :
     HasDerivAt f f' a ↔ (fun h ↦ f (a + h) - f a - h * f') =o[𝓝 0] fun h ↦ h := by
   rw [hasDerivAt_iff_isLittleO, ← map_add_left_nhds_zero a, Asymptotics.isLittleO_map]
-  simp [(· ∘ ·)]
+  simp [Function.comp_def]
 
 /-- 3. `x`が`a`に近づくとき`(f x - f a - (x - a) * f') / (x - a)`は`0`に近づく -/
 theorem hasDerivAt_iff_tendsto :

@@ -87,7 +87,7 @@ example : Group Aˣ where
     -- sorry
   mul_inv_left := by
     -- sorry
-    apply mul_left_inv
+    apply inv_mul_cancel
     -- sorry
 
 --以下この節では`G`を群とする。
