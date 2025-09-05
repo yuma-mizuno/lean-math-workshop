@@ -11,7 +11,6 @@
 -/
 import Solution.Advanced.Algebra.Lecture1
 namespace Tutorial
-attribute [-instance] Mul.toSMul
 
 section Section1
 /-
@@ -33,7 +32,8 @@ class GroupAction (G : Type) [Group G] (X : Type) where
   mul_smul' : ∀ a b x, smul (a * b) x = smul a (smul b x)
 
 -- 作用を`a • x`で書くためのおまじない。`•`は`\smul`で入力。
-infixr:73 " • " => GroupAction.smul
+instance [Group G] [GroupAction G X] : SMul G X where smul := GroupAction.smul
+-- infixr:73 " • " => GroupAction.smul
 
 -- 以下この節では、`G`を群、`X`を左`G`集合とする。
 variable [Group G] [GroupAction G X]
@@ -115,11 +115,10 @@ structure GroupActionHom
   toFun : X → Y -- underlying function
   map_smul' : ∀ (a : G) (x : X), toFun (a • x) = a • toFun x
 
--- `X →[G] Y`と書くためのおまじない。
-notation:25 X " →[" G:25 "] " Y:0 => GroupActionHom G X Y
-
 -- この節では以下`G`を群、`X Y Z`を左`G`集合とする。
 variable [Group G] [GroupAction G X] [GroupAction G Y] [GroupAction G Z]
+
+-- `X →[G] Y`で`X`から`Y`への同変写像全体を表す。
 
 -- `f : X →[G] Y`に対して`f x`のように書くためのおまじない。
 instance : DFunLike (GroupActionHom G X Y) X (fun _ ↦ Y) where

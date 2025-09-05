@@ -210,8 +210,7 @@ example (F : Functor Coproduct.Shape Type) : Colimit (sumCocone F) where
     · sorry
     · sorry
 
--- おまじない (https://github.com/leanprover-community/mathlib4/pull/7281 を見よ)
-noncomputable section TensorProduct
+section TensorProduct
 
 variable {R : CommRingCat}
 

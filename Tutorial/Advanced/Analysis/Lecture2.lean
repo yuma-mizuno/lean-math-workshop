@@ -50,7 +50,7 @@ theorem IsLocalMax.hasDerivAt_eq_zero (h : IsLocalMax f a) (hf : HasDerivAt f f'
     -- `x`を`a`に右側から近づけたとき`(f x - f a) / (x - a)`は`f'`に収束する。
     have hf : Tendsto (fun x ↦ (f x - f a) / (x - a)) (𝓝[>] a) (𝓝 f') := by
       rw [hasDerivAt_iff_tendsto_slope] at hf
-      apply hf.mono_left (nhds_right'_le_nhds_ne a)
+      apply hf.mono_left (nhdsGT_le_nhdsNE a)
     -- `(f x - f a) / (x - a)`が`a`の右側近傍で`0`以下であることを示せばよい。
     suffices ∀ᶠ x in 𝓝[>] a, (f x - f a) / (x - a) ≤ 0 from le_of_tendsto hf this
     -- `a`の右側近傍では`a < x`である。

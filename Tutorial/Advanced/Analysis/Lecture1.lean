@@ -1,4 +1,4 @@
-import Mathlib.Analysis.Asymptotics.Asymptotics
+import Mathlib.Analysis.Asymptotics.Lemmas
 
 namespace Tutorial
 
@@ -27,12 +27,12 @@ example : (fun x ↦ 11 * x ^ 5 + 4 * x ^ 3 : ℝ → ℝ) =o[𝓝 0] (fun x ↦
     calc (fun x ↦  11 * x ^ 5 : ℝ → ℝ)
       _ =O[𝓝 0] fun x ↦ x ^ 5        := by apply isBigO_const_mul_self
       _ =o[𝓝 0] fun x ↦ x ^ 2        := by apply isLittleO_pow_pow (by linarith)
-      _ =O[𝓝 0] fun x ↦ 23 * x ^ 2   := by apply isBigO_self_const_mul _ (by linarith)
+      _ =O[𝓝 0] fun x ↦ 23 * x ^ 2   := by apply isBigO_self_const_mul (by linarith)
   have h₂ :=
     calc (fun x ↦ 4 * x ^ 3 : ℝ → ℝ)
       _ =O[𝓝 0] fun x ↦ x ^ 3        := by apply isBigO_const_mul_self
       _ =o[𝓝 0] fun x ↦ x ^ 2        := by apply isLittleO_pow_pow (by linarith)
-      _ =O[𝓝 0] fun x ↦ 23 * x ^ 2   := by apply isBigO_self_const_mul _ (by linarith)
+      _ =O[𝓝 0] fun x ↦ 23 * x ^ 2   := by apply isBigO_self_const_mul (by linarith)
   apply h₁.add h₂
 
 /- # 微分 -/
@@ -332,7 +332,7 @@ example (a : ℝ) (ha : a ≠ 0) : HasDerivAt (fun x ↦ x⁻¹) (-(a ^ 2)⁻¹)
 -/
 
 /- `0⁻¹`の値が気になる人へ: Leanでは`0⁻¹`は`0`と定義されている -/
-example : (0 : ℚ)⁻¹ = 0 := by rfl
+example : (0 : ℚ)⁻¹ = 0 := by ring
 example : (0 : ℝ)⁻¹ = 0 := by ring
 
 end Tutorial
