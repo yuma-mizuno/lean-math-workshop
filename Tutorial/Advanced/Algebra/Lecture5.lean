@@ -38,20 +38,6 @@ end Subgroup
 
 variable {N : Subgroup G} [N.Normal]
 
--- 商集合の上の二項演算を定義するための補題。本来はMathlibにあるはずだが何らかのミスで
--- 利用できなくなっているため、一時的にここに置く。MathlibのPR#29359で修正予定。
-protected def _root_.Quotient.map₂' {s₁ : Setoid α} {s₂ : Setoid β} {s₃ : Setoid γ} (f : α → β → γ)
-    (h : ∀ ⦃a₁ a₂ : α⦄, s₁.r a₁ a₂ → ∀ ⦃b₁ b₂ : β⦄, s₂.r b₁ b₂ → s₃.r (f a₁ b₁) (f a₂ b₂)) :
-    Quotient s₁ → Quotient s₂ → Quotient s₃ :=
-  Quotient.map₂ f h
-
--- こちらも本来はMathlibにあるはずのもの。MathlibのPR#29359で修正予定。
-@[simp]
-theorem map₂'_mk'' {s₁ : Setoid α} {s₂ : Setoid β} {s₃ : Setoid γ} (f : α → β → γ) (h) (x : α) :
-    (Quotient.mk'' x : Quotient s₁).map₂' f h =
-      (Quotient.map' (f x) (h (Setoid.refl x)) : Quotient s₂ → Quotient s₃) :=
-  rfl
-
 /- 正規部分群`N`について、左剰余類の集合`G ⧸ N`に群の構造を入れよう。-/
 -- `Quotient.map₂'`は、商集合の上の二項演算を定義するときに使えるもの。
 instance : Group (G ⧸ N) where
