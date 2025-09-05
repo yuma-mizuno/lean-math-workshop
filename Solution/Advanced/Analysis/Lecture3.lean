@@ -1,4 +1,5 @@
 import Mathlib.Topology.MetricSpace.CauSeqFilter
+import Mathlib.Algebra.Order.Field.Basic
 
 namespace Tutorial
 
@@ -26,13 +27,13 @@ def «0.9999999» : CauSeq ℚ abs where
     suffices ∃ i, ∀ (j : ℕ), j ≥ i → |((10 ^ i : ℚ)⁻¹ - (10 ^ j : ℚ)⁻¹)| < ε by simpa
     have h : ∃ i : ℕ, (ε / 2)⁻¹ < 10 ^ i := pow_unbounded_of_one_lt (ε / 2)⁻¹ (by linarith)
     rcases h with ⟨i, hi⟩
-    have hi : 2 * (10 ^ i : ℚ)⁻¹ < ε := (lt_div_iff' (by linarith)).mp (inv_lt_of_inv_lt (half_pos ε0) hi)
+    have hi : 2 * (10 ^ i : ℚ)⁻¹ < ε := (lt_div_iff₀' (by linarith)).mp (inv_lt_of_inv_lt₀ (half_pos ε0) hi)
     exists i
     intro j hj
     calc |(10 ^ i : ℚ)⁻¹ - (10 ^ j : ℚ)⁻¹|
       _ ≤ |(10 ^ i : ℚ)⁻¹| + |(10 ^ j : ℚ)⁻¹| := by apply abs_sub
       _ ≤ |(10 ^ i : ℚ)⁻¹| + |(10 ^ i : ℚ)⁻¹| := by simpa [abs_of_ten_inv] using inv_pow_le_inv_pow_of_le (by linarith) hj
-      _ = 2 * (10 ^ i : ℚ)⁻¹                  := by simp [abs_of_ten_inv]; ring
+      _ = 2 * (10 ^ i : ℚ)⁻¹                  := by simp only [abs_inv, abs_pow, Nat.abs_ofNat]; ring
       _ < ε                                   := hi
 
 -- `0.9999999...`は`1`と等しい
@@ -44,10 +45,10 @@ theorem «0.9999999 = 1» : Real.ofCauchy (Quotient.mk CauSeq.equiv «0.9999999�
   apply Quotient.sound
   intro ε ε0
   suffices ∃ i, ∀ (j : ℕ), j ≥ i → (10 ^ j : ℚ)⁻¹ < ε by simpa [abs_of_ten_inv]
-  -- ヒント: `pow_unbounded_of_one_lt`と`inv_lt_of_inv_lt`を使って、欲しい`i`を手に入れよう
+  -- ヒント: `pow_unbounded_of_one_lt`と`inv_lt_of_inv_lt₀`を使って、欲しい`i`を手に入れよう
   -- sorry
   have ⟨n, hn⟩ : ∃ n : ℕ, ε⁻¹ < 10 ^ n := pow_unbounded_of_one_lt ε⁻¹ rfl
-  have : (10 ^ n : ℚ)⁻¹ < ε := inv_lt_of_inv_lt ε0 hn
+  have : (10 ^ n : ℚ)⁻¹ < ε := inv_lt_of_inv_lt₀ ε0 hn
   exists n
   intro h hj
   calc (10 ^ h : ℚ )⁻¹ ≤ (10 ^ n : ℚ)⁻¹ := inv_pow_le_inv_pow_of_le (by linarith) hj
@@ -214,7 +215,7 @@ theorem nestedIntervalSeq_isCauSeq_aux' {i j : ℕ} (hij : i ≤ j) :
 theorem nestedIntervalSeq_isCauSeq : IsCauSeq abs (nestedIntervalSeq U) := by
   intro ε ε0
   have ⟨i, hi⟩ : ∃ i : ℕ, ε⁻¹ < 2 ^ i := pow_unbounded_of_one_lt ε⁻¹ (by linarith)
-  have hi : (2 ^ i : ℝ)⁻¹ < ε := inv_lt_of_inv_lt ε0 hi
+  have hi : (2 ^ i : ℝ)⁻¹ < ε := inv_lt_of_inv_lt₀ ε0 hi
   exists i
   intro j hj
   calc |nestedIntervalSeq U j - nestedIntervalSeq U i|
@@ -279,7 +280,7 @@ theorem HasFinSubCover_of_Icc (hU : ∀ (i : ι), IsOpen (U i)) (cover : Icc 0 1
   intro x hx
   -- `linarith`が使う等式および不等式を用意しておく
   have hba : β n - α n = (2 ^ n : ℝ)⁻¹ := nestedInterval_len U n
-  have hn := inv_lt_of_inv_lt (by linarith) hn
+  have hn := inv_lt_of_inv_lt₀ (by linarith) hn
   have hc : α n ≤ c ∧ c ≤ β n := nestedIntervalLim_mem U n
   have hx : α n ≤ x ∧ x ≤ β n := hx
   calc |x - c|
@@ -314,10 +315,10 @@ example (hU : ∀ (i : ι), IsOpen (U i)) (cover : Icc 0 1 ⊆ ⋃ (i : ι), U i
     rcases hc.1.eq_or_lt with rfl | hlt
     · assumption
     · exists hc
-      rcases (mem_nhdsWithin_Iic_iff_exists_Ioc_subset' hlt).mp
+      rcases (mem_nhdsLE_iff_exists_Ioc_subset' hlt).mp
         (mem_nhdsWithin_of_mem_nhds <| (hU i).mem_nhds hUc') with ⟨x, hxc, hxU⟩
       rcases ((IsLUB.frequently_mem ⟨hAc, hAc'⟩ A1).and_eventually
-        (Ioc_mem_nhdsWithin_Iic ⟨hxc, le_rfl⟩)).exists with ⟨y, ⟨-, hyf⟩, hy⟩
+        (Ioc_mem_nhdsLE_of_mem ⟨hxc, le_rfl⟩)).exists with ⟨y, ⟨-, hyf⟩, hy⟩
       apply hasFinSubCover_concat hyf
       -- sorry
       exists {i}
@@ -330,7 +331,7 @@ example (hU : ∀ (i : ι), IsOpen (U i)) (cover : Icc 0 1 ⊆ ⋃ (i : ι), U i
   suffices c = 1 from this.symm ▸ hcA.2
   by_contra hnc
   have hlt : c < 1 := Ne.lt_of_le hnc (A2 hcA)
-  rcases(mem_nhdsWithin_Ici_iff_exists_mem_Ioc_Ico_subset hlt).mp
+  rcases(mem_nhdsGE_iff_exists_mem_Ioc_Ico_subset hlt).mp
     (mem_nhdsWithin_of_mem_nhds <| (hU i).mem_nhds hUc') with ⟨c', ⟨hc'1, hc'2⟩, hc'U⟩
   have : c' ∈ A := by
     constructor
