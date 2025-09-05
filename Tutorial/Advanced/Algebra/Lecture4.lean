@@ -26,6 +26,15 @@ Leanでは集合`X`上の同値関係や商集合を扱うには`Setoid X`とい
 -/
 namespace LeftQuotient
 
+-- #check Membership.mem
+-- -- local infixl
+-- abbrev _root_.Membership.mem'
+--     {α : outParam (Type u)} {γ : Type v} [Membership α γ] (a : α) (s : γ) : Prop :=
+--   a ∈ s
+
+-- notation:50 a:50 " ∈' " b:50 => Membership.mem' a b
+
+
 /-- 群`G`の部分群`H`について、`a⁻¹ * b ∈ H`であるとき
 `a`と`b`が同値であるとした同値関係。 -/
 def leftRel {G} [Group G] (H : Subgroup G) : Setoid G where
