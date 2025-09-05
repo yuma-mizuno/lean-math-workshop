@@ -11,7 +11,6 @@
 -/
 import Solution.Advanced.Algebra.Lecture1
 namespace Tutorial
--- attribute [-instance] Mul.toSMul
 
 section Section1
 /-
